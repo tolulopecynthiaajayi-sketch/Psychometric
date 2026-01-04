@@ -5,6 +5,7 @@ import { useAssessment } from '@/context/AssessmentContext';
 import { DIMENSIONS, QUESTIONS } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
 import { generatePDFReport } from '@/utils/pdfGenerator';
+import { ReportSlides } from '@/components/report/ReportSlides';
 
 export default function ResultsPage() {
     const router = useRouter();
@@ -62,7 +63,7 @@ export default function ResultsPage() {
 
                     <div style={{ marginTop: '4rem', textAlign: 'center' }}>
                         <button
-                            onClick={() => generatePDFReport('report-content')}
+                            onClick={() => generatePDFReport('pdf-report-container')}
                             style={{
                                 padding: '1rem 2rem',
                                 background: 'var(--color-dark-blue)',
@@ -92,6 +93,9 @@ export default function ResultsPage() {
                             Book Strategy Session
                         </button>
                     </div>
+
+                    {/* Hidden Slides for PDF Generation */}
+                    <ReportSlides scores={scores} />
 
                 </div>
             </main>
