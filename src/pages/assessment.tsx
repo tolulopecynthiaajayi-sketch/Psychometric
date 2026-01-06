@@ -4,12 +4,13 @@ import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
 import { QuestionRenderer } from '@/components/assessment/QuestionRenderer';
 import { PricingModal } from '@/components/payment/PricingModal';
-import { QUESTIONS } from '@/config/assessment';
 
 export default function AssessmentPage() {
     const router = useRouter();
     const {
         currentQuestionIndex,
+        activeQuestions,
+        totalQuestions,
         answers,
         setAnswer,
         nextQuestion,
@@ -20,28 +21,23 @@ export default function AssessmentPage() {
         setPremium
     } = useAssessment();
 
-    const currentQuestion = QUESTIONS[currentQuestionIndex];
+    const currentQuestion = activeQuestions[currentQuestionIndex];
+
+    // Guard against undefined (e.g. during state transitions)
+    if (!currentQuestion) return null;
+
     const currentAnswer = answers[currentQuestion.id];
 
     const handleAnswer = (value: number) => {
         setAnswer(currentQuestion.id, value);
         // Auto-advance after small delay
         setTimeout(() => {
-            if (currentQuestionIndex < QUESTIONS.length - 1) {
-                nextQuestion();
-            } else {
-                // Last question logic could be here
-            }
+            nextQuestion();
         }, 400);
     };
 
     const handleUpgrade = async () => {
-        // In real app, redirect to Stripe
-        const res = await fetch('/api/checkout', { method: 'POST' });
-        const data = await res.json();
-        console.log(data);
-
-        // For MVP demo, just unlock
+        // Mock upgrade
         setPremium(true);
         closeUpsell();
     };
@@ -52,7 +48,7 @@ export default function AssessmentPage() {
         }
     }, [isComplete, router]);
 
-    const progress = ((currentQuestionIndex + 1) / QUESTIONS.length) * 100;
+    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
     return (
         <>
@@ -64,7 +60,7 @@ export default function AssessmentPage() {
                     {/* Progress Bar */}
                     <div style={{ marginBottom: '3rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-gray-800)' }}>
-                            <span>Question {currentQuestionIndex + 1} of {QUESTIONS.length}</span>
+                            <span>Question {currentQuestionIndex + 1} of {totalQuestions}</span>
                             <span>{Math.round(progress)}%</span>
                         </div>
                         <div style={{ height: '8px', background: 'var(--color-gray-200)', borderRadius: '4px', overflow: 'hidden' }}>
@@ -107,12 +103,12 @@ export default function AssessmentPage() {
                                 cursor: 'pointer'
                             }}
                         >
-                            {currentQuestionIndex === QUESTIONS.length - 1 ? 'Finish' : 'Next'}
+                            {currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next'}
                         </button>
                     </div>
                 </div>
 
-                {/* Upsell Modal */}
+                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
                 <PricingModal
                     isOpen={showUpsell}
                     onClose={closeUpsell}
