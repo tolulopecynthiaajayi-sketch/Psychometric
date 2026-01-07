@@ -18,88 +18,100 @@ export interface DimensionConfig {
 }
 
 export const DIMENSIONS: DimensionConfig[] = [
-    { 
-        key: 'cognitive', 
-        label: 'Cognitive and Intellectual Orientation', 
+    {
+        key: 'cognitive',
+        label: 'Cognitive and Intellectual Orientation',
         description: 'Processes complexity and approaches problem-solving.',
-        narrative: '[PLACEHOLDER] How this person thinks, analyzes problems, and processes information. (e.g. "You tend to approach problems with a structured mindset...")',
+        narrative: 'You demonstrate high intellectual acuity, characterised by sharp analytical thinking, sound legal judgement, and strong problem-solving skills. You exhibit the ability to distil complex organisational realities, interpret cultural dynamics, and recognise systemic issues that affect performance and visibility. You reason strategically, thinking not just about the present implications of work but the long-term positioning. Your reflections illustrate a holistic and intellectually mature approach to career planning. Overall, you are a high-capacity professional with the cognitive range to thrive in senior leadership.',
         workImplications: [
-            '[PLACEHOLDER] Benefit: Strategic thinking in complex scenarios.',
-            '[PLACEHOLDER] Watch-out: May over-analyze simple decisions.'
+            'You connect operational workload with broader organisational constraints, showing strong systems thinking.',
+            'You articulate concerns with clarity, linking mental blocks to leadership readiness.',
+            'You may feel overwhelmed by the depth of your analysis, needing structure to potentialize your insights.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Challenge yourself to make faster decisions with 80% information.',
-            '[PLACEHOLDER] Use your analytical skills to mentor others.'
+            'Continue to cultivate your strategic lens to anticipate challenges before they arise.',
+            'Focus on "distilling" complexity for others—translate your deep analysis into simple, actionable directives for your team.',
+            'Leap from "doing the work" to "designing the system" to reduce personal overwhelm.'
         ]
     },
-    { 
-        key: 'motivation', 
-        label: 'Motivation, Drive, and Ambition', 
+    {
+        key: 'motivation',
+        label: 'Motivation, Drive, and Ambition',
         description: 'Intrinsic drive and resilience.',
-        narrative: '[PLACEHOLDER] What drives this person? Is it achievement, connection, or stability?',
+        narrative: 'You are deeply motivated by growth, competence, and meaningful impact. Even when experiencing overwhelm, you display a strong internal drive to excel and contribute at a higher level. You likely find yourself "already doing the work" of a leader, stepping up informally during transitions despite pressure. Your motivation is fueled by a desire for professional visibility and strategic positioning. You are willing to self-reflect and address mental blocks, showing a commitment to finding strategic clarity for the next decade of your career.',
         workImplications: [
-            '[PLACEHOLDER] Highly self-driven and requires little supervision.',
-            '[PLACEHOLDER] May risk burnout due to high standards.'
+            'You inspire others by taking initiative during uncertain times.',
+            'You risk burnout because your standards for yourself are exceptionally high.',
+            'You may feel frustrated if your informal leadership contributions are not formally recognized.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Set boundaries to maintain long-term energy.',
-            '[PLACEHOLDER] Celebrate small wins.'
+            'Shift from "doing more" to "aligning more"—focus on structure rather than raw effort.',
+            'Set clear boundaries to protect your energy for high-leverage activities.',
+            'Document your informal leadership contributions to build a case for formal advancement.'
         ]
     },
-    { 
-        key: 'influence', 
-        label: 'Influence and Interpersonal Impact', 
+    {
+        key: 'influence',
+        label: 'Influence and Interpersonal Impact',
         description: 'Communication style and emotional intelligence.',
-        narrative: '[PLACEHOLDER] How they interact with and persuade others.',
+        narrative: 'Your influence is understated but powerful, rooted in competence, reliability, and the quiet authority that comes from being the stabilising force in a pressured environment. You display self-leadership through improved reflection and goal clarity. You have developed the courage to speak more confidently, raise issues, and assert your perspectives even when the organisational culture is conservative or resistant.',
         workImplications: [
-            '[PLACEHOLDER] Natural ability to build consensus.',
-            '[PLACEHOLDER] Persuasive in group settings.'
+            'You are seen as a stabilising force during transitions.',
+            'Management likely leans on you for consistency, signalling trust.',
+            'Your quiet style may sometimes be overlooked if you do not intentionally advocate for your views.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Leverage your network to drive organizational change.',
-            '[PLACEHOLDER] Practice active listening.'
+            'Continue to assert your perspective in high-stakes meetings to build executive presence.',
+            'Leverage your reliability to negotiate for more resources or authority.',
+            'Practice "speaking up" early in discussions to frame the narrative.'
         ]
     },
-    { 
-        key: 'leadership', 
-        label: 'Leadership Style and Orientation', 
+    {
+        key: 'leadership',
+        label: 'Leadership Style and Orientation',
         description: 'Authority, collaboration, and decision making.',
-        narrative: '[PLACEHOLDER] Their natural style of leading: authoritative, democratic, or servant-leader.',
+        narrative: 'Your leadership capacity is evident and recognised. You tend to provide consistency and hold functions together during periods of instability. You demonstrate the capacity to operate at a higher level by stepping up when senior roles are vacant. However, you may need to focus on transitioning from "execution" to "strategy" to fully embody the senior leader role.',
         workImplications: [
-            '[PLACEHOLDER] Creates a collaborative team environment.',
-            '[PLACEHOLDER] Willing to make tough calls when needed.'
+            'You provide continuity that prevents operational failure during changes.',
+            'You may struggle to delegate because you are so capable of doing it yourself.',
+            'Others look to you for guidance even without a formal title.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Take on more mentorship roles.',
-            '[PLACEHOLDER] Communicate the "why" behind decisions.'
+            'Delegate operational tasks to focus on strategic initiatives.',
+            'Formalise your leadership by proposing clear team improvement plans.',
+            'Mentor junior colleagues to take over your execution responsibilities.'
         ]
     },
-    { 
-        key: 'strengths', 
-        label: 'Core Strengths and Leverage Areas', 
+    {
+        key: 'strengths',
+        label: 'Core Strengths and Leverage Areas',
         description: 'Natural talents and capabilities.',
-        narrative: '[PLACEHOLDER] Summary of their unique value proposition.',
+        narrative: 'Your professional competence is a distinguishing quality, backed by a deep, practical understanding of corporate governance, regulatory frameworks, and organisational dynamics. You possess exceptional strategic awareness, seeing beyond day-to-day tasks to grasp broader implications. Your self-awareness and emotional intelligence allow you to recognise emotional blocks and navigate challenges with composure. Initiative and ownership are your hallmarks; you consistently seek solutions rather than waiting for direction.',
         workImplications: [
-            '[PLACEHOLDER] Rapid learner in new domains.',
-            '[PLACEHOLDER] Trusted by peers.'
+            'You navigate complex issues with maturity, earning trust from stakeholders.',
+            'You anticipate challenges before they arise, making you a proactive asset.',
+            'Your commitment to continuous growth ensures you remain adaptable and ahead of emerging opportunities.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Position yourself in roles that utilize these strengths.',
-            '[PLACEHOLDER] Teach these skills to others.'
+            'Position yourself in high-visibility roles where your strategic competence can be seen.',
+            'Use your self-awareness to manage conflicting priorities without losing composure.',
+            'Continue to take ownership of cross-functional projects to expand your influence.'
         ]
     },
-    { 
-        key: 'development', 
-        label: 'Developmental and Growth Areas', 
+    {
+        key: 'development',
+        label: 'Developmental and Growth Areas',
         description: 'Awareness of habits and areas for improvement.',
-        narrative: '[PLACEHOLDER] Areas where focus and effort will yield high ROI.',
+        narrative: 'To achieve your full potential, focus on professional positioning and visibility. Optimising your external profile (e.g., LinkedIn, CV) and internal presence is crucial. You may need to manage overwhelm by building personal workflow systems and delegating where possible. Increasing your thought leadership presence—through speaking or writing—will help transition you from a "doer" to a recognised "expert".',
         workImplications: [
-            '[PLACEHOLDER] May struggle with delegation.',
-            '[PLACEHOLDER] Needs to improve public speaking confidence.'
+            'You may remain the "best kept secret" if you do not actively build your brand.',
+            'Overwhelm can stifle your strategic thinking if not managed with better systems.',
+            'Undefined career paths can lead to stagnation; you need a clear 3-year plan.'
         ],
         recommendations: [
-            '[PLACEHOLDER] Seek feedback regularly.',
-            '[PLACEHOLDER] Take a course on this specific skill.'
+            'Build a personal workflow system (weekly planning, priority mapping) to reduce friction.',
+            'Identify an accountability partner for regular check-ins on your goals.',
+            'Publish insights or speak at industry events to establish thought leadership.'
         ]
     },
 ];
