@@ -1,5 +1,6 @@
 import React from 'react';
 import { RadarChart } from '@/components/charts/RadarChart';
+import { DIMENSIONS } from '@/config/assessment';
 
 interface ReportSlidesProps {
     scores: { label: string; value: number; fullMark: number }[];
@@ -62,21 +63,55 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 </div>
             </div>
 
-            {/* SLIDE 3: Dimensions Detail (Simple Loop) */}
-            <div className="pdf-slide" style={slideStyle}>
-                <h2 style={headerStyle}>Dimension Breakdown</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                    {scores.map((s, i) => (
-                        <div key={i} style={{ padding: '20px', background: 'var(--color-gray-100)', borderRadius: '8px' }}>
-                            <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '10px' }}>{s.label}</h3>
-                            <div style={{ height: '10px', background: '#ccc', borderRadius: '5px' }}>
-                                <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'var(--color-gold)', borderRadius: '5px' }} />
-                            </div>
-                            <p style={{ marginTop: '10px', fontSize: '16px' }}>Score: {s.value} / 25</p>
+            {/* SLIDE 3+ : Detailed Dimension Breakdown (One Slide Per Dimension) */}
+            {scores.map((s, i) => {
+                // Find full config to get narrative/implications
+                const dimConfig = DIMENSIONS.find(d => d.label === s.label);
+                if (!dimConfig) return null;
+
+                return (
+                    <div key={i} className="pdf-slide" style={slideStyle}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '2px solid var(--color-gold)', paddingBottom: '15px' }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', color: 'var(--color-dark-blue)', margin: 0 }}>{s.label}</h2>
+                            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>Score: {s.value} / 25</div>
                         </div>
-                    ))}
-                </div>
-            </div>
+
+                        <div style={{ display: 'flex', gap: '40px', flex: 1 }}>
+                            {/* Left Column: Narrative & Implication */}
+                            <div style={{ flex: 1 }}>
+                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '10px' }}>What this means</h3>
+                                <p style={{ fontSize: '16px', lineHeight: 1.6, marginBottom: '30px', textAlign: 'justify' }}>
+                                    {dimConfig.narrative}
+                                </p>
+
+                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '10px' }}>Work Implications</h3>
+                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px' }}>
+                                    {dimConfig.workImplications.map((imp, idx) => (
+                                        <li key={idx} style={{ marginBottom: '8px' }}>{imp}</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Right Column: Recommendations & Visual */}
+                            <div style={{ flex: 1, background: 'var(--color-gray-100)', padding: '30px', borderRadius: '8px' }}>
+                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '15px' }}>Recommendations</h3>
+                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px' }}>
+                                    {dimConfig.recommendations.map((rec, idx) => (
+                                        <li key={idx} style={{ marginBottom: '12px' }}>{rec}</li>
+                                    ))}
+                                </ul>
+
+                                <div style={{ marginTop: '40px' }}>
+                                    <p style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '5px' }}>Score Visualization</p>
+                                    <div style={{ height: '20px', background: 'white', borderRadius: '10px', border: '1px solid #ddd' }}>
+                                        <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'var(--color-gold)', borderRadius: '10px' }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
 
             {/* SLIDE 4: Closing / CTA */}
             <div className="pdf-slide" style={{ ...slideStyle, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
