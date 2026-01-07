@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 
 // Initialize Stripe (conditional to prevent build errors if key is missing)
 const stripe = process.env.STRIPE_SECRET_KEY
-    ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' })
+    ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2025-12-15.clover' })
     : null;
 
 export default async function handler(
