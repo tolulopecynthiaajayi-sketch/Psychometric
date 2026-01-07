@@ -35,3 +35,18 @@ a {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+/* Responsive Question Grid */
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Mobile: Stack vertically */
+@media (max-width: 768px) {
+  .question-grid {
+    grid-template-columns: 1fr; /* Single column */
+  }
+}

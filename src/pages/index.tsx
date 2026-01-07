@@ -14,19 +14,33 @@ export default function Home() {
                 <section style={{
                     background: 'var(--color-dark-blue)',
                     color: 'white',
-                    padding: '6rem 1rem',
+                    padding: 'clamp(4rem, 8vw, 6rem) 1rem', // Responsive padding
                     textAlign: 'center',
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    minHeight: '80vh' // Ensure full height on mobile
                 }}>
                     <div className="container">
-                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '4rem', marginBottom: '1.5rem', color: 'var(--color-gold)' }}>
+                        <h1 style={{
+                            fontFamily: 'var(--font-serif)',
+                            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', // Fluid typography
+                            marginBottom: '1.5rem',
+                            color: 'var(--color-gold)',
+                            lineHeight: 1.1
+                        }}>
                             TRB Alchemy™️
                         </h1>
-                        <p style={{ fontSize: '1.5rem', maxWidth: '600px', margin: '0 auto 3rem', opacity: 0.9, lineHeight: 1.6 }}>
+                        <p style={{
+                            fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
+                            maxWidth: '600px',
+                            margin: '0 auto 3rem',
+                            opacity: 0.9,
+                            lineHeight: 1.6,
+                            padding: '0 10px' // Prevent edge touching
+                        }}>
                             Unlock the secrets of your professional DNA. <br />
                             Where insight becomes transformation.
                         </p>
@@ -40,7 +54,9 @@ export default function Home() {
                             fontWeight: 'bold',
                             borderRadius: '50px',
                             transition: 'transform 0.2s',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            width: 'fit-content',
+                            maxWidth: '100%'
                         }}>
                             Begin Your Journey
                         </Link>

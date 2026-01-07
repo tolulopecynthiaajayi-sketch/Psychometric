@@ -55,7 +55,7 @@ export default function AssessmentPage() {
             <Head>
                 <title>Assessment | TRB Alchemy™️</title>
             </Head>
-            <main style={{ minHeight: '100vh', padding: '2rem 0' }}>
+            <main style={{ minHeight: '100vh', padding: 'clamp(1rem, 4vw, 2rem) 0' }}>
                 <div className="container" style={{ maxWidth: '800px' }}>
                     {/* Progress Bar */}
                     <div style={{ marginBottom: '3rem' }}>

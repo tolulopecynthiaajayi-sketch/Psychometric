@@ -79,16 +79,16 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 <div style={cornerShape} />
                 <h2 style={headerStyle}>Executive Assessment Summary</h2>
 
-                <div style={{ display: 'flex', height: '100%', gap: '50px', position: 'relative', zIndex: 1 }}>
-                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
+                    <div style={{ flex: '0 0 450px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Fixed width for chart col */}
                         {/* Radar Chart Container with shadow */}
-                        <div style={{ padding: '20px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)' }}>
-                            <RadarChart data={scores} size={450} />
+                        <div style={{ padding: '10px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)' }}>
+                            <RadarChart data={scores} size={380} /> {/* Reduced size due to overflow */}
                         </div>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <h3 style={{ fontSize: '24px', color: '#2C5282', marginBottom: '20px' }}>Performance Snapshot</h3>
-                        <ul style={{ fontSize: '18px', lineHeight: 1.8, listStyle: 'none', padding: 0 }}>
+                        <h3 style={{ fontSize: '24px', color: '#2C5282', marginBottom: '15px' }}>Performance Snapshot</h3> {/* Reduced margin */}
+                        <ul style={{ fontSize: '16px', lineHeight: 1.6, listStyle: 'none', padding: 0 }}> {/* Smaller font/line-height to fit */}
                             {scores.map((s, i) => (
                                 <li key={i} style={{ marginBottom: '15px', padding: '15px', background: '#FFF5F5', borderRadius: '8px', borderLeft: '5px solid #ED8936' }}>
                                     <strong style={{ color: '#2D3748', fontSize: '20px' }}>{s.label}</strong>

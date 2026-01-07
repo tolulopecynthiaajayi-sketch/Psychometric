@@ -22,7 +22,7 @@ export function QuestionRenderer({ question, currentAnswer, onAnswer }: Question
                 {question.text}
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', alignItems: 'center' }}>
+            <div className="question-grid">
                 {[1, 2, 3, 4, 5].map((value, index) => (
                     <button
                         key={value}
