@@ -7,112 +7,211 @@ export interface Question {
     isFreeTier?: boolean;
 }
 
+export interface AnalysisContent {
+    narrative: string;
+    implications: string[];
+    recommendations: string[];
+}
+
 export interface DimensionConfig {
     key: DimensionKey;
     label: string;
     description: string;
-    // New Content Fields
-    narrative: string;
-    workImplications: string[];
-    recommendations: string[];
+    // Dynamic Content Generators
+    getAnalysis: (score: number) => AnalysisContent;
 }
+
+// Helper to select content based on score (Matching User Stories)
+const getBand = (score: number): 'strong' | 'solid' | 'developing' | 'underdeveloped' => {
+    if (score >= 21) return 'strong';       // 21-25
+    if (score >= 15) return 'solid';        // 15-20
+    if (score >= 10) return 'developing';   // 10-14
+    return 'underdeveloped';                // 5-9
+};
 
 export const DIMENSIONS: DimensionConfig[] = [
     {
         key: 'cognitive',
         label: 'Cognitive and Intellectual Orientation',
         description: 'Processes complexity and approaches problem-solving.',
-        narrative: 'You demonstrate high intellectual acuity, characterised by sharp analytical thinking, sound legal judgement, and strong problem-solving skills. You exhibit the ability to distil complex organisational realities, interpret cultural dynamics, and recognise systemic issues that affect performance and visibility. You reason strategically, thinking not just about the present implications of work but the long-term positioning. Your reflections illustrate a holistic and intellectually mature approach to career planning. Overall, you are a high-capacity professional with the cognitive range to thrive in senior leadership.',
-        workImplications: [
-            'You connect operational workload with broader organisational constraints, showing strong systems thinking.',
-            'You articulate concerns with clarity, linking mental blocks to leadership readiness.',
-            'You may feel overwhelmed by the depth of your analysis, needing structure to potentialize your insights.'
-        ],
-        recommendations: [
-            'Continue to cultivate your strategic lens to anticipate challenges before they arise.',
-            'Focus on "distilling" complexity for others—translate your deep analysis into simple, actionable directives for your team.',
-            'Leap from "doing the work" to "designing the system" to reduce personal overwhelm.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            // High Band (Strong & Solid)
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'You demonstrate high intellectual acuity, characterised by sharp analytical thinking, sound legal judgement, and strong problem-solving skills. You exhibit the ability to distil complex organisational realities, interpret cultural dynamics, and recognise systemic issues that affect performance and visibility. You reason strategically, thinking not just about the present implications of work but the long-term positioning.',
+                implications: [
+                    'You connect operational workload with broader organisational constraints, showing strong systems thinking.',
+                    'You articulate concerns with clarity, linking mental blocks to leadership readiness.'
+                ],
+                recommendations: [
+                    'focus on "distilling" complexity for others—translate your deep analysis into simple, actionable directives.',
+                    'Leap from "doing the work" to "designing the system" to reduce personal overwhelm.'
+                ]
+            };
+            // Low Band (Developing & Underdeveloped)
+            return {
+                narrative: 'You approach problems with a practical mindset, focusing on getting things done. While you are capable of analysis, you may sometimes overlook broader systemic issues in favor of immediate execution. Developing a more strategic "balcony view" will enhance your leadership readiness.',
+                implications: [
+                    'You are reliable in execution but may miss long-term strategic opportunities.',
+                    'You may find yourself "in the weeds" rather than planning ahead.'
+                ],
+                recommendations: [
+                    'Dedicate specific time each week for "strategic thinking" away from daily tasks.',
+                    'Ask "what is the root cause?" five times before solving a problem.'
+                ]
+            };
+        }
     },
     {
         key: 'motivation',
         label: 'Motivation, Drive, and Ambition',
         description: 'Intrinsic drive and resilience.',
-        narrative: 'You are deeply motivated by growth, competence, and meaningful impact. Even when experiencing overwhelm, you display a strong internal drive to excel and contribute at a higher level. You likely find yourself "already doing the work" of a leader, stepping up informally during transitions despite pressure. Your motivation is fueled by a desire for professional visibility and strategic positioning. You are willing to self-reflect and address mental blocks, showing a commitment to finding strategic clarity for the next decade of your career.',
-        workImplications: [
-            'You inspire others by taking initiative during uncertain times.',
-            'You risk burnout because your standards for yourself are exceptionally high.',
-            'You may feel frustrated if your informal leadership contributions are not formally recognized.'
-        ],
-        recommendations: [
-            'Shift from "doing more" to "aligning more"—focus on structure rather than raw effort.',
-            'Set clear boundaries to protect your energy for high-leverage activities.',
-            'Document your informal leadership contributions to build a case for formal advancement.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'You are deeply motivated by growth, competence, and meaningful impact. Even when experiencing overwhelm, you display a strong internal drive to excel and contribute at a higher level. You likely find yourself "already doing the work" of a leader, stepping up informally during transitions despite pressure.',
+                implications: [
+                    'You inspire others by taking initiative during uncertain times.',
+                    'You risk burnout because your standards for yourself are exceptionally high.'
+                ],
+                recommendations: [
+                    'Shift from "doing more" to "aligning more"—focus on structure rather than raw effort.',
+                    'Set clear boundaries to protect your energy for high-leverage activities.'
+                ]
+            };
+            return {
+                narrative: 'Your motivation tends to fluctuate based on the environment. You thrive when goals are clear but may disengage when faced with ambiguity or lack of recognition. Building intrinsic resilience is key to your next career stage.',
+                implications: [
+                    'You may wait for direction rather than taking initiative.',
+                    'Setbacks can significantly impact your momentum.'
+                ],
+                recommendations: [
+                    'Identify your "why"—what drives you beyond the paycheck?',
+                    'Set small, self-directed goals to build momentum independent of external feedback.'
+                ]
+            };
+        }
     },
     {
         key: 'influence',
         label: 'Influence and Interpersonal Impact',
         description: 'Communication style and emotional intelligence.',
-        narrative: 'Your influence is understated but powerful, rooted in competence, reliability, and the quiet authority that comes from being the stabilising force in a pressured environment. You display self-leadership through improved reflection and goal clarity. You have developed the courage to speak more confidently, raise issues, and assert your perspectives even when the organisational culture is conservative or resistant.',
-        workImplications: [
-            'You are seen as a stabilising force during transitions.',
-            'Management likely leans on you for consistency, signalling trust.',
-            'Your quiet style may sometimes be overlooked if you do not intentionally advocate for your views.'
-        ],
-        recommendations: [
-            'Continue to assert your perspective in high-stakes meetings to build executive presence.',
-            'Leverage your reliability to negotiate for more resources or authority.',
-            'Practice "speaking up" early in discussions to frame the narrative.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'Your influence is understated but powerful, rooted in competence, reliability, and the quiet authority that comes from being the stabilising force. You display self-leadership through improved reflection. You have the courage to assert your perspectives even in conservative cultures.',
+                implications: [
+                    'You are seen as a stabilising force during transitions.',
+                    'Management likely leans on you for consistency, signalling trust.'
+                ],
+                recommendations: [
+                    'Continue to assert your perspective in high-stakes meetings to build executive presence.',
+                    'Leverage your reliability to negotiate for more resources or authority.'
+                ]
+            };
+            return {
+                narrative: 'You tend to influence through logic and facts, which is effective but may miss the emotional component of persuasion. You may be hesitant to speak up in larger groups until you are 100% sure of your answer.',
+                implications: [
+                    'You might be underestimated by those who value vocal confidence.',
+                    'Valid ideas may die because they weren\'t championed effectively.'
+                ],
+                recommendations: [
+                    'Practice "speaking up" within the first 10 minutes of a meeting.',
+                    'Focus on the emotional impact of your message, not just the technical accuracy.'
+                ]
+            };
+        }
     },
     {
         key: 'leadership',
         label: 'Leadership Style and Orientation',
         description: 'Authority, collaboration, and decision making.',
-        narrative: 'Your leadership capacity is evident and recognised. You tend to provide consistency and hold functions together during periods of instability. You demonstrate the capacity to operate at a higher level by stepping up when senior roles are vacant. However, you may need to focus on transitioning from "execution" to "strategy" to fully embody the senior leader role.',
-        workImplications: [
-            'You provide continuity that prevents operational failure during changes.',
-            'You may struggle to delegate because you are so capable of doing it yourself.',
-            'Others look to you for guidance even without a formal title.'
-        ],
-        recommendations: [
-            'Delegate operational tasks to focus on strategic initiatives.',
-            'Formalise your leadership by proposing clear team improvement plans.',
-            'Mentor junior colleagues to take over your execution responsibilities.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'Your leadership capacity is evident and recognised. You tend to provide consistency and hold functions together during periods of instability. You demonstrate the capacity to operate at a higher level by stepping up when senior roles are vacant.',
+                implications: [
+                    'You provide continuity that prevents operational failure.',
+                    'You may struggle to delegate because you are so capable of doing it yourself.'
+                ],
+                recommendations: [
+                    'Delegate operational tasks to focus on strategic initiatives.',
+                    'Formalise your leadership by proposing clear team improvement plans.'
+                ]
+            };
+            return {
+                narrative: 'You prefer a collaborative or supportive role rather than taking charge. While you are a strong team player, you may hesitate to make unpopular decisions or hold others accountable.',
+                implications: [
+                    'Decisions may be delayed as you seek consensus.',
+                    'You may avoid conflict, leading to unresolved team issues.'
+                ],
+                recommendations: [
+                    'Practice being "kind but clear"—direct feedback is a kindness.',
+                    'Take ownership of a small project where you are the final decision maker.'
+                ]
+            };
+        }
     },
     {
         key: 'strengths',
         label: 'Core Strengths and Leverage Areas',
         description: 'Natural talents and capabilities.',
-        narrative: 'Your professional competence is a distinguishing quality, backed by a deep, practical understanding of corporate governance, regulatory frameworks, and organisational dynamics. You possess exceptional strategic awareness, seeing beyond day-to-day tasks to grasp broader implications. Your self-awareness and emotional intelligence allow you to recognise emotional blocks and navigate challenges with composure. Initiative and ownership are your hallmarks; you consistently seek solutions rather than waiting for direction.',
-        workImplications: [
-            'You navigate complex issues with maturity, earning trust from stakeholders.',
-            'You anticipate challenges before they arise, making you a proactive asset.',
-            'Your commitment to continuous growth ensures you remain adaptable and ahead of emerging opportunities.'
-        ],
-        recommendations: [
-            'Position yourself in high-visibility roles where your strategic competence can be seen.',
-            'Use your self-awareness to manage conflicting priorities without losing composure.',
-            'Continue to take ownership of cross-functional projects to expand your influence.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            // General strengths logic - usually we'd pluck top 2, but here we treat it as a dimension of "Self-Knowledge"
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'Your professional competence is a distinguishing quality, backed by a deep, practical understanding of your domain. You possess exceptional strategic awareness and self-awareness, allowing you to navigate challenges with composure.',
+                implications: [
+                    'You navigate complex issues with maturity, earning trust.',
+                    'You anticipate challenges before they arise.'
+                ],
+                recommendations: [
+                    'Position yourself in high-visibility roles where your strategic competence can be seen.',
+                    'Teach your unique skills to others to scale your impact.'
+                ]
+            };
+            return {
+                narrative: 'You have solid functional skills but may not yet have fully articulated your unique value proposition. You are reliable, but may blend into the background rather than standing out as a specialist.',
+                implications: [
+                    'You are a "safe pair of hands" but not the first called for new opportunities.',
+                    'You may undervalue your own contributions.'
+                ],
+                recommendations: [
+                    'Conduct a "personal brand audit"—what are you known for?',
+                    'Ask three colleagues to describe your superpowers.'
+                ]
+            };
+        }
     },
     {
         key: 'development',
         label: 'Developmental and Growth Areas',
         description: 'Awareness of habits and areas for improvement.',
-        narrative: 'To achieve your full potential, focus on professional positioning and visibility. Optimising your external profile (e.g., LinkedIn, CV) and internal presence is crucial. You may need to manage overwhelm by building personal workflow systems and delegating where possible. Increasing your thought leadership presence—through speaking or writing—will help transition you from a "doer" to a recognised "expert".',
-        workImplications: [
-            'You may remain the "best kept secret" if you do not actively build your brand.',
-            'Overwhelm can stifle your strategic thinking if not managed with better systems.',
-            'Undefined career paths can lead to stagnation; you need a clear 3-year plan.'
-        ],
-        recommendations: [
-            'Build a personal workflow system (weekly planning, priority mapping) to reduce friction.',
-            'Identify an accountability partner for regular check-ins on your goals.',
-            'Publish insights or speak at industry events to establish thought leadership.'
-        ]
+        getAnalysis: (score) => {
+            const band = getBand(score);
+            if (band === 'strong' || band === 'solid') return {
+                narrative: 'To achieve your full potential, focus on professional positioning and visibility. Optimising your external profile (e.g., LinkedIn, CV) and internal presence is crucial. You effectively manage your growth but need to potentialize it.',
+                implications: [
+                    'You may remain the "best kept secret" if you do not actively build your brand.',
+                    'Undefined career paths can lead to stagnation.'
+                ],
+                recommendations: [
+                    'Build a personal workflow system to reduce friction.',
+                    'Publish insights or speak at industry events.'
+                ]
+            };
+            return {
+                narrative: 'You are currently in a reactive mode regarding your development. You may feel overwhelmed by daily demands, leaving little time for intentional growth. Breaking this cycle is the first step to advancement.',
+                implications: [
+                    'Career growth is slow or stalled.',
+                    'Burnout is a significant risk.'
+                ],
+                recommendations: [
+                    'Block out 1 hour per week strictly for learning.',
+                    'Identify one small habit to change this month.'
+                ]
+            };
+        }
     },
 ];
 

@@ -8,54 +8,96 @@ interface ReportSlidesProps {
 }
 
 export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlidesProps) {
+    // Vibrant, Colourful, Gold/Orange Theme
     const slideStyle: React.CSSProperties = {
-        width: '1123px', // A4 Landscape pixel width (approx)
-        height: '794px', // A4 Landscape pixel height
-        background: 'white',
+        width: '1123px', // A4 Landscape
+        height: '794px',
+        background: 'linear-gradient(135deg, #FFF8F0 0%, #FFFFFF 100%)', // Warm background
         padding: '60px',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
-        // Global typography for PDF
         fontFamily: 'var(--font-sans)',
-        color: 'var(--color-black)'
+        color: '#2D3748',
+    };
+
+    // Decorative shape for corners
+    const cornerShape: React.CSSProperties = {
+        position: 'absolute',
+        top: '-100px',
+        right: '-100px',
+        width: '300px',
+        height: '300px',
+        background: 'rgba(255, 165, 0, 0.1)', // Orange tint
+        borderRadius: '50%',
+        zIndex: 0
     };
 
     const headerStyle: React.CSSProperties = {
         fontFamily: 'var(--font-serif)',
         fontSize: '36px',
-        color: 'var(--color-dark-blue)',
-        marginBottom: '40px',
-        borderBottom: '2px solid var(--color-gold)',
-        paddingBottom: '20px'
+        color: '#C05621', // Dark Orange / Rust
+        marginBottom: '30px',
+        borderBottom: '3px solid #F6AD55', // Light Orange
+        paddingBottom: '15px',
+        position: 'relative',
+        zIndex: 1
     };
 
     return (
         <div id="pdf-report-container" style={{ position: 'absolute', top: -10000, left: -10000 }}>
-            {/* SLIDE 1: Title Slide */}
-            <div className="pdf-slide" style={{ ...slideStyle, justifyContent: 'center', alignItems: 'center', background: 'var(--color-dark-blue)', color: 'white' }}>
-                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '64px', marginBottom: '20px' }}>TRB Alchemy™️</h1>
-                <h2 style={{ fontSize: '32px', fontWeight: 'normal', opacity: 0.9 }}>Professional Profiling Report</h2>
-                <div style={{ width: '100px', height: '4px', background: 'var(--color-gold)', margin: '40px 0' }} />
-                <p style={{ fontSize: '24px' }}>Prepared for {candidateName}</p>
-                <p style={{ marginTop: 'auto', fontSize: '16px', opacity: 0.7 }}>{new Date().toLocaleDateString()}</p>
+
+            {/* SLIDE 1: Title Slide (High Impact, Orange/Gold) */}
+            <div className="pdf-slide" style={{
+                ...slideStyle,
+                background: 'linear-gradient(135deg, #DD6B20 0%, #C05621 100%)', // Deep Orange Gradient
+                color: 'white',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <div style={{
+                    position: 'absolute', top: '50px', left: '50px',
+                    width: '150px', height: '150px',
+                    border: '10px solid rgba(255,255,255,0.2)', borderRadius: '50%'
+                }} />
+
+                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '72px', marginBottom: '20px', textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
+                    TRB Alchemy™️
+                </h1>
+                <h2 style={{ fontSize: '32px', fontWeight: '300', opacity: 0.9, letterSpacing: '2px' }}>
+                    PROFESSIONAL PROFILING REPORT
+                </h2>
+                <div style={{ width: '120px', height: '6px', background: '#FBD38D', margin: '40px 0' }} />
+                <p style={{ fontSize: '28px', fontWeight: 'bold' }}>Prepared for {candidateName}</p>
+                <p style={{ marginTop: 'auto', fontSize: '18px', opacity: 0.8 }}>{new Date().toLocaleDateString()}</p>
             </div>
 
-            {/* SLIDE 2: Executive Summary (Radar Chart) */}
+            {/* SLIDE 2: Executive Summary */}
             <div className="pdf-slide" style={slideStyle}>
-                <h2 style={headerStyle}>Executive Summary</h2>
-                <div style={{ display: 'flex', height: '100%', gap: '40px' }}>
+                <div style={cornerShape} />
+                <h2 style={headerStyle}>Executive Assessment Summary</h2>
+
+                <div style={{ display: 'flex', height: '100%', gap: '50px', position: 'relative', zIndex: 1 }}>
                     <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <RadarChart data={scores} size={500} />
+                        {/* Radar Chart Container with shadow */}
+                        <div style={{ padding: '20px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)' }}>
+                            <RadarChart data={scores} size={450} />
+                        </div>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <h3 style={{ fontSize: '24px', marginBottom: '20px' }}>Key Insights</h3>
-                        <ul style={{ fontSize: '18px', lineHeight: 1.6 }}>
+                        <h3 style={{ fontSize: '24px', color: '#2C5282', marginBottom: '20px' }}>Performance Snapshot</h3>
+                        <ul style={{ fontSize: '18px', lineHeight: 1.8, listStyle: 'none', padding: 0 }}>
                             {scores.map((s, i) => (
-                                <li key={i} style={{ marginBottom: '10px' }}>
-                                    <strong>{s.label}:</strong> {s.value >= 20 ? 'Strong Area' : s.value >= 15 ? 'Solid Competence' : 'Development Area'}
+                                <li key={i} style={{ marginBottom: '15px', padding: '15px', background: '#FFF5F5', borderRadius: '8px', borderLeft: '5px solid #ED8936' }}>
+                                    <strong style={{ color: '#2D3748', fontSize: '20px' }}>{s.label}</strong>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px', fontSize: '16px', color: '#718096' }}>
+                                        <span>Score: {s.value}/25</span>
+                                        <span style={{ fontWeight: 'bold', color: s.value >= 21 ? '#38A169' : s.value >= 15 ? '#3182CE' : s.value >= 10 ? '#D69E2E' : '#E53E3E' }}>
+                                            {s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'}
+                                        </span>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -63,48 +105,63 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 </div>
             </div>
 
-            {/* SLIDE 3+ : Detailed Dimension Breakdown (One Slide Per Dimension) */}
+            {/* SLIDE 3+: Detailed Analysis (Dynamic AI Logic) */}
             {scores.map((s, i) => {
-                // Find full config to get narrative/implications
                 const dimConfig = DIMENSIONS.find(d => d.label === s.label);
                 if (!dimConfig) return null;
 
+                // --- AI LOGIC: Get dynamic content based on score ---
+                const analysis = dimConfig.getAnalysis(s.value);
+
                 return (
                     <div key={i} className="pdf-slide" style={slideStyle}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '2px solid var(--color-gold)', paddingBottom: '15px' }}>
-                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', color: 'var(--color-dark-blue)', margin: 0 }}>{s.label}</h2>
-                            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>Score: {s.value} / 25</div>
+                        <div style={{ ...cornerShape, left: '-100px', right: 'auto', background: 'rgba(49, 130, 206, 0.05)' }} /> {/* Blue tint for variety */}
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '3px solid #ED8936', paddingBottom: '15px', position: 'relative', zIndex: 1 }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', color: '#2A4365', margin: 0 }}>{s.label}</h2>
+                            <div style={{ padding: '8px 20px', background: '#ED8936', color: 'white', borderRadius: '20px', fontWeight: 'bold', fontSize: '20px' }}>
+                                Score: {s.value} ({s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'})
+                            </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '40px', flex: 1 }}>
-                            {/* Left Column: Narrative & Implication */}
-                            <div style={{ flex: 1 }}>
-                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '10px' }}>What this means</h3>
-                                <p style={{ fontSize: '16px', lineHeight: 1.6, marginBottom: '30px', textAlign: 'justify' }}>
-                                    {dimConfig.narrative}
-                                </p>
+                        <div style={{ display: 'flex', gap: '50px', flex: 1, position: 'relative', zIndex: 1 }}>
+                            {/* Left: Narrative */}
+                            <div style={{ flex: 1.2 }}>
+                                <div style={{ marginBottom: '30px' }}>
+                                    <h3 style={{ fontSize: '20px', color: '#DD6B20', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>AI Insights</h3>
+                                    <p style={{ fontSize: '17px', lineHeight: 1.7, textAlign: 'justify', color: '#4A5568' }}>
+                                        {analysis.narrative}
+                                    </p>
+                                </div>
 
-                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '10px' }}>Work Implications</h3>
-                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px' }}>
-                                    {dimConfig.workImplications.map((imp, idx) => (
-                                        <li key={idx} style={{ marginBottom: '8px' }}>{imp}</li>
-                                    ))}
-                                </ul>
+                                <div>
+                                    <h3 style={{ fontSize: '18px', color: '#C05621', marginBottom: '10px', fontWeight: 'bold' }}>Workplace Implications</h3>
+                                    <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px', color: '#4A5568' }}>
+                                        {analysis.implications.map((imp, idx) => (
+                                            <li key={idx} style={{ marginBottom: '10px' }}>{imp}</li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
 
-                            {/* Right Column: Recommendations & Visual */}
-                            <div style={{ flex: 1, background: 'var(--color-gray-100)', padding: '30px', borderRadius: '8px' }}>
-                                <h3 style={{ fontSize: '20px', color: 'var(--color-dark-blue)', marginBottom: '15px' }}>Recommendations</h3>
-                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px' }}>
-                                    {dimConfig.recommendations.map((rec, idx) => (
-                                        <li key={idx} style={{ marginBottom: '12px' }}>{rec}</li>
+                            {/* Right: Recommendations Card */}
+                            <div style={{ flex: 0.8, background: '#FFFAF0', padding: '30px', borderRadius: '15px', border: '1px solid #FEEBC8', boxShadow: '0 5px 15px rgba(0,0,0,0.03)' }}>
+                                <h3 style={{ fontSize: '20px', color: '#C05621', marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
+                                    <span style={{ marginRight: '10px', fontSize: '24px' }}>💡</span> Recommendations
+                                </h3>
+                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '0', listStyle: 'none' }}>
+                                    {analysis.recommendations.map((rec, idx) => (
+                                        <li key={idx} style={{ marginBottom: '15px', display: 'flex', alignItems: 'flex-start' }}>
+                                            <span style={{ color: '#ED8936', marginRight: '10px', fontWeight: 'bold' }}>→</span>
+                                            {rec}
+                                        </li>
                                     ))}
                                 </ul>
 
-                                <div style={{ marginTop: '40px' }}>
-                                    <p style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '5px' }}>Score Visualization</p>
-                                    <div style={{ height: '20px', background: 'white', borderRadius: '10px', border: '1px solid #ddd' }}>
-                                        <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'var(--color-gold)', borderRadius: '10px' }} />
+                                <div style={{ marginTop: '50px', padding: '20px', background: 'white', borderRadius: '10px' }}>
+                                    <p style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#A0AEC0', marginBottom: '5px' }}>Dimension Strength</p>
+                                    <div style={{ height: '12px', background: '#EDF2F7', borderRadius: '6px', overflow: 'hidden' }}>
+                                        <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', borderRadius: '6px' }} />
                                     </div>
                                 </div>
                             </div>
@@ -113,16 +170,46 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 );
             })}
 
-            {/* SLIDE 4: Closing / CTA */}
-            <div className="pdf-slide" style={{ ...slideStyle, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-                <h2 style={{ ...headerStyle, borderBottom: 'none' }}>Ready to Accelerate Your Growth?</h2>
-                <p style={{ fontSize: '24px', maxWidth: '800px', marginBottom: '60px' }}>
-                    Use these insights to leverage your strengths and address your development areas. Our executive coaching team handles the rest.
+            {/* SLIDE: 90-DAY ACTION ROADMAP (New Request) */}
+            <div className="pdf-slide" style={slideStyle}>
+                <div style={cornerShape} />
+                <h2 style={headerStyle}>90-Day Strategic Roadmap</h2>
+                <p style={{ fontSize: '18px', color: '#718096', marginBottom: '30px' }}>A focused action plan derived from your assessment results to accelerate your professional growth.</p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', zIndex: 1, position: 'relative' }}>
+                    {[
+                        { title: 'Month 1: Positioning', points: ['Create a "Leadership Version" of your CV/Resume.', 'Optimise LinkedIn headline for "Senior" roles.', 'Apply for 5 managerial roles per week.'] },
+                        { title: 'Month 2: Visibility', points: ['Publish 1 thought-leadership post per week.', 'Speak up within the first 10 minutes of meetings.', 'Delegating one operational task to a junior.'] },
+                        { title: 'Month 3: Influence', points: ['Present a team improvement plan to management.', 'Secure a speaking slot at an industry panel.', 'Establish a formalized mentorship relationship.'] },
+                        { title: 'Habits for Success', points: ['Weekly "Strategic Review" hour (Friday PM).', 'Daily "Top 3 Priorities" mapping.', 'Monthly accountability check-in.'] }
+                    ].map((phase, idx) => (
+                        <div key={idx} style={{ background: 'white', padding: '25px', borderRadius: '12px', borderLeft: `6px solid ${['#4299E1', '#48BB78', '#ED8936', '#9F7AEA'][idx]}`, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#2D3748', marginBottom: '15px' }}>{phase.title}</h3>
+                            <ul style={{ paddingLeft: '20px', color: '#4A5568', lineHeight: 1.6 }}>
+                                {phase.points.map((pt, pIdx) => <li key={pIdx} style={{ marginBottom: '5px' }}>{pt}</li>)}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* SLIDE: Closing */}
+            <div className="pdf-slide" style={{ ...slideStyle, background: '#2D3748', color: 'white', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                <div style={{
+                    position: 'absolute', bottom: '-100px', left: '-150px',
+                    width: '400px', height: '400px',
+                    background: '#ED8936', borderRadius: '50%', opacity: 0.1
+                }} />
+
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '48px', marginBottom: '20px', color: '#FBD38D' }}>Unlock Your Potential</h2>
+                <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '60px', lineHeight: 1.6 }}>
+                    This report consists of AI-driven insights and a strategic roadmap.
+                    <br />Execute the plan. Track your progress.
                 </p>
-                <div style={{ padding: '20px 40px', background: 'var(--color-gold)', color: 'black', fontSize: '24px', fontWeight: 'bold', borderRadius: '8px' }}>
+                <div style={{ padding: '25px 50px', background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', color: 'white', fontSize: '24px', fontWeight: 'bold', borderRadius: '50px', boxShadow: '0 10px 20px rgba(237, 137, 54, 0.4)' }}>
                     Book Your Strategy Session
                 </div>
-                <p style={{ marginTop: '40px', color: 'var(--color-dark-blue)' }}>www.trbalchemy.com</p>
+                <p style={{ marginTop: '40px', color: '#A0AEC0' }}>www.trbalchemy.com</p>
             </div>
 
         </div>
