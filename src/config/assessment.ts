@@ -59,12 +59,57 @@ export interface DimensionConfig {
     getAnalysis: (score: number) => AnalysisContent;
 }
 
-// Helper to select content based on score (Matching User Stories)
+// --- AI ENGINE & ARCHETYPES ---
+
+export interface Archetype {
+    name: string;
+    description: string;
+    motto: string;
+}
+
 const getBand = (score: number): 'strong' | 'solid' | 'developing' | 'underdeveloped' => {
     if (score >= 21) return 'strong';       // 21-25
     if (score >= 15) return 'solid';        // 15-20
     if (score >= 10) return 'developing';   // 10-14
     return 'underdeveloped';                // 5-9
+};
+
+// Calculate Archetype based on top 2 dimensions
+export const getArchetype = (scores: { label: string; value: number }[]): Archetype => {
+    // Sort scores descending
+    const sorted = [...scores].sort((a, b) => b.value - a.value);
+    const top1 = sorted[0].label;
+    const top2 = sorted[1].label;
+
+    if (top1.includes('Cognitive') && top2.includes('Leadership')) return { name: 'The Strategic Architect', description: 'You lead with intellect and vision.', motto: 'Design the future.' };
+    if (top1.includes('Influence') && top2.includes('Leadership')) return { name: 'The Diplomatic Commander', description: 'You move mountains through people.', motto: 'Influence is power.' };
+    if (top1.includes('Motivation') && top2.includes('Strengths')) return { name: 'The Relentless Operator', description: 'You are an unstoppable force of execution.', motto: 'Results matter most.' };
+    if (top1.includes('Cognitive') && top2.includes('Motivation')) return { name: 'The Visionary Driver', description: 'You see the path and run towards it.', motto: 'Speed and clarity.' };
+
+    // Default fallback
+    return { name: 'The Balanced Professional', description: 'You possess a well-rounded skillset ready for specialization.', motto: 'Balance is key.' };
+};
+
+// Generate Dynamic 90-Day Roadmap
+export const generateDynamicRoadmap = (scores: { label: string; value: number }[]) => {
+    // Find development areas (lowest scores)
+    const sorted = [...scores].sort((a, b) => a.value - b.value);
+    const lowest = sorted[0];
+    const secondLowest = sorted[1];
+
+    // Logic for Month 1 (Deepest Gap)
+    const getMonth1Focus = (label: string) => {
+        if (label.includes('Cognitive')) return { title: 'Month 1: Strategic Rewiring', points: ['Stop "doing" and start "designing"—devote 4 hours/week to pure strategy.', 'Audit your decision-making process: Are you reactive or predictive?', 'Read one key text on Systems Thinking.'] };
+        if (label.includes('Influence')) return { title: 'Month 1: Radical Visibility', points: ['Speak first in every high-stakes meeting this month.', 'Map your stakeholders: Identify the 3 people who control your career.', 'Schedule "coffee chats" with zero agenda other than connection.'] };
+        return { title: 'Month 1: Foundation Building', points: ['Conduct a personal time audit: Where is your energy leaking?', 'Establish a non-negotiable morning routine.', 'Delegating your lowest-value task immediately.'] };
+    };
+
+    return [
+        getMonth1Focus(lowest.label),
+        { title: 'Month 2: Momentum & Leverage', points: [`Apply your "${sorted[sorted.length - 1].label}" strength to solve a team crisis.`, `Address your secondary gap in ${secondLowest.label} through mentorship.`, 'Launch a pilot project where you are the sole owner.'] },
+        { title: 'Month 3: Authority & Scale', points: ['Present your 90-day wins to senior leadership.', 'Mentor a junior colleague to solidify your own learning.', 'Write your "Personal Leadership Manifesto".'] },
+        { title: 'Daily Habits for Success', points: ['The "Sunday Review": Plan your strategic blocks.', 'The "No" List: Define what you will decline this week.', 'Journaling: "What did I lead today?"'] }
+    ];
 };
 
 export const DIMENSIONS: DimensionConfig[] = [
@@ -74,28 +119,26 @@ export const DIMENSIONS: DimensionConfig[] = [
         description: 'Processes complexity and approaches problem-solving.',
         getAnalysis: (score) => {
             const band = getBand(score);
-            // High Band (Strong & Solid)
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'You demonstrate high intellectual acuity, characterised by sharp analytical thinking, sound legal judgement, and strong problem-solving skills. You exhibit the ability to distil complex organisational realities, interpret cultural dynamics, and recognise systemic issues that affect performance and visibility. You reason strategically, thinking not just about the present implications of work but the long-term positioning.',
+                narrative: 'You possess a lethal intellectual edge. You don’t just solve problems; you deconstruct them. In a room full of noise, you provide the signal. However, the danger for you is "Intellectual Isolation"—being so far ahead that you leave your team behind. Your challenge is not to think smarter, but to translate your brilliance into language that mobilises others.',
                 implications: [
-                    'You connect operational workload with broader organisational constraints, showing strong systems thinking.',
-                    'You articulate concerns with clarity, linking mental blocks to leadership readiness.'
+                    'You see the "chess moves" while others are playing checkers.',
+                    'Risk: You may be perceived as arrogant or disconnected if you don\'t bridge the gap.'
                 ],
                 recommendations: [
-                    'focus on "distilling" complexity for others—translate your deep analysis into simple, actionable directives.',
-                    'Leap from "doing the work" to "designing the system" to reduce personal overwhelm.'
+                    'Simplify your output: Can you explain your strategy to a 10-year-old?',
+                    'Stop solving problems for people—teach them your mental models instead.'
                 ]
             };
-            // Low Band (Developing & Underdeveloped)
             return {
-                narrative: 'You approach problems with a practical mindset, focusing on getting things done. While you are capable of analysis, you may sometimes overlook broader systemic issues in favor of immediate execution. Developing a more strategic "balcony view" will enhance your leadership readiness.',
+                narrative: 'You are currently operating as a Tactician, not a Strategist. You are excellent at executing the "What" and "How", but you often miss the "Why" and "What If". In senior roles, execution is a commodity; strategy is the currency. You must lift your gaze from the daily grind to the horizon.',
                 implications: [
-                    'You are reliable in execution but may miss long-term strategic opportunities.',
-                    'You may find yourself "in the weeds" rather than planning ahead.'
+                    'You are reliably delivering output, but not value.',
+                    'Risk: Getting stuck in middle-management because you are "too useful" in the weeds.'
                 ],
                 recommendations: [
-                    'Dedicate specific time each week for "strategic thinking" away from daily tasks.',
-                    'Ask "what is the root cause?" five times before solving a problem.'
+                    'Block 2 hours/week for "Deep Work"—no emails, no slack, just future planning.',
+                    'Ask "What is the 2nd order consequence of this?" before every decision.'
                 ]
             };
         }
@@ -107,25 +150,25 @@ export const DIMENSIONS: DimensionConfig[] = [
         getAnalysis: (score) => {
             const band = getBand(score);
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'You are deeply motivated by growth, competence, and meaningful impact. Even when experiencing overwhelm, you display a strong internal drive to excel and contribute at a higher level. You likely find yourself "already doing the work" of a leader, stepping up informally during transitions despite pressure.',
+                narrative: 'You run on nuclear fuel. Your drive is internal, relentless, and largely independent of external validation. You are the person they call when the building is on fire. But be warned: Your high tolerance for pain allows you to endure toxic situations far longer than you should. High drive without boundaries is just high-speed burnout.',
                 implications: [
-                    'You inspire others by taking initiative during uncertain times.',
-                    'You risk burnout because your standards for yourself are exceptionally high.'
+                    'You are a natural pace-setter for the organisation.',
+                    'Risk: You intimidate peers who cannot match your velocity.'
                 ],
                 recommendations: [
-                    'Shift from "doing more" to "aligning more"—focus on structure rather than raw effort.',
-                    'Set clear boundaries to protect your energy for high-leverage activities.'
+                    'Audit your energy, not just your time. What gives you fuel?',
+                    'Learn the power of the "Strategic Pause"—speed kills if the direction is wrong.'
                 ]
             };
             return {
-                narrative: 'Your motivation tends to fluctuate based on the environment. You thrive when goals are clear but may disengage when faced with ambiguity or lack of recognition. Building intrinsic resilience is key to your next career stage.',
+                narrative: 'Your engine is sputtering. You are likely waiting for permission, inspiration, or a "perfect moment" that will never arrive. This isn\'t a capability issue; it\'s an ignition issue. You are letting external circumstances dictate your internal velocity. Leadership is about moving forward when you don\'t feel like it.',
                 implications: [
-                    'You may wait for direction rather than taking initiative.',
-                    'Setbacks can significantly impact your momentum.'
+                    'You drift when supervision is removed.',
+                    'Risk: Being labelled as "Low Potential" despite having high skill.'
                 ],
                 recommendations: [
-                    'Identify your "why"—what drives you beyond the paycheck?',
-                    'Set small, self-directed goals to build momentum independent of external feedback.'
+                    'Gamify your week: Set 3 "Must-Win" battles and track them relentlessly.',
+                    'Find a "Running Mate"—a peer who pushes you to sprint.'
                 ]
             };
         }
@@ -137,25 +180,25 @@ export const DIMENSIONS: DimensionConfig[] = [
         getAnalysis: (score) => {
             const band = getBand(score);
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'Your influence is understated but powerful, rooted in competence, reliability, and the quiet authority that comes from being the stabilising force. You display self-leadership through improved reflection. You have the courage to assert your perspectives even in conservative cultures.',
+                narrative: 'You are a political heavyweight in the making. You understand that organisations are human networks, not just org charts. You trade in social capital. Your ability to read the room is your superpower. Use it to protect your team and advance your agenda, but beware of being seen as "calculating" rather than authentic.',
                 implications: [
-                    'You are seen as a stabilising force during transitions.',
-                    'Management likely leans on you for consistency, signalling trust.'
+                    'You can get things done where others hit brick walls.',
+                    'Risk: You might prioritize harmony over hard truths.'
                 ],
                 recommendations: [
-                    'Continue to assert your perspective in high-stakes meetings to build executive presence.',
-                    'Leverage your reliability to negotiate for more resources or authority.'
+                    'Spend your political capital: Take a controversial stand for something you believe in.',
+                    'Mentor a "high-performer" who lacks your social grace.'
                 ]
             };
             return {
-                narrative: 'You tend to influence through logic and facts, which is effective but may miss the emotional component of persuasion. You may be hesitant to speak up in larger groups until you are 100% sure of your answer.',
+                narrative: 'You are shouting into the void. You may be right, but nobody is listening. You rely on logic, data, and "being right" to persuade people, but humans are emotional creatures. You are currently fighting battles with one hand tied behind your back because you are ignoring the human element of corporate warfare.',
                 implications: [
-                    'You might be underestimated by those who value vocal confidence.',
-                    'Valid ideas may die because they weren\'t championed effectively.'
+                    'Your best ideas die in the meeting room.',
+                    'Risk: Invisibility. If you can\'t sell it, you didn\'t do it.'
                 ],
                 recommendations: [
-                    'Practice "speaking up" within the first 10 minutes of a meeting.',
-                    'Focus on the emotional impact of your message, not just the technical accuracy.'
+                    'The "First 5 Minutes" rule: Engage personally before diving into business.',
+                    'Stop arguing facts; start telling stories. Stories move people; data just confuses them.'
                 ]
             };
         }
@@ -167,25 +210,25 @@ export const DIMENSIONS: DimensionConfig[] = [
         getAnalysis: (score) => {
             const band = getBand(score);
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'Your leadership capacity is evident and recognised. You tend to provide consistency and hold functions together during periods of instability. You demonstrate the capacity to operate at a higher level by stepping up when senior roles are vacant.',
+                narrative: 'You have "Commander Energy". People naturally look to you when the path is unclear. You are comfortable with the burden of decision-making. Your next evolution is to shift from "heroic leadership" (saving the day) to "systemic leadership" (building a machine that doesn\'t need saving).',
                 implications: [
-                    'You provide continuity that prevents operational failure.',
-                    'You may struggle to delegate because you are so capable of doing it yourself.'
+                    'You create safety and clarity for your team.',
+                    'Risk: Creating dependency—the team collapses when you are away.'
                 ],
                 recommendations: [
-                    'Delegate operational tasks to focus on strategic initiatives.',
-                    'Formalise your leadership by proposing clear team improvement plans.'
+                    'Practice "Lazy Leadership": Force your team to answer their own questions.',
+                    'Delegate authority, not just tasks.'
                 ]
             };
             return {
-                narrative: 'You prefer a collaborative or supportive role rather than taking charge. While you are a strong team player, you may hesitate to make unpopular decisions or hold others accountable.',
+                narrative: 'You are a Manager, not a Leader. You manage tasks, timelines, and resources, but you do not lead people. You avoid conflict, seek consensus too often, and hesitate to make the call. The team needs a Captain, not a best friend. It is time to step into the discomfort of authority.',
                 implications: [
-                    'Decisions may be delayed as you seek consensus.',
-                    'You may avoid conflict, leading to unresolved team issues.'
+                    'The team lacks direction and drifts during crises.',
+                    'Risk: Being bypassed for promotion in favor of more decisive characters.'
                 ],
                 recommendations: [
-                    'Practice being "kind but clear"—direct feedback is a kindness.',
-                    'Take ownership of a small project where you are the final decision maker.'
+                    'Make one unilateral decision this week and own the consequences.',
+                    'Deliver bad news face-to-face, without apologizing for the reality.'
                 ]
             };
         }
@@ -196,27 +239,26 @@ export const DIMENSIONS: DimensionConfig[] = [
         description: 'Natural talents and capabilities.',
         getAnalysis: (score) => {
             const band = getBand(score);
-            // General strengths logic - usually we'd pluck top 2, but here we treat it as a dimension of "Self-Knowledge"
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'Your professional competence is a distinguishing quality, backed by a deep, practical understanding of your domain. You possess exceptional strategic awareness and self-awareness, allowing you to navigate challenges with composure.',
+                narrative: 'You are operating in your Zone of Genius. You know what you are good at, and you double down on it. This clarity gives you confidence and velocity. Now, the question is: Are these strengths scalable? Or are they traps that keep you doing the same work forever?',
                 implications: [
-                    'You navigate complex issues with maturity, earning trust.',
-                    'You anticipate challenges before they arise.'
+                    'You deliver high-quality work effortlessly.',
+                    'Risk: The "Competence Trap"—staying in a role too long because it\'s easy.'
                 ],
                 recommendations: [
-                    'Position yourself in high-visibility roles where your strategic competence can be seen.',
-                    'Teach your unique skills to others to scale your impact.'
+                    'Train your replacement. It is the only way to move up.',
+                    'Audit your calendar: Delete anything that doesn\'t leverage your superpowers.'
                 ]
             };
             return {
-                narrative: 'You have solid functional skills but may not yet have fully articulated your unique value proposition. You are reliable, but may blend into the background rather than standing out as a specialist.',
+                narrative: 'You are a Generalist in a world that rewards Specialists. You are "good enough" at many things but Great at nothing. This makes you replaceable. You must ruthlessly identify your unique value proposition and sharpen it into a spearpoint. Stop trying to fix your weaknesses; ignore them and explode your strengths.',
                 implications: [
-                    'You are a "safe pair of hands" but not the first called for new opportunities.',
-                    'You may undervalue your own contributions.'
+                    'You are a utility player—useful, but not vital.',
+                    'Risk: Stagnation. Average is the enemy of Excellent.'
                 ],
                 recommendations: [
-                    'Conduct a "personal brand audit"—what are you known for?',
-                    'Ask three colleagues to describe your superpowers.'
+                    'Brand yourself. Pick ONE thing to be the "Go-To" person for.',
+                    'Ask your boss: "What is the one thing I do better than anyone else?" If they can\'t answer, you have work to do.'
                 ]
             };
         }
@@ -228,25 +270,25 @@ export const DIMENSIONS: DimensionConfig[] = [
         getAnalysis: (score) => {
             const band = getBand(score);
             if (band === 'strong' || band === 'solid') return {
-                narrative: 'To achieve your full potential, focus on professional positioning and visibility. Optimising your external profile (e.g., LinkedIn, CV) and internal presence is crucial. You effectively manage your growth but need to potentialize it.',
+                narrative: 'You are a Growth Machine. You treat your career as a product to be iterated. You seek feedback, you kill bad habits, and you invest in yourself. This trajectory guarantees success over time. Keep feeding the machine.',
                 implications: [
-                    'You may remain the "best kept secret" if you do not actively build your brand.',
-                    'Undefined career paths can lead to stagnation.'
+                    'You adapt faster than your peers.',
+                    'Risk: "Optimization Fatigue"—don\'t forget to actually do the work.'
                 ],
                 recommendations: [
-                    'Build a personal workflow system to reduce friction.',
-                    'Publish insights or speak at industry events.'
+                    'Teach what you learn. It solidifies the knowledge.',
+                    'Find a "Stretch Role"—a project you are only 60% qualified for.'
                 ]
             };
             return {
-                narrative: 'You are currently in a reactive mode regarding your development. You may feel overwhelmed by daily demands, leaving little time for intentional growth. Breaking this cycle is the first step to advancement.',
+                narrative: 'You are coasting. You rely on past glory and natural talent, but you stopped growing years ago. The world is moving faster than you are. If you aren\'t uncomfortable, you aren\'t learning. It is time to wake up and get back in the gym.',
                 implications: [
-                    'Career growth is slow or stalled.',
-                    'Burnout is a significant risk.'
+                    'Your skills are slowly becoming obsolete.',
+                    'Risk: Irrelevance. The market punishes stagnation.'
                 ],
                 recommendations: [
-                    'Block out 1 hour per week strictly for learning.',
-                    'Identify one small habit to change this month.'
+                    'Read one book a month. Non-negotiable.',
+                    'Seek "Brutal Feedback"—ask a peer to tell you your blindspots, and don\'t argue.'
                 ]
             };
         }

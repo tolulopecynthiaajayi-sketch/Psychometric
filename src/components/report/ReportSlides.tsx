@@ -1,6 +1,5 @@
-import React from 'react';
+import { DIMENSIONS, generateDynamicRoadmap, getArchetype } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
-import { DIMENSIONS } from '@/config/assessment';
 
 interface ReportSlidesProps {
     scores: { label: string; value: number; fullMark: number }[];
@@ -8,6 +7,10 @@ interface ReportSlidesProps {
 }
 
 export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlidesProps) {
+    // 1. Calculate Archetype & Roadmap
+    const archetype = getArchetype(scores);
+    const roadmap = generateDynamicRoadmap(scores);
+
     // Vibrant, Colourful, Gold/Orange Theme
     const slideStyle: React.CSSProperties = {
         width: '1123px', // A4 Landscape
@@ -71,6 +74,9 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 </h2>
                 <div style={{ width: '120px', height: '6px', background: '#FBD38D', margin: '40px 0' }} />
                 <p style={{ fontSize: '28px', fontWeight: 'bold' }}>Prepared for {candidateName}</p>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '10px 20px', borderRadius: '20px', marginTop: '20px' }}>
+                    <p style={{ fontSize: '24px', fontWeight: 'bold' }}>Archetype: {archetype.name}</p>
+                </div>
                 <p style={{ marginTop: 'auto', fontSize: '18px', opacity: 0.8 }}>{new Date().toLocaleDateString()}</p>
             </div>
 
@@ -78,6 +84,12 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
             <div className="pdf-slide" style={slideStyle}>
                 <div style={cornerShape} />
                 <h2 style={headerStyle}>Executive Assessment Summary</h2>
+
+                <div style={{ marginBottom: '20px', background: '#FFFAF0', padding: '15px', borderRadius: '10px', borderLeft: '5px solid #DD6B20' }}>
+                    <h3 style={{ margin: 0, fontSize: '22px', color: '#C05621' }}>{archetype.name}</h3>
+                    <p style={{ margin: '5px 0 0 0', fontStyle: 'italic', color: '#4A5568' }}>"{archetype.motto}"</p>
+                    <p style={{ marginTop: '5px', color: '#2D3748' }}>{archetype.description}</p>
+                </div>
 
                 <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
                     <div style={{ flex: '0 0 450px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Fixed width for chart col */}
@@ -170,19 +182,19 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                 );
             })}
 
-            {/* SLIDE: 90-DAY ACTION ROADMAP (New Request) */}
+            {/* SLIDE: 90-DAY ACTION ROADMAP (Dynamic) */}
             <div className="pdf-slide" style={slideStyle}>
                 <div style={cornerShape} />
                 <h2 style={headerStyle}>90-Day Strategic Roadmap</h2>
-                <p style={{ fontSize: '18px', color: '#718096', marginBottom: '30px' }}>A focused action plan derived from your assessment results to accelerate your professional growth.</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                    <p style={{ fontSize: '18px', color: '#718096', maxWidth: '70%' }}>
+                        A hyper-personalized action plan derived from your unique Archetype: <strong>{archetype.name}</strong>.
+                    </p>
+                </div>
+
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', zIndex: 1, position: 'relative' }}>
-                    {[
-                        { title: 'Month 1: Positioning', points: ['Create a "Leadership Version" of your CV/Resume.', 'Optimise LinkedIn headline for "Senior" roles.', 'Apply for 5 managerial roles per week.'] },
-                        { title: 'Month 2: Visibility', points: ['Publish 1 thought-leadership post per week.', 'Speak up within the first 10 minutes of meetings.', 'Delegating one operational task to a junior.'] },
-                        { title: 'Month 3: Influence', points: ['Present a team improvement plan to management.', 'Secure a speaking slot at an industry panel.', 'Establish a formalized mentorship relationship.'] },
-                        { title: 'Habits for Success', points: ['Weekly "Strategic Review" hour (Friday PM).', 'Daily "Top 3 Priorities" mapping.', 'Monthly accountability check-in.'] }
-                    ].map((phase, idx) => (
+                    {roadmap.map((phase, idx) => (
                         <div key={idx} style={{ background: 'white', padding: '25px', borderRadius: '12px', borderLeft: `6px solid ${['#4299E1', '#48BB78', '#ED8936', '#9F7AEA'][idx]}`, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                             <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#2D3748', marginBottom: '15px' }}>{phase.title}</h3>
                             <ul style={{ paddingLeft: '20px', color: '#4A5568', lineHeight: 1.6 }}>
@@ -215,3 +227,4 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
         </div>
     );
 }
+
