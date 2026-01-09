@@ -84,12 +84,12 @@ export default function Home() {
                         {/* Who is TRB? */}
                         <div style={{ marginBottom: '6rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '1.5rem', textAlign: 'center' }}>
-                                About TRB Alchemy
+                                About Temitope Richard-Banji
                             </h2>
                             <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: 'var(--color-gray-800)', textAlign: 'center', marginBottom: '2rem' }}>
-                                TRB Alchemy is a premier human capital development firm dedicated to transforming potential into performance.
-                                We believe that self-awareness is the catalyst for all great leadership. Our tools are built on decades of
-                                research and practical application in high-performance environments.
+                                Built from years of hands-on experience mentoring professionals, advising leaders, and assessing talent across industries,
+                                TRB Alchemy refers to the proprietary framework developed by Temitope Richard-Banji. It goes beyond conventional psychometrics
+                                to interpret how people think, lead, influence, and grow, converting those insights into practical developmental guidance.
                             </p>
                         </div>
 

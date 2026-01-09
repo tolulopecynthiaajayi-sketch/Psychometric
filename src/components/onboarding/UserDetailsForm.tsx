@@ -29,7 +29,7 @@ export function UserDetailsForm() {
     };
 
     // Pricing Logic
-    const price = PRICE_TIERS[formData.category] || 4900;
+    const price = PRICE_TIERS[formData.category] ?? 4900;
     const isFree = price === 0;
 
     const handleProceed = async () => {
@@ -81,7 +81,7 @@ export function UserDetailsForm() {
                 <h2 style={headerStyle}>Confirm Your Strategy</h2>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <p style={{ fontSize: '1.2rem', color: '#4A5568' }}>
-                        Based on your role as <span style={{ fontWeight: 'bold' }}>{CATEGORY_LABELS[formData.category]}</span>:
+                        Your assessment access plan:
                     </p>
 
                     <div style={{ margin: '2rem 0', padding: '2rem', background: '#FFFFF0', border: '2px solid var(--color-gold)', borderRadius: '12px' }}>
