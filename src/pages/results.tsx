@@ -2,24 +2,28 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
-import { DIMENSIONS, QUESTIONS, PRICE_TIERS, CATEGORY_LABELS } from '@/config/assessment';
+import { DIMENSIONS, QUESTIONS, PRICE_TIERS, CATEGORY_LABELS, getArchetype } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
 import { generatePDFReport } from '@/utils/pdfGenerator';
 import { ReportSlides } from '@/components/report/ReportSlides';
+import { useAuth } from '@/context/AuthContext';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import Link from 'next/link';
 
 export default function ResultsPage() {
     const router = useRouter();
     const { answers, isPremium, userProfile, setPremium } = useAssessment();
+    const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
     const [price, setPrice] = useState(4900); // Default
+    const [saved, setSaved] = useState(false);
 
-    // Determine Status Logic: 'Student'/'JobSeeker' should be Premium by now if flow worked, 
-    // but we can double check exemption here just in case.
+    // Determine Status
     const isExempt = userProfile?.category === 'student' || userProfile?.category === 'job_seeker';
     const showFullReport = isPremium || isExempt;
 
     useEffect(() => {
-        // Set dynamic price based on category
         if (userProfile?.category) {
             setPrice(PRICE_TIERS[userProfile.category]);
         }
@@ -29,10 +33,6 @@ export default function ResultsPage() {
         // Calculate scores
         const calculatedScores = DIMENSIONS.map(dim => {
             const dimQuestions = QUESTIONS.filter(q => q.dimension === dim.key);
-            // If viewing limited report, we might not have all answers, but that's fine (score will be lower/partial)
-            // But we display score out of 25 regardless? Or maybe normalize?
-            // User story: "free version that covers only 12 questions, 2 from each dimension"
-            // Start (0-25) is fine, just will be low if unresolved.
             const sum = dimQuestions.reduce((acc, q) => acc + (answers[q.id] || 0), 0);
             return {
                 label: dim.label,
@@ -42,6 +42,34 @@ export default function ResultsPage() {
         });
         setScores(calculatedScores);
     }, [answers]);
+
+    // Auto-save when scores, profile, and user are ready + user is premium/exempt
+    useEffect(() => {
+        if (showFullReport && user && scores.length > 0 && !saved) {
+            saveResultToFirebase();
+        }
+    }, [showFullReport, user, scores, saved]);
+
+    const saveResultToFirebase = async () => {
+        if (!user || saved) return;
+        try {
+            const archetype = getArchetype(scores);
+            await addDoc(collection(db, 'assessments'), {
+                userId: user.uid,
+                userEmail: user.email,
+                profile: userProfile,
+                scores: scores,
+                archetype: archetype,
+                isPremium: showFullReport,
+                createdAt: serverTimestamp(),
+                answers: answers // Optional: Save raw answers too
+            });
+            setSaved(true);
+            console.log("Assessment saved to Firebase!");
+        } catch (err) {
+            console.error("Error saving assessment:", err);
+        }
+    };
 
     const handleUnlock = async () => {
         try {
@@ -77,6 +105,20 @@ export default function ResultsPage() {
                 <div id="report-content" className="container" style={{ maxWidth: '900px', background: 'white', padding: '3rem', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', position: 'relative' }}>
 
                     <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                        {/* Auth Status Banner */}
+                        {!user && showFullReport && (
+                            <div style={{ background: '#EBF8FF', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #BEE3F8' }}>
+                                <p style={{ color: '#2C5282', margin: 0 }}>
+                                    <strong>Want to save this report?</strong> <Link href="/login" style={{ color: '#DD6B20', fontWeight: 'bold' }}>Log in</Link> or <Link href="/login" style={{ color: '#DD6B20', fontWeight: 'bold' }}>Sign up</Link> to access it later from your dashboard.
+                                </p>
+                            </div>
+                        )}
+                        {saved && (
+                            <div style={{ background: '#F0FFF4', padding: '0.5rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid #C6F6D5', color: '#276749', fontSize: '0.9rem' }}>
+                                ✓ Report saved to your account.
+                            </div>
+                        )}
+
                         <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)' }}>
                             {showFullReport ? 'Your Alchemy Profile' : 'Preliminary Profile'}
                         </h1>
