@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
-import { UserCategory, CATEGORY_LABELS } from '@/config/assessment';
+import { UserCategory, CATEGORY_LABELS, PRICE_TIERS } from '@/config/assessment';
 
 export function UserDetailsForm() {
     const router = useRouter();
-    const { setUserProfile } = useAssessment();
+    const { setUserProfile, setPremium } = useAssessment();
+    const [step, setStep] = useState<'form' | 'pricing'>('form');
+
+    // Form State
     const [formData, setFormData] = useState({
         name: '',
         occupation: '',
@@ -20,24 +23,104 @@ export function UserDetailsForm() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Save profile to context
+        setStep('pricing');
+    };
+
+    // Pricing Logic
+    const price = PRICE_TIERS[formData.category] || 4900;
+    const isFree = price === 0;
+
+    const handleProceed = async () => {
+        // 1. Save Profile
         setUserProfile(formData);
-        // Redirect to assessment (or start it)
+
+        if (isFree) {
+            // Student/Job Seeker -> "Zero Checkout"
+            setPremium(true); // Grant full access immediately
+            router.push('/assessment');
+        } else {
+            // Paid Tier -> Go to Stripe
+            try {
+                const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: price,
+                        description: `Professional Profile (${CATEGORY_LABELS[formData.category]})`
+                    })
+                });
+                const data = await res.json();
+
+                // Mock Success for Dev (Remove in Prod if desired, but good for testing)
+                if (data.mock) {
+                    setPremium(true);
+                    router.push('/assessment');
+                } else if (data.url) {
+                    window.location.href = data.url;
+                }
+            } catch (error) {
+                console.error('Checkout failed', error);
+                alert('Payment initialization failed. Please try again.');
+            }
+        }
+    };
+
+    const handleDecline = () => {
+        // User explicitly chose "Free Limited Version"
+        setUserProfile(formData);
+        setPremium(false); // Explicitly NOT premium
         router.push('/assessment');
     };
 
+    // --- RENDER PRICING STEP ---
+    if (step === 'pricing') {
+        return (
+            <div style={cardStyle}>
+                <h2 style={headerStyle}>Confirm Your Strategy</h2>
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <p style={{ fontSize: '1.2rem', color: '#4A5568' }}>
+                        Based on your role as <span style={{ fontWeight: 'bold' }}>{CATEGORY_LABELS[formData.category]}</span>:
+                    </p>
+
+                    <div style={{ margin: '2rem 0', padding: '2rem', background: '#FFFFF0', border: '2px solid var(--color-gold)', borderRadius: '12px' }}>
+                        <span style={{ fontSize: '3.5rem', fontWeight: 'bold', color: '#2D3748' }}>
+                            {isFree ? 'FREE' : `$${price / 100}`}
+                        </span>
+                        {isFree && <p style={{ color: '#744210', marginTop: '0.5rem' }}>Sponsored Access for Students & Job Seekers</p>}
+                        {!isFree && <p style={{ color: '#744210', marginTop: '0.5rem' }}>Full Professional Assessment</p>}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <button onClick={handleProceed} style={primaryBtnStyle}>
+                            {isFree ? 'Begin Assessment (Free)' : `Proceed to Payment ($${price / 100})`}
+                        </button>
+
+                        {!isFree && (
+                            <button onClick={handleDecline} style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: '#718096', padding: '0.5rem' }}>
+                                No thanks, I'll take the limited free version
+                            </button>
+                        )}
+
+                        <button onClick={() => setStep('form')} style={{ background: 'none', border: 'none', fontSize: '0.9rem', color: '#CBD5E0', cursor: 'pointer', marginTop: '1rem' }}>
+                            ← Back to details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // --- RENDER FORM STEP ---
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', background: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-dark-blue)', marginBottom: '1.5rem', textAlign: 'center' }}>
-                Your Professional Profile
-            </h2>
+        <div style={cardStyle}>
+            <h2 style={headerStyle}>Your Professional Profile</h2>
             <p style={{ textAlign: 'center', color: 'var(--color-gray-800)', marginBottom: '2rem' }}>
                 Please provide your details to personalize your assessment experience.
             </p>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+            <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
 
                 {/* 1. Name */}
                 <div className="form-group">
@@ -90,25 +173,30 @@ export function UserDetailsForm() {
                     </p>
                 </div>
 
-                <button type="submit" style={{
-                    marginTop: '1rem',
-                    padding: '1rem',
-                    background: 'var(--color-gold)',
-                    color: 'var(--color-dark-blue)',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '1.1rem',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s'
-                }}>
-                    Begin Assessment
+                <button type="submit" style={primaryBtnStyle}>
+                    Continue
                 </button>
 
             </form>
         </div>
     );
 }
+
+const cardStyle = {
+    maxWidth: '600px',
+    margin: '0 auto',
+    background: 'white',
+    padding: '2rem',
+    borderRadius: '12px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+};
+
+const headerStyle = {
+    fontFamily: 'var(--font-serif)',
+    color: 'var(--color-dark-blue)',
+    marginBottom: '1.5rem',
+    textAlign: 'center' as const
+};
 
 const labelStyle = {
     display: 'block',
@@ -125,4 +213,17 @@ const inputStyle = {
     borderRadius: '6px',
     fontSize: '1rem',
     fontFamily: 'inherit'
+};
+
+const primaryBtnStyle = {
+    width: '100%',
+    padding: '1rem',
+    background: 'var(--color-gold)',
+    color: 'var(--color-dark-blue)',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'transform 0.2s'
 };

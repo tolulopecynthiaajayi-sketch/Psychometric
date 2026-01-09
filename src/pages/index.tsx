@@ -64,51 +64,74 @@ export default function Home() {
                 </section>
 
                 {/* Features / tiers */}
+                {/* Content Section: Educational instead of Transactional */}
                 <section style={{ padding: '6rem 1rem', background: 'white' }}>
-                    <div className="container" style={{ maxWidth: '1000px' }}>
-                        <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '4rem' }}>
-                            Choose Your Path
-                        </h2>
+                    <div className="container" style={{ maxWidth: '900px' }}>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-
-                            {/* Free Tier */}
-                            <div style={{ padding: '2rem', border: '1px solid var(--color-gray-200)', borderRadius: '12px', textAlign: 'center' }}>
-                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Quick Insight</h3>
-                                <p style={{ color: 'var(--color-gray-800)', marginBottom: '2rem' }}>A glimpse into your core strengths.</p>
-                                <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', color: 'var(--color-gray-800)' }}>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ 12 Key Questions</li>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ Basic Summary</li>
-                                    <li style={{ opacity: 0.5 }}>✗ Full PDF Report</li>
-                                </ul>
-                                <Link href="/onboarding" style={{
-                                    display: 'block', padding: '1rem', border: '2px solid var(--color-dark-blue)',
-                                    color: 'var(--color-dark-blue)', borderRadius: '8px', fontWeight: 'bold'
-                                }}>
-                                    Start Free
-                                </Link>
-                            </div>
-
-                            {/* Paid Tier */}
-                            <div style={{ padding: '2rem', background: 'var(--color-dark-blue)', color: 'white', borderRadius: '12px', textAlign: 'center', position: 'relative', transform: 'scale(1.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-                                <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: 'var(--color-gold)', color: 'black', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold' }}>Most Popular</div>
-                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--color-gold)' }}>Full Profile</h3>
-                                <p style={{ opacity: 0.9, marginBottom: '2rem' }}>Deep dive into your professional essence.</p>
-                                <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem' }}>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ All 30 Questions</li>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ 6-Dimension Analysis</li>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ Detailed PDF Slide Deck</li>
-                                    <li style={{ marginBottom: '0.5rem' }}>✓ Strategy Session Access</li>
-                                </ul>
-                                <Link href="/onboarding" style={{
-                                    display: 'block', padding: '1rem', background: 'var(--color-gold)',
-                                    color: 'var(--color-dark-blue)', borderRadius: '8px', fontWeight: 'bold'
-                                }}>
-                                    Unlock for $49
-                                </Link>
-                            </div>
-
+                        {/* What is it? */}
+                        <div style={{ marginBottom: '6rem' }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '1.5rem', textAlign: 'center' }}>
+                                What is the Alchemy Profile?
+                            </h2>
+                            <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: 'var(--color-gray-800)', textAlign: 'center' }}>
+                                The Alchemy Profile is a sophisticated psychometric instrument designed to decode your professional DNA.
+                                Unlike standard personality tests, it measures six critical dimensions of leadership and influence—from
+                                <strong> Cognitive Agility</strong> to <strong>Drivers of Motivation</strong>. It offers a mirror to your potential, revealing not just who you are,
+                                but who you could become.
+                            </p>
                         </div>
+
+                        {/* Who is TRB? */}
+                        <div style={{ marginBottom: '6rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '1.5rem', textAlign: 'center' }}>
+                                About TRB Alchemy
+                            </h2>
+                            <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: 'var(--color-gray-800)', textAlign: 'center', marginBottom: '2rem' }}>
+                                TRB Alchemy is a premier human capital development firm dedicated to transforming potential into performance.
+                                We believe that self-awareness is the catalyst for all great leadership. Our tools are built on decades of
+                                research and practical application in high-performance environments.
+                            </p>
+                        </div>
+
+                        {/* Why Take It? */}
+                        <div style={{ marginBottom: '4rem' }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '2rem', textAlign: 'center' }}>
+                                Why Take This Assessment?
+                            </h2>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
+                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Clarity</h3>
+                                    <p>Gain a precise understanding of your operational style and hidden blind spots.</p>
+                                </div>
+                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
+                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Strategy</h3>
+                                    <p>Receive concrete recommendations to accelerate your career trajectory.</p>
+                                </div>
+                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
+                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Growth</h3>
+                                    <p>Unlock detailed insights that serve as a roadmap for your next 90 days and beyond.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Final CTA */}
+                        <div style={{ textAlign: 'center', marginTop: '4rem' }}>
+                            <Link href="/onboarding" style={{
+                                display: 'inline-block',
+                                background: 'var(--color-dark-blue)',
+                                color: 'white',
+                                padding: '1.2rem 3rem',
+                                fontSize: '1.2rem',
+                                fontWeight: 'bold',
+                                borderRadius: '50px',
+                                transition: 'transform 0.2s',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 14px 0 rgba(0,0,0,0.39)'
+                            }}>
+                                Begin Your Assessment
+                            </Link>
+                        </div>
+
                     </div>
                 </section>
 
