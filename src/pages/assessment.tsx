@@ -18,8 +18,20 @@ export default function AssessmentPage() {
         isComplete,
         showUpsell,
         closeUpsell,
-        setPremium
+        setPremium,
+        userProfile
     } = useAssessment();
+
+    useEffect(() => {
+        // Guard: If no user profile (bypassed onboarding), redirect to start
+        // We wait a tick to ensure hydration (if using localstorage)
+        const checkProfile = setTimeout(() => {
+            if (!userProfile) {
+                router.replace('/onboarding');
+            }
+        }, 100);
+        return () => clearTimeout(checkProfile);
+    }, [userProfile, router]);
 
     const currentQuestion = activeQuestions[currentQuestionIndex];
 

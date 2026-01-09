@@ -92,6 +92,27 @@ export function UserDetailsForm() {
                         {!isFree && <p style={{ color: '#744210', marginTop: '0.5rem' }}>Full Professional Assessment</p>}
                     </div>
 
+                    {/* Comparison / Disclaimer */}
+                    {!isFree && (
+                        <div style={{ textAlign: 'left', marginBottom: '2rem', background: '#F7FAFC', padding: '1.5rem', borderRadius: '8px', fontSize: '0.95rem' }}>
+                            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#2D3748' }}>What's included in the Premium Report ($49):</p>
+                            <ul style={{ paddingLeft: '1.2rem', marginBottom: '1.5rem', color: '#4A5568' }}>
+                                <li>✅ Complete 6-Dimension Psychometric Analysis</li>
+                                <li>✅ Your Unique Professional Archetype</li>
+                                <li>✅ 90-Day Strategic Career Roadmap</li>
+                                <li>✅ Deep-Dive Leadership Recommendations</li>
+                                <li>✅ <strong>Bonus:</strong> 30min Strategy Session (Senior Mgmt)</li>
+                            </ul>
+
+                            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#E53E3E' }}>limited Free Version Warning:</p>
+                            <p style={{ color: '#718096', lineHeight: 1.5 }}>
+                                The free version provides <strong>raw scores only</strong>.
+                                It does NOT include the TRB Alchemy analysis, archetype profile, roadmap, or strategy session.
+                                This is not a promo; it is a restricted preview logic.
+                            </p>
+                        </div>
+                    )}
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <button onClick={handleProceed} style={primaryBtnStyle}>
                             {isFree ? 'Begin Assessment (Free)' : `Proceed to Payment ($${price / 100})`}
@@ -99,7 +120,7 @@ export function UserDetailsForm() {
 
                         {!isFree && (
                             <button onClick={handleDecline} style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: '#718096', padding: '0.5rem' }}>
-                                No thanks, I'll take the limited free version
+                                I understand, take me to the limited free version
                             </button>
                         )}
 

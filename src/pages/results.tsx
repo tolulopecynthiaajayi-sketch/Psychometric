@@ -136,7 +136,8 @@ export default function ResultsPage() {
                         )}
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', filter: showFullReport ? 'none' : 'blur(4px)', pointerEvents: showFullReport ? 'auto' : 'none', userSelect: showFullReport ? 'auto' : 'none' }}>
+                    {/* Score Grid - NOW VISIBLE to everyone (No Blur) */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
                         {scores.map((score, i) => (
                             <div key={i} style={{ padding: '1.5rem', background: 'var(--color-gray-100)', borderRadius: '8px' }}>
                                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--color-dark-blue)' }}>{score.label}</h3>
@@ -151,23 +152,27 @@ export default function ResultsPage() {
                     </div>
 
                     {!showFullReport && (
-                        <div style={{ marginTop: '-150px', position: 'relative', zIndex: 10, textAlign: 'center', background: 'rgba(255,255,255,0.9)', padding: '2rem', border: '1px solid var(--color-gold)', borderRadius: '12px' }}>
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Unlock Your Full Potential</h3>
-                            <p style={{ marginBottom: '1.5rem' }}>Get the complete 30-question analysis, detailed breakdown, and PDF Report.</p>
+                        <div style={{ textAlign: 'center', background: '#FFFAF0', padding: '3rem', border: '1px solid var(--color-gold)', borderRadius: '12px' }}>
+                            <h3 style={{ fontSize: '1.8rem', color: '#C05621', marginBottom: '1rem' }}>Go Deeper with TRB Alchemy™️</h3>
+                            <p style={{ marginBottom: '1.5rem', fontSize: '1.1rem', color: '#4A5568', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+                                You have your raw scores. Now unlock the <strong>Meaning</strong>. <br />
+                                Upgrade to receive your custom <strong>Archetype Profile</strong>, deep-dive analysis, and a personalized <strong>90-Day Strategy Roadmap</strong>.
+                            </p>
                             <button
                                 onClick={handleUnlock}
                                 style={{
-                                    padding: '1rem 2rem',
+                                    padding: '1rem 2.5rem',
                                     background: 'var(--color-gold)',
                                     color: 'black',
                                     border: 'none',
-                                    borderRadius: '4px',
+                                    borderRadius: '6px',
                                     fontSize: '1.2rem',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                                 }}
                             >
-                                Upgrade for ${price / 100}
+                                Unlock Full Report (${price / 100})
                             </button>
                         </div>
                     )}
@@ -208,7 +213,7 @@ export default function ResultsPage() {
                     )}
 
                     {/* Hidden Slides for PDF Generation */}
-                    {showFullReport && <ReportSlides scores={scores} />}
+                    {showFullReport && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
 
                 </div>
             </main>

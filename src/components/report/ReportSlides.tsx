@@ -4,9 +4,10 @@ import { RadarChart } from '@/components/charts/RadarChart';
 interface ReportSlidesProps {
     scores: { label: string; value: number; fullMark: number }[];
     candidateName?: string;
+    hasBookSessionAccess?: boolean;
 }
 
-export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlidesProps) {
+export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessionAccess = false }: ReportSlidesProps) {
     // 1. Calculate Archetype & Roadmap
     const archetype = getArchetype(scores);
     const roadmap = generateDynamicRoadmap(scores);
@@ -140,7 +141,7 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
                             {/* Left: Narrative */}
                             <div style={{ flex: 1.2 }}>
                                 <div style={{ marginBottom: '30px' }}>
-                                    <h3 style={{ fontSize: '20px', color: '#DD6B20', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>AI Insights</h3>
+                                    <h3 style={{ fontSize: '20px', color: '#DD6B20', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>TRB Insight</h3>
                                     <p style={{ fontSize: '17px', lineHeight: 1.7, textAlign: 'justify', color: '#4A5568' }}>
                                         {analysis.narrative}
                                     </p>
@@ -215,13 +216,14 @@ export function ReportSlides({ scores, candidateName = 'Candidate' }: ReportSlid
 
                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '48px', marginBottom: '20px', color: '#FBD38D' }}>Unlock Your Potential</h2>
                 <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '60px', lineHeight: 1.6 }}>
-                    This report consists of AI-driven insights and a strategic roadmap.
+                    This report consists of TRB Alchemy insights and a strategic roadmap.
                     <br />Execute the plan. Track your progress.
                 </p>
-                <div style={{ padding: '25px 50px', background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', color: 'white', fontSize: '24px', fontWeight: 'bold', borderRadius: '50px', boxShadow: '0 10px 20px rgba(237, 137, 54, 0.4)' }}>
-                    Book Your Strategy Session
-                </div>
-                <p style={{ marginTop: '40px', color: '#A0AEC0' }}>www.trbalchemy.com</p>
+                {hasBookSessionAccess && (
+                    <div style={{ padding: '25px 50px', background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', color: 'white', fontSize: '24px', fontWeight: 'bold', borderRadius: '50px', boxShadow: '0 10px 20px rgba(237, 137, 54, 0.4)' }}>
+                        Book Your Strategy Session
+                    </div>
+                )}
             </div>
 
         </div>
