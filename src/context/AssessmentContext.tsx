@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { QUESTIONS, Question } from '@/config/assessment';
+import { QUESTIONS, Question, UserProfile, PRICE_TIERS } from '@/config/assessment';
 
 interface AssessmentState {
     answers: Record<string, number>;
-    currentQuestionId: string; // Changed from index to ID for safety
+    currentQuestionId: string;
     isPremium: boolean;
     isComplete: boolean;
     showUpsell: boolean;
+    userProfile: UserProfile | null;
 }
 
 interface AssessmentContextType extends AssessmentState {
@@ -32,6 +33,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         isPremium: false,
         isComplete: false,
         showUpsell: false,
+        userProfile: null,
     });
 
     // Derived state: Get list of questions based on premium status
@@ -55,13 +57,22 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 // Should ideally map old index to ID, but for safety in dev:
                 parsed.currentQuestionId = QUESTIONS[0].id;
             }
-            setState({ ...parsed, showUpsell: parsed.showUpsell || false });
+            // Ensure userProfile is preserved if it exists, or null
+            setState({
+                ...parsed,
+                showUpsell: parsed.showUpsell || false,
+                userProfile: parsed.userProfile || null
+            });
         }
     }, []);
 
     useEffect(() => {
         localStorage.setItem('trb_assessment_state', JSON.stringify(state));
     }, [state]);
+
+    const setUserProfile = (profile: UserProfile) => {
+        setState((prev) => ({ ...prev, userProfile: profile }));
+    };
 
     const setAnswer = (questionId: string, value: number) => {
         setState((prev) => ({
@@ -95,14 +106,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
     const setPremium = (status: boolean) => {
         // When upgrading, we likely want to keep current progress but unlock rest.
-        // If they finished free tier, we might want to jump to the first "new" question.
         setState((prev) => {
-            let nextQuestionId = prev.currentQuestionId;
-
-            // If they were complete, un-complete so they can continue
-            // And ensure they are on the first unanswered question?
-            // Simple strategy: If changing to premium, stay on current ID,
-            // but the 'activeQuestions' list will expand.
             return { ...prev, isPremium: status, showUpsell: false, isComplete: false };
         });
     };
@@ -119,10 +123,10 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         const newState = {
             answers: {},
             currentQuestionId: QUESTIONS[0].id,
-            isPremium: false, // Reset to default? Or keep premium? usually keep premium if paid.
-            // For now, hard reset.
+            isPremium: false,
             isComplete: false,
             showUpsell: false,
+            userProfile: null
         };
         setState(newState);
         localStorage.setItem('trb_assessment_state', JSON.stringify(newState));
@@ -139,6 +143,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 closeUpsell,
                 completeAssessment,
                 resetAssessment,
+                setUserProfile,
                 activeQuestions,
                 currentQuestionIndex: safeIndex,
                 totalQuestions: activeQuestions.length
