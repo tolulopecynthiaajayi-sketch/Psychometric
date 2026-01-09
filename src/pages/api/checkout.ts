@@ -29,6 +29,8 @@ export default async function handler(
         const host = req.headers.host;
         const origin = `${protocol}://${host}`;
 
+        const { amount, description } = req.body;
+
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -37,11 +39,11 @@ export default async function handler(
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: 'TRB Alchemy™️ Full Profile',
-                            description: 'Comprehensive 6-Dimension Psychometric Assessment & Detailed PDF Report',
-                            images: ['https://trbalchemy.com/assets/report-preview.png'], // Placeholder
+                            name: 'TRB Alchemy™️ Professional Profile',
+                            description: description || 'Comprehensive Psychometric Assessment',
+                            images: ['https://trbalchemy.com/assets/report-preview.png'],
                         },
-                        unit_amount: 4900, // $49.00 in cents
+                        unit_amount: amount || 4900, // Default to $49 if not sent
                     },
                     quantity: 1,
                 },

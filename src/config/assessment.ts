@@ -13,6 +13,44 @@ export interface AnalysisContent {
     recommendations: string[];
 }
 
+// --- User Profile & Work-Context Logic ---
+
+export type UserCategory =
+    | 'student'
+    | 'job_seeker'
+    | 'junior_mgmt'
+    | 'middle_mgmt'
+    | 'senior_mgmt'
+    | 'entrepreneur';
+
+export const PRICE_TIERS: Record<UserCategory, number> = {
+    'student': 0,
+    'job_seeker': 0,
+    'junior_mgmt': 1500,  // $15.00
+    'middle_mgmt': 2500,  // $25.00
+    'senior_mgmt': 4900,  // $49.00
+    'entrepreneur': 2500, // $25.00
+};
+
+export const CATEGORY_LABELS: Record<UserCategory, string> = {
+    'student': 'Student',
+    'job_seeker': 'Job Seeker',
+    'junior_mgmt': 'Junior Management (3-5 years)',
+    'middle_mgmt': 'Middle Management (6-9 years)',
+    'senior_mgmt': 'Senior Management (10+ years)',
+    'entrepreneur': 'Entrepreneur'
+};
+
+export interface UserProfile {
+    name: string;
+    occupation: string;
+    title: string;
+    organization: string;
+    email: string;
+    purpose: string;
+    category: UserCategory;
+}
+
 export interface DimensionConfig {
     key: DimensionKey;
     label: string;

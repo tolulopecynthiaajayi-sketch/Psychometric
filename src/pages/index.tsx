@@ -45,7 +45,7 @@ export default function Home() {
                             Where insight becomes transformation.
                         </p>
 
-                        <Link href="/assessment" style={{
+                        <Link href="/onboarding" style={{
                             display: 'inline-block',
                             background: 'var(--color-gold)',
                             color: 'var(--color-dark-blue)',
@@ -81,7 +81,7 @@ export default function Home() {
                                     <li style={{ marginBottom: '0.5rem' }}>✓ Basic Summary</li>
                                     <li style={{ opacity: 0.5 }}>✗ Full PDF Report</li>
                                 </ul>
-                                <Link href="/assessment" style={{
+                                <Link href="/onboarding" style={{
                                     display: 'block', padding: '1rem', border: '2px solid var(--color-dark-blue)',
                                     color: 'var(--color-dark-blue)', borderRadius: '8px', fontWeight: 'bold'
                                 }}>
@@ -100,7 +100,7 @@ export default function Home() {
                                     <li style={{ marginBottom: '0.5rem' }}>✓ Detailed PDF Slide Deck</li>
                                     <li style={{ marginBottom: '0.5rem' }}>✓ Strategy Session Access</li>
                                 </ul>
-                                <Link href="/assessment" style={{
+                                <Link href="/onboarding" style={{
                                     display: 'block', padding: '1rem', background: 'var(--color-gold)',
                                     color: 'var(--color-dark-blue)', borderRadius: '8px', fontWeight: 'bold'
                                 }}>

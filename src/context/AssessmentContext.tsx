@@ -17,6 +17,7 @@ interface AssessmentContextType extends AssessmentState {
     closeUpsell: () => void;
     completeAssessment: () => void;
     resetAssessment: () => void;
+    setUserProfile: (profile: UserProfile) => void;
     activeQuestions: Question[];
     currentQuestionIndex: number;
     totalQuestions: number;
