@@ -18,10 +18,9 @@ export default async function handler(
     try {
         // Fallback for Development if no keys set
         if (!stripe) {
-            console.warn('⚠️ Stripe API keys not missing. Using mock checkout flow.');
-            return res.status(200).json({
-                url: '/results?payment_success=true', // Redirect directly to manual success
-                mock: true
+            console.error('Stripe Secret Key is missing.');
+            return res.status(500).json({
+                error: 'Stripe is not configured. Missing STRIPE_SECRET_KEY in environment variables.'
             });
         }
 

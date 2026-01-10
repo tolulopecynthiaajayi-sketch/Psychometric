@@ -51,18 +51,19 @@ export function UserDetailsForm() {
                         description: `Professional Profile (${CATEGORY_LABELS[formData.category]})`
                     })
                 });
+
                 const data = await res.json();
 
-                // Mock Success for Dev (Remove in Prod if desired, but good for testing)
-                if (data.mock) {
-                    setPremium(true);
-                    router.push('/assessment');
-                } else if (data.url) {
+                if (!res.ok) {
+                    throw new Error(data.error || 'Payment initialization failed');
+                }
+
+                if (data.url) {
                     window.location.href = data.url;
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Checkout failed', error);
-                alert('Payment initialization failed. Please try again.');
+                alert(`System Error: ${error.message}`);
             }
         }
     };
