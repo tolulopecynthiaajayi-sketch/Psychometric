@@ -48,8 +48,8 @@ export default async function handler(
                 },
             ],
             mode: 'payment',
-            success_url: `${origin}/results?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
-            cancel_url: `${origin}/results?payment_canceled=true`,
+            success_url: `${origin}/assessment?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
+            cancel_url: `${origin}/onboarding?payment_canceled=true`,
             metadata: {
                 source: 'web_app_v1'
             }
