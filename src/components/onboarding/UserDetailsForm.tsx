@@ -95,13 +95,15 @@ export function UserDetailsForm() {
                     {/* Comparison / Disclaimer */}
                     {!isFree && (
                         <div style={{ textAlign: 'left', marginBottom: '2rem', background: '#F7FAFC', padding: '1.5rem', borderRadius: '8px', fontSize: '0.95rem' }}>
-                            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#2D3748' }}>What's included in the Premium Report ($49):</p>
+                            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#2D3748' }}>What's included in the Premium Report:</p>
                             <ul style={{ paddingLeft: '1.2rem', marginBottom: '1.5rem', color: '#4A5568' }}>
                                 <li>✅ Complete 6-Dimension Psychometric Analysis</li>
                                 <li>✅ Your Unique Professional Archetype</li>
                                 <li>✅ 90-Day Strategic Career Roadmap</li>
                                 <li>✅ Deep-Dive Leadership Recommendations</li>
-                                <li>✅ <strong>Bonus:</strong> 30min Strategy Session (Senior Mgmt)</li>
+                                {(price >= 4900) && (
+                                    <li>✅ <strong>Bonus:</strong> 30min Strategy Session</li>
+                                )}
                             </ul>
 
                             <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#E53E3E' }}>limited Free Version Warning:</p>
