@@ -19,7 +19,8 @@ export default function AssessmentPage() {
         showUpsell,
         closeUpsell,
         setPremium,
-        userProfile
+        userProfile,
+        completeAssessment
     } = useAssessment();
 
     useEffect(() => {
@@ -111,7 +112,13 @@ export default function AssessmentPage() {
                         </button>
 
                         <button
-                            onClick={nextQuestion}
+                            onClick={() => {
+                                if (currentQuestionIndex === totalQuestions - 1) {
+                                    completeAssessment();
+                                } else {
+                                    nextQuestion();
+                                }
+                            }}
                             style={{
                                 padding: '0.8rem 1.5rem',
                                 background: 'var(--color-dark-blue)',
