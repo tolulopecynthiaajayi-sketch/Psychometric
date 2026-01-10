@@ -20,7 +20,7 @@ export default function Dashboard() {
     }, [user, loading, router]);
 
     const fetchAssessments = async () => {
-        if (!user) return;
+        if (!user || !db) return;
         try {
             const q = query(
                 collection(db, 'assessments'),

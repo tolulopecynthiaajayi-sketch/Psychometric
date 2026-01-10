@@ -51,7 +51,7 @@ export default function ResultsPage() {
     }, [showFullReport, user, scores, saved]);
 
     const saveResultToFirebase = async () => {
-        if (!user || saved) return;
+        if (!user || saved || !db) return;
         try {
             const archetype = getArchetype(scores);
             await addDoc(collection(db, 'assessments'), {

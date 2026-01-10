@@ -16,6 +16,10 @@ export default function Login() {
         setError('');
 
         try {
+            if (!auth) {
+                throw new Error("Authentication is not configured. (Missing API Keys)");
+            }
+
             if (isSignUp) {
                 await createUserWithEmailAndPassword(auth, email, password);
                 // Creating account... redirect to assessment or dashboard
