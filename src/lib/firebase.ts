@@ -14,7 +14,8 @@ const firebaseConfig = {
 };
 
 // Initialize only if not already initialized
-let app;
+// Initialize only if not already initialized
+let app: any; // Explicitly type as any to handle the conditional initialization cleanly without complex type guards for this fallback file
 if (getApps().length === 0) {
     if (!firebaseConfig.apiKey) {
         console.warn('⚠️ Firebase API keys missing. Authentication and Database will not work.');
