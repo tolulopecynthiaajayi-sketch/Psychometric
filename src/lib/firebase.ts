@@ -37,7 +37,7 @@ export const db = app ? getFirestore(app) : null;
 let analytics;
 if (typeof window !== 'undefined') {
     isSupported().then((supported) => {
-        if (supported) {
+        if (supported && app) {
             analytics = getAnalytics(app);
         }
     });
