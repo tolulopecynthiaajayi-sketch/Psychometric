@@ -14,10 +14,24 @@ const firebaseConfig = {
 };
 
 // Initialize only if not already initialized
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+let app;
+if (getApps().length === 0) {
+    if (!firebaseConfig.apiKey) {
+        console.warn('⚠️ Firebase API keys missing. Authentication and Database will not work.');
+        // Prevent crash during build/CI where secrets might be missing
+        // This allows the build to finish, though usage will fail at runtime.
+    } else {
+        app = initializeApp(firebaseConfig);
+    }
+} else {
+    app = getApps()[0];
+}
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Export auth/db but handle potential undefined app (though getAuth might internally throw if app is undefined)
+// We cast app to any to bypass strict type check for the fallback scenario, 
+// ensuring we don't break the build just because of missing keys.
+export const auth = app ? getAuth(app) : {} as any;
+export const db = app ? getFirestore(app) : {} as any;
 
 // Initialize Analytics only on client side
 let analytics;
