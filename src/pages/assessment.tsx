@@ -23,15 +23,21 @@ export default function AssessmentPage() {
     } = useAssessment();
 
     useEffect(() => {
+        // Handle Payment Success Return
+        if (router.query.payment_success === 'true') {
+            setPremium(true);
+            // Clean URL
+            router.replace('/assessment', undefined, { shallow: true });
+        }
+
         // Guard: If no user profile (bypassed onboarding), redirect to start
-        // We wait a tick to ensure hydration (if using localstorage)
         const checkProfile = setTimeout(() => {
             if (!userProfile) {
                 router.replace('/onboarding');
             }
         }, 100);
         return () => clearTimeout(checkProfile);
-    }, [userProfile, router]);
+    }, [userProfile, router, setPremium]);
 
     const currentQuestion = activeQuestions[currentQuestionIndex];
 
