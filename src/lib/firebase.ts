@@ -29,10 +29,9 @@ if (getApps().length === 0) {
 }
 
 // Export auth/db but handle potential undefined app (though getAuth might internally throw if app is undefined)
-// We cast app to any to bypass strict type check for the fallback scenario, 
-// ensuring we don't break the build just because of missing keys.
-export const auth = app ? getAuth(app) : {} as any;
-export const db = app ? getFirestore(app) : {} as any;
+// Return null if app is not initialized so consumers can safely check for existence
+export const auth = app ? getAuth(app) : null;
+export const db = app ? getFirestore(app) : null;
 
 // Initialize Analytics only on client side
 let analytics;

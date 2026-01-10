@@ -21,6 +21,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!auth) {
+            console.warn("AuthContext: Firebase Auth not initialized (likely missing keys).");
+            setLoading(false);
+            return;
+        }
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
             setLoading(false);
@@ -30,7 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const logout = async () => {
-        await firebaseSignOut(auth);
+        if (auth) {
+            await firebaseSignOut(auth);
+        }
     };
 
     return (
