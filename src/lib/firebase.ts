@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD4GoPva_dNnCaj4kZfCGLlorYi8pF3BVI",
-    authDomain: "psychometric-1cd63.firebaseapp.com",
-    projectId: "psychometric-1cd63",
-    storageBucket: "psychometric-1cd63.firebasestorage.app",
-    messagingSenderId: "778437806706",
-    appId: "1:778437806706:web:25f3ffd367e56cb26990eb",
-    measurementId: "G-KKXZC1LT4G"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize only if not already initialized
