@@ -113,10 +113,15 @@ export default function AssessmentPage() {
 
                         <button
                             onClick={() => {
-                                if (currentQuestionIndex === totalQuestions - 1) {
-                                    completeAssessment();
-                                } else {
-                                    nextQuestion();
+                                try {
+                                    if (currentQuestionIndex === totalQuestions - 1) {
+                                        completeAssessment();
+                                    } else {
+                                        nextQuestion();
+                                    }
+                                } catch (err: any) {
+                                    console.error("Navigation Error:", err);
+                                    alert("Something went wrong finishing the test. Please refresh and try again.");
                                 }
                             }}
                             style={{
