@@ -44,7 +44,14 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
     const currentQuestionIndex = activeQuestions.findIndex(q => q.id === state.currentQuestionId);
 
-    // Safe fallback if current ID is not in active list (e.g. after upgrade or state weirdness)
+    // Auto-recover if currentQuestionId is invalid (e.g. switching Free/Premium)
+    useEffect(() => {
+        if (currentQuestionIndex === -1 && activeQuestions.length > 0) {
+            console.warn("Found invalid question ID, resetting to first question.");
+            setState(prev => ({ ...prev, currentQuestionId: activeQuestions[0].id }));
+        }
+    }, [currentQuestionIndex, activeQuestions]);
+
     const safeIndex = currentQuestionIndex === -1 ? 0 : currentQuestionIndex;
 
     // Load state from localStorage
