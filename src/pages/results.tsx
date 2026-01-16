@@ -213,7 +213,7 @@ export default function ResultsPage() {
                     )}
 
                     {/* Hidden Slides for PDF Generation */}
-                    {showFullReport && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
+                    {showFullReport && scores.length > 0 && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
 
                 </div>
             </main>
