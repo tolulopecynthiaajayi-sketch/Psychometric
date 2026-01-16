@@ -23,6 +23,8 @@ export default function AssessmentPage() {
         completeAssessment
     } = useAssessment();
 
+    const [isNavigating, setIsNavigating] = React.useState(false);
+
     useEffect(() => {
         // Handle Payment Success Return
         if (router.query.payment_success === 'true') {
@@ -112,28 +114,34 @@ export default function AssessmentPage() {
                         </button>
 
                         <button
-                            onClick={() => {
+                            disabled={isNavigating}
+                            onClick={async () => {
                                 try {
                                     if (currentQuestionIndex === totalQuestions - 1) {
+                                        setIsNavigating(true);
                                         completeAssessment();
+                                        // Force navigation as backup to useEffect
+                                        await router.push('/results');
                                     } else {
                                         nextQuestion();
                                     }
                                 } catch (err: any) {
                                     console.error("Navigation Error:", err);
-                                    alert("Something went wrong finishing the test. Please refresh and try again.");
+                                    setIsNavigating(false);
+                                    alert("Something went wrong. Please refresh the page.");
                                 }
                             }}
                             style={{
                                 padding: '0.8rem 1.5rem',
-                                background: 'var(--color-dark-blue)',
+                                background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '4px',
-                                cursor: 'pointer'
+                                cursor: isNavigating ? 'wait' : 'pointer',
+                                opacity: isNavigating ? 0.8 : 1
                             }}
                         >
-                            {currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next'}
+                            {isNavigating ? 'Processing...' : (currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next')}
                         </button>
                     </div>
                 </div>
