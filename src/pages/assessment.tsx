@@ -61,29 +61,27 @@ export default function AssessmentPage() {
     const currentAnswer = answers[currentQuestion.id];
 
     const handleAnswer = (value: number) => {
-        // If it's the last question, we override normal behavior
+        // Save answer to state
+        setAnswer(currentQuestion.id, value);
+
+        // Update LocalStorage immediately for safety
+        try {
+            const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+            currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
+            // We DO NOT set isComplete here anymore. 
+            // The user must click "Finalise Assessment" explicitly.
+            localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+        } catch (e: any) {
+            console.error("Save failed", e);
+        }
+
+        // If it's the last question, WE STOP HERE.
+        // No auto-advance, no auto-redirect.
         if (currentQuestionIndex === totalQuestions - 1) {
-
-            // 1. SAVE DATA (Paranoid Mode)
-            try {
-                const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
-                currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
-                currentState.isComplete = true;
-                localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-            } catch (e: any) {
-                console.error("Save failed", e);
-            }
-
-            // 2. FORCE NAVIGATION (Absolute)
-            setTimeout(() => {
-                window.location.replace('/assessment-complete');
-            }, 50);
             return;
         }
 
-        setAnswer(currentQuestion.id, value);
-
-        // Auto-advance
+        // Otherwise, Auto-advance
         setTimeout(() => {
             nextQuestion();
         }, 300);
