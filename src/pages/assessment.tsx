@@ -107,65 +107,46 @@ export default function AssessmentPage() {
                             Previous
                         </button>
 
-                        <button
-                            disabled={isNavigating}
-                            onClick={() => {
-                                try {
-                                    if (currentQuestionIndex === totalQuestions - 1) {
-                                        setIsNavigating(true);
-                                        // 1. Manually mark complete in storage
-                                        // We skip the context update (completeAssessment) to avoid re-renders interfering with navigation
-                                        const savedState = localStorage.getItem('trb_assessment_state');
-                                        if (savedState) {
-                                            const parsed = JSON.parse(savedState);
-                                            parsed.isComplete = true;
-                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
-                                        }
-
-                                        // 2. FORCE NAVIGATION IMMEDIATELY
-                                        window.location.href = '/results';
-                                    } else {
-                                        nextQuestion();
-                                    }
-                                } catch (err) {
-                                    console.error("Navigation Error:", err);
-                                    // Fallback if anything fails
-                                    window.location.href = '/results';
-                                }
-                            }}
-                            style={{
-                                padding: '0.8rem 1.5rem',
-                                background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: isNavigating ? 'wait' : 'pointer',
-                                opacity: isNavigating ? 0.8 : 1
-                            }}
-                        >
-                            {isNavigating ? 'Redirecting...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
-                        </button>
+                        {currentQuestionIndex === totalQuestions - 1 ? (
+                            <a
+                                href="/results"
+                                style={{
+                                    padding: '0.8rem 1.5rem',
+                                    background: 'var(--color-dark-blue)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    textDecoration: 'none',
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                FINALISE ASSESSMENT
+                            </a>
+                        ) : (
+                            <button
+                                onClick={nextQuestion}
+                                style={{
+                                    padding: '0.8rem 1.5rem',
+                                    background: 'var(--color-dark-blue)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Next
+                            </button>
+                        )}
                     </div>
 
-                    {/* Emergency Exit Link */}
+                    {/* Emergency Exit Link - Redundant now but kept for safety */}
                     {currentQuestionIndex === totalQuestions - 1 && (
                         <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                             <a
                                 href="/results"
-                                onClick={(e) => {
-                                    // Fallback: Just go to results. The context handles state enough.
-                                    // We keep the local storage write just in case context is lost on refresh, but keep it simple.
-                                    try {
-                                        const savedState = localStorage.getItem('trb_assessment_state');
-                                        if (savedState) {
-                                            const parsed = JSON.parse(savedState);
-                                            parsed.isComplete = true;
-                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
-                                        }
-                                    } catch (e) {
-                                        // Ignore storage errors, priority is navigation
-                                    }
-                                }}
                                 style={{ color: 'var(--color-gray-500)', fontSize: '0.8rem', textDecoration: 'underline' }}
                             >
                                 Having trouble? Click here to complete.

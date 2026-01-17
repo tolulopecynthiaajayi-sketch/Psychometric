@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 export default function ResultsPage() {
     const router = useRouter();
-    const { answers, isPremium, userProfile, setPremium } = useAssessment();
+    const { answers, isPremium, userProfile, setPremium, completeAssessment, isComplete } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
     const [price, setPrice] = useState(4900); // Default
@@ -27,7 +27,12 @@ export default function ResultsPage() {
 
     useEffect(() => {
         setIsMounted(true);
-    }, []);
+        // NUCLEAR OPTION FIX: Auto-complete assessment on arrival
+        // Since we use a raw <a> tag in assessment.tsx, we must ensure state is consistent here.
+        if (!isComplete && Object.keys(answers).length > 0) {
+            completeAssessment();
+        }
+    }, [isComplete, answers, completeAssessment]);
 
     useEffect(() => {
         if (userProfile?.category) {
