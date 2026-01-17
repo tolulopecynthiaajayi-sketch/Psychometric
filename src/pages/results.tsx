@@ -245,8 +245,9 @@ export default function ResultsPage() {
                                 {isGeneratingPdf ? 'Generating PDF...' : 'Download PDF Report'}
                             </button>
 
-                            {/* Only Show Strategy Call for Top Tier ($49) */}
-                            {price >= 4900 && (
+                            {/* STRATEGY CALL LOGIC */}
+                            {price >= 4900 ? (
+                                /* Free Call for VIPs */
                                 <button
                                     style={{
                                         padding: '1rem 2rem',
@@ -256,11 +257,41 @@ export default function ResultsPage() {
                                         borderRadius: '4px',
                                         fontSize: '1rem',
                                         cursor: 'pointer',
-                                        fontWeight: 'bold'
+                                        fontWeight: 'bold',
+                                        marginTop: '1rem'
                                     }}
                                 >
                                     Book 30min Strategy Call (Free)
                                 </button>
+                            ) : (
+                                /* Paid Upsell for Standard Users */
+                                <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px', border: '1px solid #E2E8F0', maxWidth: '600px', margin: '2rem auto 0 auto' }}>
+                                    <h3 style={{ fontSize: '1.2rem', color: '#2C5282', marginBottom: '0.5rem' }}>Need personalized guidance?</h3>
+                                    <p style={{ color: '#4A5568', marginBottom: '1rem' }}>
+                                        Turn these insights into immediate career momentum with a 1-on-1 executive coaching session.
+                                    </p>
+                                    <ul style={{ textAlign: 'left', marginBottom: '1.5rem', color: '#4A5568', display: 'inline-block' }}>
+                                        <li style={{ marginBottom: '0.5rem' }}>🔍 Deep-dive into your blind spots</li>
+                                        <li style={{ marginBottom: '0.5rem' }}>🚀 Build a custom promotion strategy</li>
+                                        <li>💡 Expert answers to your specific challenges</li>
+                                    </ul>
+                                    <br />
+                                    <button
+                                        style={{
+                                            padding: '0.8rem 2rem',
+                                            background: 'white',
+                                            color: '#C05621',
+                                            border: '2px solid #C05621',
+                                            borderRadius: '4px',
+                                            fontSize: '1rem',
+                                            cursor: 'pointer',
+                                            fontWeight: 'bold',
+                                            marginTop: '0.5rem'
+                                        }}
+                                    >
+                                        Book Executive Session ($150)
+                                    </button>
+                                </div>
                             )}
                         </div>
                     )}
