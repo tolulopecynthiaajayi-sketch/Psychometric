@@ -122,30 +122,50 @@ export default function AssessmentPage() {
                             Previous
                         </button>
 
-                        <button
-                            // STALE CLOSURE VACCINE: The 'key' forces React to destroy and recreate the button
-                            // whenever we switch between "Next" and "Finish". This ensures the onClick handler
-                            // is always fresh and never using old logic.
-                            key={currentQuestionIndex === totalQuestions - 1 ? 'finish-btn' : 'next-btn'}
-                            onClick={() => {
-                                if (currentQuestionIndex === totalQuestions - 1) {
-                                    window.location.href = '/assessment-complete';
-                                } else {
-                                    nextQuestion();
-                                }
-                            }}
-                            style={{
-                                padding: '0.8rem 1.5rem',
-                                background: 'var(--color-dark-blue)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            {currentQuestionIndex === totalQuestions - 1 ? 'FINISH ASSESSMENT' : 'Next'}
-                        </button>
+                        {currentQuestionIndex === totalQuestions - 1 ? (
+                            /* IRONCLAD NAVIGATION: Raw Anchor Tag */
+                            /* Bypasses all React Event logic, Context state, and JavaScript execution */
+                            <a
+                                href="/assessment-complete"
+                                style={{
+                                    padding: '0.8rem 1.5rem',
+                                    background: 'var(--color-dark-blue)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    textDecoration: 'none',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 'bold',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                FINALISE ASSESSMENT ➔
+                            </a>
+                        ) : (
+                            <button
+                                key="next-btn"
+                                onClick={nextQuestion}
+                                style={{
+                                    padding: '0.8rem 1.5rem',
+                                    background: 'var(--color-dark-blue)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Next
+                            </button>
+                        )}
                     </div>
+                </div>
+
+                {/* DEBUG FOOTER (Temporary for troubleshooting) */}
+                <div style={{ position: 'fixed', bottom: 5, right: 5, fontSize: '10px', opacity: 0.5, background: '#eee', padding: '2px' }}>
+                    Idx: {currentQuestionIndex} / {totalQuestions} | Mode: {currentQuestionIndex === totalQuestions - 1 ? 'ANCHOR' : 'BTN'}
                 </div>
 
                 {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
