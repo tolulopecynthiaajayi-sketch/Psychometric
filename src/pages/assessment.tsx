@@ -113,9 +113,23 @@ export default function AssessmentPage() {
                                 try {
                                     if (currentQuestionIndex === totalQuestions - 1) {
                                         setIsNavigating(true);
+
+                                        // ATOMIC SAVE: Bypass React State Batching
+                                        // 1. Manually update storage
+                                        const savedState = localStorage.getItem('trb_assessment_state');
+                                        if (savedState) {
+                                            const parsed = JSON.parse(savedState);
+                                            parsed.isComplete = true;
+                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
+                                        }
+
+                                        // 2. Trigger React State (for consistency if stay on page)
                                         completeAssessment();
-                                        // "Nuclear Option": Force hard navigation to bypass any router hangs
-                                        window.location.href = '/results';
+
+                                        // 3. FORCE NAVIGATION (Delayed slightly to allow UI feedback)
+                                        setTimeout(() => {
+                                            window.location.assign('/results');
+                                        }, 500);
                                     } else {
                                         nextQuestion();
                                     }
@@ -135,7 +149,7 @@ export default function AssessmentPage() {
                                 opacity: isNavigating ? 0.8 : 1
                             }}
                         >
-                            {isNavigating ? 'Processing...' : (currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next')}
+                            {isNavigating ? 'Processing...' : (currentQuestionIndex === totalQuestions - 1 ? 'COMPLETE ASSESSMENT' : 'Next')}
                         </button>
                     </div>
                 </div>
