@@ -55,11 +55,12 @@ export default function ResultsPage() {
     }, [answers]);
 
     // Auto-save when scores, profile, and user are ready + user is premium/exempt
+    // Auto-save when scores, profile, and user are ready + user is premium/exempt
     useEffect(() => {
         if (showFullReport && user && scores.length > 0 && !saved) {
-            // LITE MODE: Temporarily disable auto-save to prevent network hanging
-            // saveResultToFirebase();
-            console.log("Lite Mode: Auto-save skipped to ensure performance.");
+            // LITE MODE: Re-enabled for production data safety
+            saveResultToFirebase();
+            // console.log("Lite Mode: Auto-save skipped to ensure performance.");
         }
     }, [showFullReport, user, scores, saved]);
 
