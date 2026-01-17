@@ -264,7 +264,7 @@ export default function ResultsPage() {
                             <div className="fade-in-up" style={{ padding: '2rem', background: '#F0FFF4', borderRadius: '20px', border: '1px solid #C6F6D5', marginBottom: '3rem', animationDelay: '0.3s' }}>
                                 <h3 style={{ color: '#22543D', marginBottom: '1rem' }}>Your Full Report is Ready</h3>
                                 <p style={{ marginBottom: '1.5rem', color: '#2F855A' }}>
-                                    A comprehensive 15-page PDF detailing your archetype logic, blind spots, and a 90-day execution roadmap.
+                                    A comprehensive 10-page PDF detailing your archetype logic, blind spots, and a 90-day execution roadmap.
                                 </p>
                                 <button
                                     onClick={handleDownloadPDF}
