@@ -39,9 +39,11 @@ export default function AssessmentPage() {
         // Guard: If no user profile (bypassed onboarding), redirect to start
         const checkProfile = setTimeout(() => {
             if (!userProfile) {
+                // Only redirect if state is seemingly initialized (e.g. currentQuestionIndex is valid or answers present)
+                // or if enough time has passed to be sure.
                 router.replace('/onboarding');
             }
-        }, 100);
+        }, 1000);
         return () => clearTimeout(checkProfile);
     }, [userProfile, router, setPremium]);
 
