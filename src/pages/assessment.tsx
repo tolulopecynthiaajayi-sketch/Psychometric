@@ -107,74 +107,75 @@ export default function AssessmentPage() {
                             Previous
                         </button>
 
-                        disabled={isNavigating}
-                        onClick={() => {
-                            try {
-                                if (currentQuestionIndex === totalQuestions - 1) {
-                                    setIsNavigating(true);
-                                    // 1. Manually mark complete in storage
-                                    // We skip the context update (completeAssessment) to avoid re-renders interfering with navigation
+                        <button
+                            disabled={isNavigating}
+                            onClick={() => {
+                                try {
+                                    if (currentQuestionIndex === totalQuestions - 1) {
+                                        setIsNavigating(true);
+                                        // 1. Manually mark complete in storage
+                                        // We skip the context update (completeAssessment) to avoid re-renders interfering with navigation
+                                        const savedState = localStorage.getItem('trb_assessment_state');
+                                        if (savedState) {
+                                            const parsed = JSON.parse(savedState);
+                                            parsed.isComplete = true;
+                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
+                                        }
+
+                                        // 2. FORCE NAVIGATION IMMEDIATELY
+                                        window.location.href = '/results';
+                                    } else {
+                                        nextQuestion();
+                                    }
+                                } catch (err) {
+                                    console.error("Navigation Error:", err);
+                                    // Fallback if anything fails
+                                    window.location.href = '/results';
+                                }
+                            }}
+                            style={{
+                                padding: '0.8rem 1.5rem',
+                                background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: isNavigating ? 'wait' : 'pointer',
+                                opacity: isNavigating ? 0.8 : 1
+                            }}
+                        >
+                            {isNavigating ? 'Redirecting...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
+                        </button>
+                    </div>
+
+                    {/* Emergency Exit Link */}
+                    {currentQuestionIndex === totalQuestions - 1 && (
+                        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                            <a
+                                href="/results"
+                                onClick={(e) => {
+                                    // Ensure we try to save state even on manual click
                                     const savedState = localStorage.getItem('trb_assessment_state');
                                     if (savedState) {
                                         const parsed = JSON.parse(savedState);
                                         parsed.isComplete = true;
                                         localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
                                     }
-
-                                    // 2. FORCE NAVIGATION IMMEDIATELY
-                                    window.location.href = '/results';
-                                } else {
-                                    nextQuestion();
-                                }
-                            } catch (err) {
-                                console.error("Navigation Error:", err);
-                                // Fallback if anything fails
-                                window.location.href = '/results';
-                            }
-                        }}
-                        style={{
-                            padding: '0.8rem 1.5rem',
-                            background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: isNavigating ? 'wait' : 'pointer',
-                            opacity: isNavigating ? 0.8 : 1
-                        }}
-                        >
-                        {isNavigating ? 'Redirecting...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
-                    </button>
+                                }}
+                                style={{ color: 'var(--color-gray-500)', fontSize: '0.8rem', textDecoration: 'underline' }}
+                            >
+                                Having trouble? Click here to complete.
+                            </a>
+                        </div>
+                    )}
                 </div>
 
-                {/* Emergency Exit Link */}
-                {currentQuestionIndex === totalQuestions - 1 && (
-                    <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-                        <a
-                            href="/results"
-                            onClick={(e) => {
-                                // Ensure we try to save state even on manual click
-                                const savedState = localStorage.getItem('trb_assessment_state');
-                                if (savedState) {
-                                    const parsed = JSON.parse(savedState);
-                                    parsed.isComplete = true;
-                                    localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
-                                }
-                            }}
-                            style={{ color: 'var(--color-gray-500)', fontSize: '0.8rem', textDecoration: 'underline' }}
-                        >
-                            Having trouble? Click here to complete.
-                        </a>
-                    </div>
-                )}
-            </div>
-
-            {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
-            < PricingModal
-                isOpen={showUpsell}
-                onClose={closeUpsell}
-                onUpgrade={handleUpgrade}
-            />
-        </main >
+                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
+                < PricingModal
+                    isOpen={showUpsell}
+                    onClose={closeUpsell}
+                    onUpgrade={handleUpgrade}
+                />
+            </main >
         </>
     );
 }
