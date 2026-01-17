@@ -7,7 +7,7 @@ interface RadarChartProps {
 
 export function RadarChart({ data, size = 300 }: RadarChartProps) {
     const center = size / 2;
-    const radius = (size / 2) - 85; // Increased Padding for labels
+    const radius = (size / 2) - 105; // Increased Padding for labels (Safe Zone)
     const angleSlice = (Math.PI * 2) / data.length;
 
     // Helper to get coordinates
@@ -30,7 +30,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
     const gridLevels = [1, 2, 3, 4, 5];
 
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
+        <svg width={size} height={size} viewBox={`-30 0 ${size + 60} ${size}`}>
             {/* Grid Lines */}
             {gridLevels.map((level) => (
                 <React.Fragment key={level}>
@@ -91,11 +91,12 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
                     xOffset = -5; // Slight push left
                 }
 
-                // Push labels out
-                const coords = getCoordinates(6, i, 5);
+                // Push labels out - REDUCED from 6.2 to 5.8 to keep closer to chart and avoid edge clipping
+                const coords = getCoordinates(5.8, i, 5);
 
                 const words = d.label.split(' ');
                 const lines = [];
+                // Simple wrapping logic: 2 words per line max
                 for (let j = 0; j < words.length; j += 2) {
                     lines.push(words.slice(j, j + 2).join(' '));
                 }
