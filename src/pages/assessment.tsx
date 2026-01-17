@@ -98,7 +98,7 @@ export default function AssessmentPage() {
                 zIndex: 99999,
                 color: 'var(--color-dark-blue)'
             }}>
-                <h2 style={{ marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Finishing your upgrade...</h2>
+                <h2 style={{ marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Finalizing your access...</h2>
                 <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gray-200)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                 <style jsx>{`
                     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
