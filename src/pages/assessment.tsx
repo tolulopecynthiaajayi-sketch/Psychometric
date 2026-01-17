@@ -23,9 +23,8 @@ export default function AssessmentPage() {
         completeAssessment
     } = useAssessment();
 
-    // DEBUG: Visible Logger
-    const [logs, setLogs] = React.useState<string[]>([]);
-    const addLog = (msg: string) => setLogs(p => [...p, `${new Date().toISOString().split('T')[1].slice(0, 8)}: ${msg}`].slice(-5));
+    // REMOVED: React State Logger (Too slow)
+    // const [logs, setLogs] = React.useState<string[]>([]);
 
     const [isNavigating, setIsNavigating] = React.useState(false);
 
@@ -62,30 +61,34 @@ export default function AssessmentPage() {
 
     const currentAnswer = answers[currentQuestion.id];
 
-    const handleAnswer = (value: number) => {
-        addLog(`Ans: ${value} Idx: ${currentQuestionIndex}`);
+    // DIRECT DOM HELPER: Bypasses React Refresh Cycle
+    const setStatus = (msg: string) => {
+        const el = document.getElementById('assess-debug-status');
+        if (el) el.innerText = msg;
+        console.log(msg);
+    };
 
-        // CRITICAL FIX: If last question, bypass React State entirely to prevent render loops
+    const handleAnswer = (value: number) => {
+        // If it's the last question, we override normal behavior
         if (currentQuestionIndex === totalQuestions - 1) {
-            addLog('Last Q detected. Saving direct...');
+            setStatus('LAST Q DETECTED. INITIATING SEQUENCE...');
+
+            // 1. SAVE DATA (Paranoid Mode)
             try {
-                // 1. Construct new state manually
                 const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
                 currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
-                currentState.isComplete = true; // Mark complete
-
-                // 2. Write to storage synchronously
+                currentState.isComplete = true;
                 localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-                addLog('Saved. Navigating...');
-
-                // 3. Force Hard Redirect
-                window.location.href = '/assessment-complete';
-            } catch (e) {
-                addLog(`Err: ${e}`);
-                // Fallback
-                setAnswer(currentQuestion.id, value);
-                nextQuestion();
+                setStatus('DATA SAVED. REDIRECTING...');
+            } catch (e: any) {
+                setStatus('SAVE ERROR: ' + e.message + ' - PROCEEDING ANYWAY');
             }
+
+            // 2. FORCE NAVIGATION (Absolute)
+            // Use setTimeout to allow UI to paint the status message for 50ms
+            setTimeout(() => {
+                window.location.href = '/assessment-complete';
+            }, 50);
             return;
         }
 
@@ -155,7 +158,7 @@ export default function AssessmentPage() {
                                     type="submit"
                                     onClick={(e) => {
                                         // Optional: Ensure storage is synced one last time
-                                        addLog('Form Submit Clicked');
+                                        setStatus('FORM SUBMIT CLICKED');
                                     }}
                                     style={{
                                         padding: '0.8rem 1.5rem',
@@ -191,10 +194,7 @@ export default function AssessmentPage() {
                         )}
                     </div>
 
-                    {/* DEBUG CONSOLE: Live visible feedback for user */}
-                    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: '#0f0', fontSize: '10px', padding: '4px', fontFamily: 'monospace', pointerEvents: 'none', zIndex: 9999 }}>
-                        {logs.map((L, i) => <div key={i}>{L}</div>)}
-                    </div>
+
 
                 </div>
 
@@ -204,6 +204,26 @@ export default function AssessmentPage() {
                     onClose={closeUpsell}
                     onUpgrade={handleUpgrade}
                 />
+
+                {/* DIRECT DOM DEBUGGER: Updates via vanilla JS, no React waiting */}
+                <div
+                    id="assess-debug-status"
+                    style={{
+                        position: 'fixed',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: 'black',
+                        color: 'lime',
+                        fontSize: '12px',
+                        padding: '8px',
+                        textAlign: 'center',
+                        fontFamily: 'monospace',
+                        zIndex: 99999
+                    }}
+                >
+                    READY.
+                </div>
             </main>
         </>
     );
