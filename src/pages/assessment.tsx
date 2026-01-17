@@ -196,13 +196,15 @@ export default function AssessmentPage() {
                         {logs.map((L, i) => <div key={i}>{L}</div>)}
                     </div>
 
-                    {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
-                    < PricingModal
-                        isOpen={showUpsell}
-                        onClose={closeUpsell}
-                        onUpgrade={handleUpgrade}
-                    />
-            </main >
+                </div>
+
+                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
+                <PricingModal
+                    isOpen={showUpsell}
+                    onClose={closeUpsell}
+                    onUpgrade={handleUpgrade}
+                />
+            </main>
         </>
     );
 }
