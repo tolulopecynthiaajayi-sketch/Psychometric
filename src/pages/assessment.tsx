@@ -48,14 +48,17 @@ export default function AssessmentPage() {
     // If the button logic somehow fails or runs "Next" instead of "Finish",
     // this hook catches the state change and forces the redirect anyway.
     useEffect(() => {
-        // RACE CONDITION FIX: Don't redirect if we are processing a payment return.
-        // Give the other useEffect time to unlock the app and set isComplete = false.
+        // 1. Wait for Router to be ready (so we can read query params)
+        if (!router.isReady) return;
+
+        // 2. Don't redirect if we are processing a payment return.
         if (router.query.payment_success) return;
 
+        // 3. Only then, check isComplete
         if (isComplete) {
             window.location.href = '/assessment-complete';
         }
-    }, [isComplete, router.query.payment_success]);
+    }, [isComplete, router.isReady, router.query.payment_success]);
 
     const currentQuestion = activeQuestions[currentQuestionIndex];
 
