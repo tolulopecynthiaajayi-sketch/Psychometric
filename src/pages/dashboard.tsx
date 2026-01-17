@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Link from 'next/link';
+import { isAdmin } from '@/config/admin';
 
 export default function Dashboard() {
     const { user, loading, logout } = useAuth();
@@ -50,6 +51,11 @@ export default function Dashboard() {
                     <h1 style={{ fontFamily: 'serif', fontSize: '2rem', color: '#2D3748' }}>Dashboard</h1>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <span style={{ color: '#718096' }}>{user.email}</span>
+                        {isAdmin(user.email) && (
+                            <Link href="/admin" style={{ padding: '0.5rem 1rem', background: '#2D3748', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>
+                                Admin Panel
+                            </Link>
+                        )}
                         <button onClick={logout} style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid #CBD5E0', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
                         <Link href="/" style={{ padding: '0.5rem 1rem', background: '#DD6B20', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>New Assessment</Link>
                     </div>
