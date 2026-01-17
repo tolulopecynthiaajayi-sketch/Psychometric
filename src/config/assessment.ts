@@ -78,6 +78,12 @@ const getBand = (score: number): 'strong' | 'solid' | 'developing' | 'underdevel
 export const getArchetype = (scores: { label: string; value: number }[]): Archetype => {
     // Sort scores descending
     const sorted = [...scores].sort((a, b) => b.value - a.value);
+
+    // Safety check for empty or insufficient scores (e.g. initial load)
+    if (sorted.length < 2) {
+        return { name: 'The Balanced Professional', description: 'You possess a well-rounded skillset ready for specialization.', motto: 'Balance is key.' };
+    }
+
     const top1 = sorted[0].label;
     const top2 = sorted[1].label;
 
