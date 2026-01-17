@@ -23,9 +23,6 @@ export default function AssessmentPage() {
         completeAssessment
     } = useAssessment();
 
-    // REMOVED: React State Logger (Too slow)
-    // const [logs, setLogs] = React.useState<string[]>([]);
-
     const [isNavigating, setIsNavigating] = React.useState(false);
 
     useEffect(() => {
@@ -63,26 +60,9 @@ export default function AssessmentPage() {
 
     const currentAnswer = answers[currentQuestion.id];
 
-    // DIRECT DOM HELPER: Bypasses React Refresh Cycle
-    const setStatus = (msg: string) => {
-        const el = document.getElementById('assess-debug-status');
-        if (el) el.innerText = msg;
-    };
-
-    // GLOBAL ERROR TRAP
-    React.useEffect(() => {
-        const oldError = window.onerror;
-        window.onerror = (msg, source, lineno, colno, error) => {
-            setStatus(`ERR: ${msg}`);
-            if (oldError) oldError(msg, source, lineno, colno, error);
-        };
-        return () => { window.onerror = oldError; };
-    }, []);
-
     const handleAnswer = (value: number) => {
         // If it's the last question, we override normal behavior
         if (currentQuestionIndex === totalQuestions - 1) {
-            setStatus('LAST Q DETECTED. INITIATING SEQUENCE...');
 
             // 1. SAVE DATA (Paranoid Mode)
             try {
@@ -90,15 +70,13 @@ export default function AssessmentPage() {
                 currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
                 currentState.isComplete = true;
                 localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-                setStatus('DATA SAVED. REDIRECTING...');
             } catch (e: any) {
-                setStatus('SAVE ERROR: ' + e.message + ' - PROCEEDING ANYWAY');
+                console.error("Save failed", e);
             }
 
             // 2. FORCE NAVIGATION (Absolute)
-            // Use setTimeout to allow UI to paint the status message for 50ms
             setTimeout(() => {
-                window.location.href = '/assessment-complete';
+                window.location.replace('/assessment-complete');
             }, 50);
             return;
         }
@@ -162,15 +140,11 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            /* DESPERATE MEASURES: Not a button, not a link. Just a clickable div. */
-                            /* No default behaviors to prevent. Pure JS execution. */
                             <div
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setStatus('CLICK RECEIVED. JUMPING (v2)...');
 
                                     // FORCE NAVIGATE (REPLACE)
-                                    // No window.stop() - it might be killing the jump
                                     setTimeout(() => {
                                         window.location.replace('/assessment-complete');
                                     }, 100);
@@ -185,7 +159,7 @@ export default function AssessmentPage() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '8px',
-                                    userSelect: 'none' // behave like button
+                                    userSelect: 'none'
                                 }}
                             >
                                 FINALISE ASSESSMENT ➔
@@ -208,46 +182,15 @@ export default function AssessmentPage() {
                         )}
                     </div>
 
-
-
                 </div>
 
-                {/* MANUAL FALLBACK: Pure HTML Link for when all scripts fail */}
-                {currentQuestionIndex === totalQuestions - 1 && (
-                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                        <p style={{ fontSize: '0.8rem', color: '#666' }}>
-                            Not advancing? <a href="/assessment-complete" style={{ color: 'blue', textDecoration: 'underline' }}>Click here to finish</a>
-                        </p>
-                    </div>
-                )}
-
-                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
+                {/* Upsell Modal */}
                 <PricingModal
                     isOpen={showUpsell}
                     onClose={closeUpsell}
                     onUpgrade={handleUpgrade}
                 />
-
-                {/* DIRECT DOM DEBUGGER: Updates via vanilla JS, no React waiting */}
-                <div
-                    id="assess-debug-status"
-                    style={{
-                        position: 'fixed',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: 'black',
-                        color: 'lime',
-                        fontSize: '12px',
-                        padding: '8px',
-                        textAlign: 'center',
-                        fontFamily: 'monospace',
-                        zIndex: 99999
-                    }}
-                >
-                    READY.
-                </div>
-            </main >
+            </main>
         </>
     );
 }
