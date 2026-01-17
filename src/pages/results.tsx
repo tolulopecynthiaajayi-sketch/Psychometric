@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
 import { DIMENSIONS, QUESTIONS, PRICE_TIERS, CATEGORY_LABELS, getArchetype } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
-import { generatePDFReport } from '@/utils/pdfGenerator';
+// REMOVED STATIC IMPORT: import { generatePDFReport } from '@/utils/pdfGenerator';
 import { ReportSlides } from '@/components/report/ReportSlides';
 import { useAuth } from '@/context/AuthContext';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -18,10 +18,16 @@ export default function ResultsPage() {
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
     const [price, setPrice] = useState(4900); // Default
     const [saved, setSaved] = useState(false);
+    const [isMounted, setIsMounted] = useState(false); // Safety check for client-side rendering
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     // Determine Status
     const isExempt = userProfile?.category === 'student' || userProfile?.category === 'job_seeker';
     const showFullReport = isPremium || isExempt;
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (userProfile?.category) {
@@ -95,6 +101,23 @@ export default function ResultsPage() {
             console.error('Checkout failed', error);
         }
     };
+
+    const handleDownloadPDF = async () => {
+        if (isGeneratingPdf) return;
+        setIsGeneratingPdf(true);
+        try {
+            // Lazy load the PDF generator only when requested
+            const { generatePDFReport } = await import('@/utils/pdfGenerator');
+            await generatePDFReport('pdf-report-container');
+        } catch (error) {
+            console.error("Failed to generate PDF:", error);
+            alert("Could not generate PDF. Please try again.");
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
+
+    if (!isMounted) return null; // Prevent hydration mismatch and heavy initial load
 
     return (
         <>
@@ -180,19 +203,20 @@ export default function ResultsPage() {
                     {showFullReport && (
                         <div style={{ marginTop: '4rem', textAlign: 'center' }}>
                             <button
-                                onClick={() => generatePDFReport('pdf-report-container')}
+                                onClick={handleDownloadPDF}
+                                disabled={isGeneratingPdf}
                                 style={{
                                     padding: '1rem 2rem',
-                                    background: 'var(--color-dark-blue)',
+                                    background: isGeneratingPdf ? '#A0AEC0' : 'var(--color-dark-blue)',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '4px',
                                     fontSize: '1rem',
-                                    cursor: 'pointer',
+                                    cursor: isGeneratingPdf ? 'wait' : 'pointer',
                                     marginRight: '1rem'
                                 }}
                             >
-                                Download PDF Report
+                                {isGeneratingPdf ? 'Generating PDF...' : 'Download PDF Report'}
                             </button>
 
                             <button
@@ -212,8 +236,10 @@ export default function ResultsPage() {
                         </div>
                     )}
 
-                    {/* Hidden Slides for PDF Generation */}
-                    {showFullReport && scores.length > 0 && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
+                    {/* Hidden Slides for PDF Generation - DEFERRED RENDERING */}
+                    {/* Only render if showing report to reduce DOM size on initial load */}
+                    {/* Additionally, we could use a delay, but isMounted helps enough for hydration */}
+                    {isMounted && showFullReport && scores.length > 0 && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
 
                 </div>
             </main>

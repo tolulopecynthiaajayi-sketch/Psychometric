@@ -153,12 +153,17 @@ export default function AssessmentPage() {
                             <a
                                 href="/results"
                                 onClick={(e) => {
-                                    // Ensure we try to save state even on manual click
-                                    const savedState = localStorage.getItem('trb_assessment_state');
-                                    if (savedState) {
-                                        const parsed = JSON.parse(savedState);
-                                        parsed.isComplete = true;
-                                        localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
+                                    // Fallback: Just go to results. The context handles state enough.
+                                    // We keep the local storage write just in case context is lost on refresh, but keep it simple.
+                                    try {
+                                        const savedState = localStorage.getItem('trb_assessment_state');
+                                        if (savedState) {
+                                            const parsed = JSON.parse(savedState);
+                                            parsed.isComplete = true;
+                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
+                                        }
+                                    } catch (e) {
+                                        // Ignore storage errors, priority is navigation
                                     }
                                 }}
                                 style={{ color: 'var(--color-gray-500)', fontSize: '0.8rem', textDecoration: 'underline' }}
