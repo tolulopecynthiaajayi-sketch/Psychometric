@@ -36,6 +36,9 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         userProfile: null,
     });
 
+    // Safety flag to prevent overwriting LocalStorage before we've read it
+    const [isLoaded, setIsLoaded] = useState(false);
+
     // Derived state: Get list of questions based on premium status
     const activeQuestions = React.useMemo(() => {
         if (state.isPremium) return QUESTIONS;
@@ -58,24 +61,31 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         const savedState = localStorage.getItem('trb_assessment_state');
         if (savedState) {
-            const parsed = JSON.parse(savedState);
-            // Migrate old index-based state to ID-based if needed (or just reset if too complex)
-            if (typeof parsed.currentQuestionIndex === 'number' && !parsed.currentQuestionId) {
-                // Should ideally map old index to ID, but for safety in dev:
-                parsed.currentQuestionId = QUESTIONS[0].id;
+            try {
+                const parsed = JSON.parse(savedState);
+                // Migrate old index-based state to ID-based if needed (or just reset if too complex)
+                if (typeof parsed.currentQuestionIndex === 'number' && !parsed.currentQuestionId) {
+                    parsed.currentQuestionId = QUESTIONS[0].id;
+                }
+
+                setState({
+                    ...parsed,
+                    showUpsell: parsed.showUpsell || false,
+                    userProfile: parsed.userProfile || null
+                });
+            } catch (e) {
+                console.error("Failed to parse saved state", e);
             }
-            // Ensure userProfile is preserved if it exists, or null
-            setState({
-                ...parsed,
-                showUpsell: parsed.showUpsell || false,
-                userProfile: parsed.userProfile || null
-            });
         }
+        setIsLoaded(true); // Allow writes after this
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('trb_assessment_state', JSON.stringify(state));
-    }, [state]);
+        // ONLY save if we have initialized the state from storage (or confirmed it's new)
+        if (isLoaded) {
+            localStorage.setItem('trb_assessment_state', JSON.stringify(state));
+        }
+    }, [state, isLoaded]);
 
     const setUserProfile = (profile: UserProfile) => {
         setState((prev) => ({ ...prev, userProfile: profile }));
