@@ -65,8 +65,17 @@ export default function AssessmentPage() {
     const setStatus = (msg: string) => {
         const el = document.getElementById('assess-debug-status');
         if (el) el.innerText = msg;
-        console.log(msg);
     };
+
+    // GLOBAL ERROR TRAP
+    React.useEffect(() => {
+        const oldError = window.onerror;
+        window.onerror = (msg, source, lineno, colno, error) => {
+            setStatus(`ERR: ${msg}`);
+            if (oldError) oldError(msg, source, lineno, colno, error);
+        };
+        return () => { window.onerror = oldError; };
+    }, []);
 
     const handleAnswer = (value: number) => {
         // If it's the last question, we override normal behavior
@@ -151,31 +160,37 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            /* NUCLEAR OPTION: Form Submission */
-                            /* Browsers handle form actions with highest priority, breaking JS loops */
-                            <form action="/assessment-complete" method="GET">
-                                <button
-                                    type="submit"
-                                    onClick={(e) => {
-                                        // Optional: Ensure storage is synced one last time
-                                        setStatus('FORM SUBMIT CLICKED');
-                                    }}
-                                    style={{
-                                        padding: '0.8rem 1.5rem',
-                                        background: 'var(--color-dark-blue)',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px'
-                                    }}
-                                >
-                                    FINALISE ASSESSMENT ➔
-                                </button>
-                            </form>
+                            /* DESPERATE MEASURES: Not a button, not a link. Just a clickable div. */
+                            /* No default behaviors to prevent. Pure JS execution. */
+                            <div
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setStatus('CLICK RECEIVED. EXECUTING JUMP...');
+
+                                    // Kill any pending networking
+                                    try { window.stop(); } catch (e) { }
+
+                                    // Force Move
+                                    setTimeout(() => {
+                                        window.location.href = '/assessment-complete';
+                                    }, 10);
+                                }}
+                                style={{
+                                    padding: '0.8rem 1.5rem',
+                                    background: 'var(--color-dark-blue)',
+                                    color: 'white',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    userSelect: 'none' // behave like button
+                                }}
+                            >
+                                FINALISE ASSESSMENT ➔
+                            </div>
                         ) : (
                             <button
                                 key="next-btn"
@@ -224,7 +239,7 @@ export default function AssessmentPage() {
                 >
                     READY.
                 </div>
-            </main>
+            </main >
         </>
     );
 }
