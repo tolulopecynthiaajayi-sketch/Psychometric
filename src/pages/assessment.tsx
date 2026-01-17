@@ -24,6 +24,7 @@ export default function AssessmentPage() {
     } = useAssessment();
 
     const [isNavigating, setIsNavigating] = React.useState(false);
+    const [showSuccess, setShowSuccess] = React.useState(false);
 
     useEffect(() => {
         // Handle Payment Success Return
@@ -51,9 +52,16 @@ export default function AssessmentPage() {
 
     const handleAnswer = (value: number) => {
         setAnswer(currentQuestion.id, value);
+
         // Auto-advance after small delay
         setTimeout(() => {
-            nextQuestion();
+            if (currentQuestionIndex === totalQuestions - 1) {
+                // FORCE SUCCESS VIEW LOCALLY
+                setShowSuccess(true);
+                completeAssessment();
+            } else {
+                nextQuestion();
+            }
         }, 400);
     };
 
@@ -65,8 +73,8 @@ export default function AssessmentPage() {
 
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
-    // SUCCESS VIEW: Rendered when assessment is marked complete
-    if (isComplete) {
+    // SUCCESS VIEW: Rendered when assessment is marked complete OR locally forced
+    if (isComplete || showSuccess) {
         return (
             <>
                 <Head>
@@ -151,6 +159,7 @@ export default function AssessmentPage() {
                         <button
                             onClick={() => {
                                 if (currentQuestionIndex === totalQuestions - 1) {
+                                    setShowSuccess(true);
                                     completeAssessment();
                                 } else {
                                     nextQuestion();
