@@ -1,7 +1,23 @@
 import Head from 'next/head';
 import { UserDetailsForm } from '@/components/onboarding/UserDetailsForm';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function OnboardingPage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/login?redirect=/onboarding');
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user) {
+        return <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading...</div>;
+    }
+
     return (
         <>
             <Head>

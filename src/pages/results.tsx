@@ -56,14 +56,13 @@ export default function ResultsPage() {
         setScores(calculatedScores);
     }, [answers]);
 
-    // Auto-save when scores, profile, and user are ready + user is premium/exempt
+    // Auto-save when scores, profile, and user are ready
+    // CHANGED: We now save for ALL logged-in users, so Admin sees leads.
     useEffect(() => {
-        if (showFullReport && user && scores.length > 0 && !saved) {
-            // LITE MODE: Re-enabled for production data safety
+        if (user && scores.length > 0 && !saved) {
             saveResultToFirebase();
-            // console.log("Lite Mode: Auto-save skipped to ensure performance.");
         }
-    }, [showFullReport, user, scores, saved]);
+    }, [user, scores, saved]);
 
     const saveResultToFirebase = async () => {
         if (!user || saved || !db) return;
@@ -156,7 +155,23 @@ export default function ResultsPage() {
 
                     {/* Header Section */}
                     <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative', zIndex: 1 }}>
-                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                            <Link href="/dashboard" style={{
+                                textDecoration: 'none',
+                                color: 'var(--color-gray-800)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                fontWeight: 'bold',
+                                padding: '0.5rem 1rem',
+                                background: 'rgba(255,255,255,0.5)',
+                                borderRadius: '30px',
+                                backdropFilter: 'blur(5px)'
+                            }}>
+                                ← Home
+                            </Link>
+                        </div>
+                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '2rem' }}>
                             <img src="/images/logo-orange-nobg.png" alt="TRB Alchemy" style={{ width: '120px', filter: 'drop-shadow(0 4px 6px rgba(237, 137, 54, 0.2))' }} />
                             {showFullReport ? 'Your Alchemy Profile' : 'Preliminary Profile'}
                         </h1>
