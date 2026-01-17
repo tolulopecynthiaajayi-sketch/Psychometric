@@ -7,7 +7,7 @@ interface RadarChartProps {
 
 export function RadarChart({ data, size = 300 }: RadarChartProps) {
     const center = size / 2;
-    const radius = (size / 2) - 65; // Increased Padding for labels
+    const radius = (size / 2) - 85; // Increased Padding for labels
     const angleSlice = (Math.PI * 2) / data.length;
 
     // Helper to get coordinates
@@ -30,7 +30,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
     const gridLevels = [1, 2, 3, 4, 5];
 
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
             {/* Grid Lines */}
             {gridLevels.map((level) => (
                 <React.Fragment key={level}>
@@ -71,19 +71,30 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
 
             {/* Labels */}
             {data.map((d, i) => {
-                const coords = getCoordinates(6, i, 5); // Push label out a bit
+                const coords = getCoordinates(6.2, i, 5); // Push label out a bit more
+                const words = d.label.split(' ');
+                const lines = [];
+                // Simple wrapping logic: 2 words per line max
+                for (let j = 0; j < words.length; j += 2) {
+                    lines.push(words.slice(j, j + 2).join(' '));
+                }
+
                 return (
                     <text
                         key={i}
                         x={coords.x}
-                        y={coords.y}
+                        y={coords.y - ((lines.length - 1) * 6)} // Shift up to vertically center the block
                         textAnchor="middle"
                         dominantBaseline="middle"
                         fontSize="10"
                         fill="var(--color-dark-blue)"
                         style={{ fontWeight: 'bold' }}
                     >
-                        {d.label}
+                        {lines.map((line, lineIdx) => (
+                            <tspan x={coords.x} dy={lineIdx === 0 ? 0 : "1.1em"} key={lineIdx}>
+                                {line}
+                            </tspan>
+                        ))}
                     </text>
                 );
             })}
