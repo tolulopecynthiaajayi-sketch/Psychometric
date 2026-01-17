@@ -38,7 +38,9 @@ export function QuestionRenderer({ question, currentAnswer, onAnswer }: Question
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            height: '100px'
+                            height: '100px',
+                            position: 'relative', // DEFENSIVE: Ensure clickability
+                            zIndex: 20
                         }}
                     >
                         <span style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{value}</span>
