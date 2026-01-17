@@ -140,23 +140,24 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            <div
+                            <a
+                                href="/assessment-complete"
                                 onClick={(e) => {
-                                    e.stopPropagation();
-
-                                    // 1. SAVE DATA (Silent & Robust)
+                                    // 1. Try to save data
                                     try {
                                         const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
                                         currentState.isComplete = true;
                                         localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
                                     } catch (err) {
-                                        console.error("Save failed during finalise", err);
+                                        console.error("Save error", err);
                                     }
 
-                                    // 2. FORCE NAVIGATE (Immediate)
-                                    window.location.replace('/assessment-complete');
+                                    // 2. Allow default link behavior to proceed
+                                    // We DO NOT call e.preventDefault() here.
+                                    // We let the browser handle the navigation naturally.
                                 }}
                                 style={{
+                                    textDecoration: 'none',
                                     padding: '0.8rem 1.5rem',
                                     background: 'var(--color-dark-blue)',
                                     color: 'white',
@@ -170,7 +171,7 @@ export default function AssessmentPage() {
                                 }}
                             >
                                 FINALISE ASSESSMENT ➔
-                            </div>
+                            </a>
                         ) : (
                             <button
                                 key="next-btn"
