@@ -107,60 +107,74 @@ export default function AssessmentPage() {
                             Previous
                         </button>
 
-                        <button
-                            disabled={isNavigating}
-                            onClick={async () => {
-                                try {
-                                    if (currentQuestionIndex === totalQuestions - 1) {
-                                        setIsNavigating(true);
-
-                                        // ATOMIC SAVE: Bypass React State Batching
-                                        // 1. Manually update storage
-                                        const savedState = localStorage.getItem('trb_assessment_state');
-                                        if (savedState) {
-                                            const parsed = JSON.parse(savedState);
-                                            parsed.isComplete = true;
-                                            localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
-                                        }
-
-                                        // 2. Trigger React State (for consistency if stay on page)
-                                        completeAssessment();
-
-                                        // 3. FORCE NAVIGATION (Delayed slightly to allow UI feedback)
-                                        setTimeout(() => {
-                                            window.location.assign('/results');
-                                        }, 500);
-                                    } else {
-                                        nextQuestion();
+                        disabled={isNavigating}
+                        onClick={() => {
+                            try {
+                                if (currentQuestionIndex === totalQuestions - 1) {
+                                    setIsNavigating(true);
+                                    // 1. Manually mark complete in storage
+                                    // We skip the context update (completeAssessment) to avoid re-renders interfering with navigation
+                                    const savedState = localStorage.getItem('trb_assessment_state');
+                                    if (savedState) {
+                                        const parsed = JSON.parse(savedState);
+                                        parsed.isComplete = true;
+                                        localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
                                     }
-                                } catch (err: any) {
-                                    console.error("Navigation Error:", err);
-                                    setIsNavigating(false);
-                                    alert("Something went wrong. Please refresh the page.");
+
+                                    // 2. FORCE NAVIGATION IMMEDIATELY
+                                    window.location.href = '/results';
+                                } else {
+                                    nextQuestion();
                                 }
-                            }}
-                            style={{
-                                padding: '0.8rem 1.5rem',
-                                background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: isNavigating ? 'wait' : 'pointer',
-                                opacity: isNavigating ? 0.8 : 1
-                            }}
+                            } catch (err) {
+                                console.error("Navigation Error:", err);
+                                // Fallback if anything fails
+                                window.location.href = '/results';
+                            }
+                        }}
+                        style={{
+                            padding: '0.8rem 1.5rem',
+                            background: isNavigating ? 'var(--color-gray-400)' : 'var(--color-dark-blue)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: isNavigating ? 'wait' : 'pointer',
+                            opacity: isNavigating ? 0.8 : 1
+                        }}
                         >
-                            {isNavigating ? 'Finalizing Results...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
-                        </button>
-                    </div>
+                        {isNavigating ? 'Redirecting...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
+                    </button>
                 </div>
 
-                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
-                < PricingModal
-                    isOpen={showUpsell}
-                    onClose={closeUpsell}
-                    onUpgrade={handleUpgrade}
-                />
-            </main >
+                {/* Emergency Exit Link */}
+                {currentQuestionIndex === totalQuestions - 1 && (
+                    <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                        <a
+                            href="/results"
+                            onClick={(e) => {
+                                // Ensure we try to save state even on manual click
+                                const savedState = localStorage.getItem('trb_assessment_state');
+                                if (savedState) {
+                                    const parsed = JSON.parse(savedState);
+                                    parsed.isComplete = true;
+                                    localStorage.setItem('trb_assessment_state', JSON.stringify(parsed));
+                                }
+                            }}
+                            style={{ color: 'var(--color-gray-500)', fontSize: '0.8rem', textDecoration: 'underline' }}
+                        >
+                            Having trouble? Click here to complete.
+                        </a>
+                    </div>
+                )}
+            </div>
+
+            {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
+            < PricingModal
+                isOpen={showUpsell}
+                onClose={closeUpsell}
+                onUpgrade={handleUpgrade}
+            />
+        </main >
         </>
     );
 }
