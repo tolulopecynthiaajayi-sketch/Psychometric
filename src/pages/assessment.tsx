@@ -138,10 +138,15 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            <a
-                                href="/assessment-complete"
+                            <button
                                 onClick={(e) => {
-                                    // 1. Save Data
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const btn = e.currentTarget;
+                                    btn.innerText = "PROCESSING...";
+                                    btn.style.opacity = "0.7";
+
+                                    // 1. Save Data (Synchronous)
                                     try {
                                         const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
                                         currentState.isComplete = true;
@@ -149,10 +154,14 @@ export default function AssessmentPage() {
                                     } catch (err) {
                                         console.error("Save error", err);
                                     }
-                                    // 2. Default Link Behavior (Navigation)
+
+                                    // 2. Force Hard Navigation
+                                    setTimeout(() => {
+                                        window.location.href = "/assessment-complete";
+                                    }, 100);
                                 }}
                                 style={{
-                                    textDecoration: 'none',
+                                    border: 'none',
                                     padding: '0.8rem 1.5rem',
                                     background: 'var(--color-dark-blue)',
                                     color: 'white',
@@ -162,13 +171,13 @@ export default function AssessmentPage() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '8px',
-                                    userSelect: 'none',
                                     position: 'relative',
-                                    zIndex: 20
+                                    zIndex: 9999, // NUCLEAR Z-INDEX
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                                 }}
                             >
                                 FINALISE ASSESSMENT ➔
-                            </a>
+                            </button>
                         ) : (
                             <button
                                 key="next-btn"
