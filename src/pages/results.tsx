@@ -7,7 +7,7 @@ import { RadarChart } from '@/components/charts/RadarChart';
 // REMOVED STATIC IMPORT: import { generatePDFReport } from '@/utils/pdfGenerator';
 import { ReportSlides } from '@/components/report/ReportSlides';
 import { useAuth } from '@/context/AuthContext';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Link from 'next/link';
 
@@ -67,6 +67,7 @@ export default function ResultsPage() {
     const saveResultToFirebase = async () => {
         if (!user || saved || !db) return;
         try {
+            // 1. Save Assessment Result
             const archetype = getArchetype(scores);
             await addDoc(collection(db, 'assessments'), {
                 userId: user.uid,
@@ -78,6 +79,22 @@ export default function ResultsPage() {
                 createdAt: serverTimestamp(),
                 answers: answers // Optional: Save raw answers too
             });
+
+            // 2. Save/Update User Profile in 'users' collection
+            // This creates a clean directory of all users
+            const userRef = doc(db, 'users', user.uid);
+            await setDoc(userRef, {
+                uid: user.uid,
+                email: user.email,
+                displayName: userProfile?.name || '',
+                profile: userProfile,
+                updatedAt: serverTimestamp(),
+                // If they are premium, mark it here too
+                isPremium: showFullReport || false
+            }, { merge: true });
+
+            setSaved(true);
+            console.log("Assessment AND User Profile saved to Firebase!");
             setSaved(true);
             console.log("Assessment saved to Firebase!");
         } catch (err) {
