@@ -164,17 +164,14 @@ export default function AssessmentPage() {
                             /* No default behaviors to prevent. Pure JS execution. */
                             <div
                                 onClick={(e) => {
-                                    e.preventDefault();
                                     e.stopPropagation();
-                                    setStatus('CLICK RECEIVED. EXECUTING JUMP...');
+                                    setStatus('CLICK RECEIVED. JUMPING (v2)...');
 
-                                    // Kill any pending networking
-                                    try { window.stop(); } catch (e) { }
-
-                                    // Force Move
+                                    // FORCE NAVIGATE (REPLACE)
+                                    // No window.stop() - it might be killing the jump
                                     setTimeout(() => {
-                                        window.location.href = '/assessment-complete';
-                                    }, 10);
+                                        window.location.replace('/assessment-complete');
+                                    }, 100);
                                 }}
                                 style={{
                                     padding: '0.8rem 1.5rem',
@@ -212,6 +209,15 @@ export default function AssessmentPage() {
 
 
                 </div>
+
+                {/* MANUAL FALLBACK: Pure HTML Link for when all scripts fail */}
+                {currentQuestionIndex === totalQuestions - 1 && (
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                        <p style={{ fontSize: '0.8rem', color: '#666' }}>
+                            Not advancing? <a href="/assessment-complete" style={{ color: 'blue', textDecoration: 'underline' }}>Click here to finish</a>
+                        </p>
+                    </div>
+                )}
 
                 {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
                 <PricingModal
