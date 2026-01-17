@@ -28,11 +28,12 @@ export default function ResultsPage() {
     useEffect(() => {
         setIsMounted(true);
         // NUCLEAR OPTION FIX: Auto-complete assessment on arrival
-        // Since we use a raw <a> tag in assessment.tsx, we must ensure state is consistent here.
-        if (!isComplete && Object.keys(answers).length > 0) {
+        // ONLY if user is NOT premium. If they are premium, they might be here mid-upgrade,
+        // so we must NOT force completion, otherwise they can't go back to answer the rest.
+        if (!isComplete && Object.keys(answers).length > 0 && !isPremium) {
             completeAssessment();
         }
-    }, [isComplete, answers, completeAssessment]);
+    }, [isComplete, answers, completeAssessment, isPremium]);
 
     useEffect(() => {
         if (userProfile?.category) {
@@ -54,7 +55,6 @@ export default function ResultsPage() {
         setScores(calculatedScores);
     }, [answers]);
 
-    // Auto-save when scores, profile, and user are ready + user is premium/exempt
     // Auto-save when scores, profile, and user are ready + user is premium/exempt
     useEffect(() => {
         if (showFullReport && user && scores.length > 0 && !saved) {
@@ -117,7 +117,8 @@ export default function ResultsPage() {
             // Handle Mock Success immediately for dev/demo if needed
             if (data.mock) {
                 setPremium(true);
-                // Redirect to assessment to finish questions? 
+                // Redirect to assessment to finish questions
+                // Use window.location to ensure fresh state load if needed, but router is faster
                 router.push('/assessment');
             } else if (data.url) {
                 window.location.href = data.url;

@@ -91,6 +91,7 @@ export default function AssessmentPage() {
         // Mock upgrade
         setPremium(true);
         closeUpsell();
+        router.push('/assessment');
     };
 
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
