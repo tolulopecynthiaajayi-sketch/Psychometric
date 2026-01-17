@@ -144,10 +144,22 @@ export default function AssessmentPage() {
                                 onClick={(e) => {
                                     e.stopPropagation();
 
+                                    // DIAGNOSTIC ALERT sequence
+                                    alert(`Step 1: Click Received.\nStorage Status: ${localStorage.getItem('trb_assessment_state') ? 'Exists' : 'Empty'}`);
+
+                                    try {
+                                        const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+                                        currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
+                                        currentState.isComplete = true;
+                                        localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+
+                                        alert('Step 2: Data Saved Successfully.\nClick OK to Redirect.');
+                                    } catch (err: any) {
+                                        alert(`Step 2 FAILED: Save Error: ${err.message}\nProceeding to redirect anyway.`);
+                                    }
+
                                     // FORCE NAVIGATE (REPLACE)
-                                    setTimeout(() => {
-                                        window.location.replace('/assessment-complete');
-                                    }, 100);
+                                    window.location.replace('/assessment-complete');
                                 }}
                                 style={{
                                     padding: '0.8rem 1.5rem',
@@ -190,7 +202,7 @@ export default function AssessmentPage() {
                     onClose={closeUpsell}
                     onUpgrade={handleUpgrade}
                 />
-            </main>
+            </main >
         </>
     );
 }
