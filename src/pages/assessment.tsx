@@ -26,13 +26,16 @@ export default function AssessmentPage() {
     const [isNavigating, setIsNavigating] = React.useState(false);
 
     const [isProcessingPayment, setIsProcessingPayment] = React.useState(false);
+    const processedRef = React.useRef(false);
 
     useEffect(() => {
         // Handle Payment Success Return
         if (!router.isReady) return;
 
-        if (router.query.payment_success === 'true') {
+        // Use ref to prevent double-firing or loops during re-renders
+        if (router.query.payment_success === 'true' && !processedRef.current) {
             console.log("Processing payment return...");
+            processedRef.current = true; // Lock immediately
             setIsProcessingPayment(true);
             setPremium(true);
 
@@ -42,7 +45,11 @@ export default function AssessmentPage() {
                     // Slight delay to ensure Context propagates and UI stabilizes
                     setTimeout(() => {
                         setIsProcessingPayment(false);
-                    }, 500);
+                    }, 1000); // Increased stability delay
+                })
+                .catch(err => {
+                    console.error("Navigation failed", err);
+                    setIsProcessingPayment(false); // recover
                 });
         }
 
@@ -55,7 +62,7 @@ export default function AssessmentPage() {
             }
         }, 1000);
         return () => clearTimeout(checkProfile);
-    }, [userProfile, router, setPremium]);
+    }, [userProfile, router.isReady, router.query, setPremium]);
 
     // SAFETY NET: Watch for completion state
     // If the button logic somehow fails or runs "Next" instead of "Finish",
