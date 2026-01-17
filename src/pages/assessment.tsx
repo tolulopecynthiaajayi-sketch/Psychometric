@@ -191,13 +191,12 @@ export default function AssessmentPage() {
 
                 </div>
 
-                {/* Upsell Modal - DISABLED FOR DEBUGGING
+                {/* Upsell Modal */}
                 <PricingModal
                     isOpen={showUpsell}
                     onClose={closeUpsell}
                     onUpgrade={handleUpgrade}
                 />
-                */}
             </main >
         </>
     );
