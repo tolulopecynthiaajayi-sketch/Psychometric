@@ -32,21 +32,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
         });
 
-        // SAFETY FALLBACK: Force loading to false after 3 seconds
-        // This prevents the app from hanging if Firebase is blocked (e.g. by extensions or strict mobile networks)
-        const safetyTimer = setTimeout(() => {
-            setLoading((current) => {
-                if (current) {
-                    console.warn("AuthContext: Firebase timed out, forcing app load.");
-                    return false;
-                }
-                return current;
-            });
-        }, 3000);
-
         return () => {
             unsubscribe();
-            clearTimeout(safetyTimer);
         };
     }, []);
 
