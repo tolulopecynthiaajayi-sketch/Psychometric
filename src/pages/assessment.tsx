@@ -25,12 +25,25 @@ export default function AssessmentPage() {
 
     const [isNavigating, setIsNavigating] = React.useState(false);
 
+    const [isProcessingPayment, setIsProcessingPayment] = React.useState(false);
+
     useEffect(() => {
         // Handle Payment Success Return
+        if (!router.isReady) return;
+
         if (router.query.payment_success === 'true') {
+            console.log("Processing payment return...");
+            setIsProcessingPayment(true);
             setPremium(true);
-            // Clean URL
-            router.replace('/assessment', undefined, { shallow: true });
+
+            // Clean URL and THEN unlock UI
+            router.replace('/assessment', undefined, { shallow: true })
+                .then(() => {
+                    // Slight delay to ensure Context propagates and UI stabilizes
+                    setTimeout(() => {
+                        setIsProcessingPayment(false);
+                    }, 500);
+                });
         }
 
         // Guard: If no user profile (bypassed onboarding), redirect to start
@@ -52,18 +65,40 @@ export default function AssessmentPage() {
         if (!router.isReady) return;
 
         // 2. Don't redirect if we are processing a payment return.
-        if (router.query.payment_success) return;
+        if (router.query.payment_success || isProcessingPayment) return;
 
         // 3. Only then, check isComplete
         if (isComplete) {
             window.location.href = '/assessment-complete';
         }
-    }, [isComplete, router.isReady, router.query.payment_success]);
+    }, [isComplete, router.isReady, router.query.payment_success, isProcessingPayment]);
 
     const currentQuestion = activeQuestions[currentQuestionIndex];
 
     // Guard against undefined (e.g. during state transitions)
     if (!currentQuestion) return null;
+
+    if (isProcessingPayment) {
+        return (
+            <div style={{
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                background: 'white',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 99999,
+                color: 'var(--color-dark-blue)'
+            }}>
+                <h2 style={{ marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Finishing your upgrade...</h2>
+                <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gray-200)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <style jsx>{`
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                `}</style>
+            </div>
+        );
+    }
 
     const currentAnswer = answers[currentQuestion.id];
 
@@ -129,7 +164,7 @@ export default function AssessmentPage() {
                     />
 
                     {/* Navigation Controls */}
-                    <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 100000 }}>
                         <button
                             onClick={prevQuestion}
                             disabled={currentQuestionIndex === 0}
@@ -182,7 +217,7 @@ export default function AssessmentPage() {
                                         alignItems: 'center',
                                         gap: '8px',
                                         position: 'relative',
-                                        zIndex: 9999, // NUCLEAR Z-INDEX
+                                        zIndex: 100001, // NUCLEAR PLUS ONE
                                         boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                                     }}
                                 >
@@ -190,7 +225,7 @@ export default function AssessmentPage() {
                                 </button>
                                 <div style={{ marginTop: '10px', fontSize: '0.8rem', textAlign: 'center' }}>
                                     <span style={{ opacity: 0.7 }}>Not redirecting? </span>
-                                    <a href="/assessment-complete" style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer' }}>
+                                    <a href="/assessment-complete" style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer', position: 'relative', zIndex: 100001 }}>
                                         Click here
                                     </a>
                                 </div>
