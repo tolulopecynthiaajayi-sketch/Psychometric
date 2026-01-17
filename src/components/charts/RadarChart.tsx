@@ -71,10 +71,31 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
 
             {/* Labels */}
             {data.map((d, i) => {
-                const coords = getCoordinates(6.2, i, 5); // Push label out a bit more
+                const angle = i * angleSlice - Math.PI / 2;
+                // Calculate position relative to center (normalized -1 to 1)
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+
+                // Dynamic Anchoring based on horizontal position
+                let textAnchor: "middle" | "start" | "end" = "middle";
+                let xOffset = 0;
+
+                // Tolerance for "center" alignment (approx Top/Bottom)
+                if (Math.abs(cos) < 0.1) {
+                    textAnchor = "middle";
+                } else if (cos > 0) {
+                    textAnchor = "start";
+                    xOffset = 5; // Slight push right
+                } else {
+                    textAnchor = "end";
+                    xOffset = -5; // Slight push left
+                }
+
+                // Push labels out
+                const coords = getCoordinates(6, i, 5);
+
                 const words = d.label.split(' ');
                 const lines = [];
-                // Simple wrapping logic: 2 words per line max
                 for (let j = 0; j < words.length; j += 2) {
                     lines.push(words.slice(j, j + 2).join(' '));
                 }
@@ -82,16 +103,16 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
                 return (
                     <text
                         key={i}
-                        x={coords.x}
-                        y={coords.y - ((lines.length - 1) * 6)} // Shift up to vertically center the block
-                        textAnchor="middle"
+                        x={coords.x + xOffset}
+                        y={coords.y - ((lines.length - 1) * 6)}
+                        textAnchor={textAnchor}
                         dominantBaseline="middle"
                         fontSize="10"
                         fill="var(--color-dark-blue)"
                         style={{ fontWeight: 'bold' }}
                     >
                         {lines.map((line, lineIdx) => (
-                            <tspan x={coords.x} dy={lineIdx === 0 ? 0 : "1.1em"} key={lineIdx}>
+                            <tspan x={coords.x + xOffset} dy={lineIdx === 0 ? 0 : "1.2em"} key={lineIdx}>
                                 {line}
                             </tspan>
                         ))}
