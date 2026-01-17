@@ -99,7 +99,19 @@ export const getArchetype = (scores: { label: string; value: number }[]): Archet
 // Generate Dynamic 90-Day Roadmap
 export const generateDynamicRoadmap = (scores: { label: string; value: number }[]) => {
     // Find development areas (lowest scores)
+    // Find development areas (lowest scores)
     const sorted = [...scores].sort((a, b) => a.value - b.value);
+
+    // Safety check
+    if (sorted.length < 2) {
+        return [
+            { title: 'Month 1: Foundation', points: ['Complete your profile.', 'Identify key strengths.'] },
+            { title: 'Month 2: Momentum', points: ['Build on your foundation.', 'Seek feedback.'] },
+            { title: 'Month 3: Success', points: ['Review progress.', 'Plan next steps.'] },
+            { title: 'Daily Habits', points: ['Reflect daily.', 'Stay consistent.'] }
+        ];
+    }
+
     const lowest = sorted[0];
     const secondLowest = sorted[1];
 
