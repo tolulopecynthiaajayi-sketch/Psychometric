@@ -138,46 +138,55 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const btn = e.currentTarget;
-                                    btn.innerText = "PROCESSING...";
-                                    btn.style.opacity = "0.7";
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        const btn = e.currentTarget;
+                                        btn.innerText = "PROCESSING...";
+                                        btn.style.opacity = "0.7";
 
-                                    // 1. Save Data (Synchronous)
-                                    try {
-                                        const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
-                                        currentState.isComplete = true;
-                                        localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-                                    } catch (err) {
-                                        console.error("Save error", err);
-                                    }
+                                        // 1. Save Data (Synchronous)
+                                        try {
+                                            const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+                                            currentState.isComplete = true;
+                                            localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+                                        } catch (err) {
+                                            console.error("Save error", err);
+                                        }
 
-                                    // 2. Force Hard Navigation
-                                    setTimeout(() => {
-                                        window.location.href = "/assessment-complete";
-                                    }, 100);
-                                }}
-                                style={{
-                                    border: 'none',
-                                    padding: '0.8rem 1.5rem',
-                                    background: 'var(--color-dark-blue)',
-                                    color: 'white',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    position: 'relative',
-                                    zIndex: 9999, // NUCLEAR Z-INDEX
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                                }}
-                            >
-                                FINALISE ASSESSMENT ➔
-                            </button>
+                                        // 2. Force Hard Navigation
+                                        setTimeout(() => {
+                                            console.log("Forcing navigation...");
+                                            window.location.assign("/assessment-complete");
+                                        }, 50);
+                                    }}
+                                    style={{
+                                        border: 'none',
+                                        padding: '0.8rem 1.5rem',
+                                        background: 'var(--color-dark-blue)',
+                                        color: 'white',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        position: 'relative',
+                                        zIndex: 9999, // NUCLEAR Z-INDEX
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                                    }}
+                                >
+                                    FINALISE ASSESSMENT ➔
+                                </button>
+                                <div style={{ marginTop: '10px', fontSize: '0.8rem', textAlign: 'center' }}>
+                                    <span style={{ opacity: 0.7 }}>Not redirecting? </span>
+                                    <a href="/assessment-complete" style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer' }}>
+                                        Click here
+                                    </a>
+                                </div>
+                            </div>
                         ) : (
                             <button
                                 key="next-btn"
@@ -188,14 +197,17 @@ export default function AssessmentPage() {
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '4px',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
                                 }}
                             >
-                                Next
+                                Next ➔
                             </button>
                         )}
                     </div>
-
                 </div>
 
                 {/* Upsell Modal */}
@@ -204,7 +216,7 @@ export default function AssessmentPage() {
                     onClose={closeUpsell}
                     onUpgrade={handleUpgrade}
                 />
-            </main >
+            </main>
         </>
     );
 }
