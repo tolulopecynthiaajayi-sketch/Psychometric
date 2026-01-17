@@ -59,28 +59,32 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                 background: 'linear-gradient(135deg, #C05621 0%, #DD6B20 50%, #ED8936 100%)', // Richer Dr Stallion Gradient
                 color: 'white',
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                padding: '60px' // Ensure padding to avoid edge overflow
             }}>
                 {/* Logo Centerpiece */}
                 <img
                     src="/images/logo-white.png"
                     alt="TRB Logo"
-                    style={{ width: '250px', marginBottom: '40px', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.2))' }}
+                    style={{ width: '220px', marginBottom: '30px', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.2))' }}
                     crossOrigin="anonymous"
                 />
 
-                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '72px', marginBottom: '20px', textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
+                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '64px', marginBottom: '15px', textShadow: '2px 2px 4px rgba(0,0,0,0.2)', textAlign: 'center', lineHeight: 1.1 }}>
                     TRB Alchemy™️
                 </h1>
-                <h2 style={{ fontSize: '32px', fontWeight: '300', opacity: 0.9, letterSpacing: '4px' }}>
+                <h2 style={{ fontSize: '28px', fontWeight: '300', opacity: 0.9, letterSpacing: '3px', textAlign: 'center', marginBottom: '30px' }}>
                     PROFESSIONAL PROFILING REPORT
                 </h2>
-                <div style={{ width: '120px', height: '6px', background: 'white', margin: '40px 0', borderRadius: '3px' }} />
-                <p style={{ fontSize: '28px', fontWeight: 'bold' }}>Prepared for {candidateName}</p>
+
+                <div style={{ width: '100px', height: '4px', background: 'white', marginBottom: '40px', borderRadius: '2px' }} />
+
+                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>Prepared for {candidateName}</p>
                 <div style={{ background: 'rgba(255,255,255,0.2)', padding: '10px 30px', borderRadius: '50px', marginTop: '20px', border: '1px solid rgba(255,255,255,0.4)' }}>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold' }}>Archetype: {archetype.name}</p>
+                    <p style={{ fontSize: '20px', fontWeight: 'bold' }}>Archetype: {archetype.name}</p>
                 </div>
-                <p style={{ marginTop: 'auto', fontSize: '18px', opacity: 0.8 }}>{new Date().toLocaleDateString()}</p>
+
+                <p style={{ marginTop: 'auto', fontSize: '16px', opacity: 0.8 }}>{new Date().toLocaleDateString()}</p>
             </div>
 
             {/* SLIDE 2: Executive Summary */}
@@ -249,15 +253,24 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                 />
 
                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '48px', marginBottom: '20px', color: '#FBD38D' }}>Unlock Your Potential</h2>
-                <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '60px', lineHeight: 1.6, color: '#E2E8F0' }}>
+                <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '40px', lineHeight: 1.6, color: '#E2E8F0' }}>
                     This report consists of TRB Alchemy insights and a strategic roadmap.
                     <br />Execute the plan. Track your progress.
                 </p>
-                <a href="mailto:temitoperichardbanji@gmail.com?subject=Inquiry%3A%20Strategy%20Session" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                    <div style={{ padding: '25px 50px', background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', color: 'white', fontSize: '24px', fontWeight: 'bold', borderRadius: '50px', boxShadow: '0 10px 20px rgba(237, 137, 54, 0.4)' }}>
-                        Contact to Book Session
+                <div style={{ marginBottom: '40px' }}>
+                    <p style={{ fontSize: '16px', color: '#A0AEC0', marginBottom: '10px' }}>To book your strategy session, email us at:</p>
+                    <div style={{
+                        padding: '20px 40px',
+                        background: 'rgba(255,255,255,0.1)',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        borderRadius: '12px',
+                        display: 'inline-block'
+                    }}>
+                        <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#ED8936', margin: 0, letterSpacing: '1px' }}>
+                            temitoperichardbanji@gmail.com
+                        </p>
                     </div>
-                </a>
+                </div>
             </div>
 
         </div>
