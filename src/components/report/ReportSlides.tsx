@@ -17,7 +17,7 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
         width: '1123px', // A4 Landscape
         height: '794px',
         background: 'linear-gradient(135deg, #FFF8F0 0%, #FFFFFF 100%)', // Warm background
-        padding: '60px',
+        padding: '40px', // Reduced from 60px to lift content up
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
@@ -30,8 +30,8 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
     // Decorative shape for corners
     const cornerShape: React.CSSProperties = {
         position: 'absolute',
-        top: '-100px',
-        right: '-100px',
+        top: '-120px', // Pulled up slightly
+        right: '-120px',
         width: '300px',
         height: '300px',
         background: 'rgba(255, 165, 0, 0.1)', // Orange tint
@@ -43,9 +43,9 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
         fontFamily: 'var(--font-serif)',
         fontSize: '36px',
         color: '#C05621', // Dark Orange / Rust
-        marginBottom: '30px',
+        marginBottom: '20px', // Reduced from 30px
         borderBottom: '3px solid #F6AD55', // Light Orange
-        paddingBottom: '15px',
+        paddingBottom: '10px', // Reduced from 15px
         position: 'relative',
         zIndex: 1
     };
@@ -95,7 +95,7 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                 <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
                     <div style={{ flex: '0 0 450px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Fixed width for chart col */}
                         {/* Radar Chart Container with shadow */}
-                        <div style={{ padding: '10px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)' }}>
+                        <div style={{ padding: '20px 0', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)', width: '100%', display: 'flex', justifyContent: 'center' }}>
                             <RadarChart data={scores} size={380} /> {/* Reduced size due to overflow */}
                         </div>
                     </div>
