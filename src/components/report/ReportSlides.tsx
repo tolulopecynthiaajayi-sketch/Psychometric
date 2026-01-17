@@ -130,51 +130,51 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                     <div key={i} className="pdf-slide" style={slideStyle}>
                         <div style={{ ...cornerShape, left: '-100px', right: 'auto', background: 'rgba(49, 130, 206, 0.05)' }} /> {/* Blue tint for variety */}
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '3px solid #ED8936', paddingBottom: '15px', position: 'relative', zIndex: 1 }}>
-                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '32px', color: '#2A4365', margin: 0 }}>{s.label}</h2>
-                            <div style={{ padding: '8px 20px', background: '#ED8936', color: 'white', borderRadius: '20px', fontWeight: 'bold', fontSize: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '3px solid #ED8936', paddingBottom: '10px', position: 'relative', zIndex: 1 }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '30px', color: '#2A4365', margin: 0 }}>{s.label}</h2>
+                            <div style={{ padding: '6px 15px', background: '#ED8936', color: 'white', borderRadius: '15px', fontWeight: 'bold', fontSize: '16px' }}>
                                 Score: {s.value} ({s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'})
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '50px', flex: 1, position: 'relative', zIndex: 1 }}>
+                        <div style={{ display: 'flex', gap: '40px', flex: 1, position: 'relative', zIndex: 1 }}>
                             {/* Left: Narrative */}
                             <div style={{ flex: 1.2 }}>
-                                <div style={{ marginBottom: '30px' }}>
-                                    <h3 style={{ fontSize: '20px', color: '#DD6B20', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>TRB Insight</h3>
-                                    <p style={{ fontSize: '17px', lineHeight: 1.7, textAlign: 'justify', color: '#4A5568' }}>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <h3 style={{ fontSize: '18px', color: '#DD6B20', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>TRB Insight</h3>
+                                    <p style={{ fontSize: '15px', lineHeight: 1.5, textAlign: 'justify', color: '#4A5568' }}>
                                         {analysis.narrative}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <h3 style={{ fontSize: '18px', color: '#C05621', marginBottom: '10px', fontWeight: 'bold' }}>Workplace Implications</h3>
-                                    <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '20px', color: '#4A5568' }}>
+                                    <h3 style={{ fontSize: '18px', color: '#C05621', marginBottom: '8px', fontWeight: 'bold' }}>Workplace Implications</h3>
+                                    <ul style={{ fontSize: '15px', lineHeight: 1.5, paddingLeft: '20px', color: '#4A5568' }}>
                                         {analysis.implications.map((imp, idx) => (
-                                            <li key={idx} style={{ marginBottom: '10px' }}>{imp}</li>
+                                            <li key={idx} style={{ marginBottom: '6px' }}>{imp}</li>
                                         ))}
                                     </ul>
                                 </div>
                             </div>
 
                             {/* Right: Recommendations Card */}
-                            <div style={{ flex: 0.8, background: '#FFFAF0', padding: '30px', borderRadius: '15px', border: '1px solid #FEEBC8', boxShadow: '0 5px 15px rgba(0,0,0,0.03)' }}>
-                                <h3 style={{ fontSize: '20px', color: '#C05621', marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
-                                    <span style={{ marginRight: '10px', fontSize: '24px' }}>💡</span> Recommendations
+                            <div style={{ flex: 0.8, background: '#FFFAF0', padding: '20px', borderRadius: '12px', border: '1px solid #FEEBC8', boxShadow: '0 5px 15px rgba(0,0,0,0.03)' }}>
+                                <h3 style={{ fontSize: '18px', color: '#C05621', marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
+                                    <span style={{ marginRight: '10px', fontSize: '20px' }}>💡</span> Recommendations
                                 </h3>
-                                <ul style={{ fontSize: '16px', lineHeight: 1.6, paddingLeft: '0', listStyle: 'none' }}>
+                                <ul style={{ fontSize: '14px', lineHeight: 1.5, paddingLeft: '0', listStyle: 'none' }}>
                                     {analysis.recommendations.map((rec, idx) => (
-                                        <li key={idx} style={{ marginBottom: '15px', display: 'flex', alignItems: 'flex-start' }}>
-                                            <span style={{ color: '#ED8936', marginRight: '10px', fontWeight: 'bold' }}>→</span>
+                                        <li key={idx} style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                                            <span style={{ color: '#ED8936', marginRight: '8px', fontWeight: 'bold' }}>→</span>
                                             {rec}
                                         </li>
                                     ))}
                                 </ul>
 
-                                <div style={{ marginTop: '50px', padding: '20px', background: 'white', borderRadius: '10px' }}>
+                                <div style={{ marginTop: '30px', padding: '15px', background: 'white', borderRadius: '8px' }}>
                                     <p style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#A0AEC0', marginBottom: '5px' }}>Dimension Strength</p>
-                                    <div style={{ height: '12px', background: '#EDF2F7', borderRadius: '6px', overflow: 'hidden' }}>
-                                        <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', borderRadius: '6px' }} />
+                                    <div style={{ height: '10px', background: '#EDF2F7', borderRadius: '5px', overflow: 'hidden' }}>
+                                        <div style={{ height: '100%', width: `${(s.value / 25) * 100}%`, background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', borderRadius: '5px' }} />
                                     </div>
                                 </div>
                             </div>
@@ -187,19 +187,19 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             <div className="pdf-slide" style={slideStyle}>
                 <div style={cornerShape} />
                 <h2 style={headerStyle}>90-Day Strategic Roadmap</h2>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <p style={{ fontSize: '18px', color: '#718096', maxWidth: '70%' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <p style={{ fontSize: '16px', color: '#718096', maxWidth: '80%' }}>
                         A hyper-personalized action plan derived from your unique Archetype: <strong>{archetype.name}</strong>.
                     </p>
                 </div>
 
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', zIndex: 1, position: 'relative' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', zIndex: 1, position: 'relative' }}>
                     {roadmap.map((phase, idx) => (
-                        <div key={idx} style={{ background: 'white', padding: '25px', borderRadius: '12px', borderLeft: `6px solid ${['#4299E1', '#48BB78', '#ED8936', '#9F7AEA'][idx]}`, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#2D3748', marginBottom: '15px' }}>{phase.title}</h3>
-                            <ul style={{ paddingLeft: '20px', color: '#4A5568', lineHeight: 1.6 }}>
-                                {phase.points.map((pt, pIdx) => <li key={pIdx} style={{ marginBottom: '5px' }}>{pt}</li>)}
+                        <div key={idx} style={{ background: 'white', padding: '20px', borderRadius: '10px', borderLeft: `5px solid ${['#4299E1', '#48BB78', '#ED8936', '#9F7AEA'][idx]}`, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#2D3748', marginBottom: '10px' }}>{phase.title}</h3>
+                            <ul style={{ paddingLeft: '20px', color: '#4A5568', lineHeight: 1.5, fontSize: '14px' }}>
+                                {phase.points.map((pt, pIdx) => <li key={pIdx} style={{ marginBottom: '4px' }}>{pt}</li>)}
                             </ul>
                         </div>
                     ))}
