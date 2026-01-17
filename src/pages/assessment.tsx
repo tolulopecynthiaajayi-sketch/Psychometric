@@ -153,8 +153,6 @@ export default function AssessmentPage() {
                                     }
 
                                     // 2. Allow default link behavior to proceed
-                                    // We DO NOT call e.preventDefault() here.
-                                    // We let the browser handle the navigation naturally.
                                 }}
                                 style={{
                                     textDecoration: 'none',
@@ -167,7 +165,9 @@ export default function AssessmentPage() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '8px',
-                                    userSelect: 'none'
+                                    userSelect: 'none',
+                                    position: 'relative', // FORCE CLICKABILITY
+                                    zIndex: 20
                                 }}
                             >
                                 FINALISE ASSESSMENT ➔
