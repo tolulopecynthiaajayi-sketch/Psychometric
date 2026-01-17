@@ -144,22 +144,16 @@ export default function AssessmentPage() {
                                 onClick={(e) => {
                                     e.stopPropagation();
 
-                                    // DIAGNOSTIC ALERT sequence
-                                    alert(`Step 1: Click Received.\nStorage Status: ${localStorage.getItem('trb_assessment_state') ? 'Exists' : 'Empty'}`);
-
+                                    // 1. SAVE DATA (Silent & Robust)
                                     try {
                                         const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
-                                        // We don't have 'value' here, so we just mark complete.
-                                        // The answer should have been saved when the user clicked the option.
                                         currentState.isComplete = true;
                                         localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-
-                                        alert('Step 2: Data Saved Successfully OLD.\nClick OK to Redirect.');
-                                    } catch (err: any) {
-                                        alert(`Step 2 FAILED: Save Error: ${err.message}\nProceeding to redirect anyway.`);
+                                    } catch (err) {
+                                        console.error("Save failed during finalise", err);
                                     }
 
-                                    // FORCE NAVIGATE (REPLACE)
+                                    // 2. FORCE NAVIGATE (Immediate)
                                     window.location.replace('/assessment-complete');
                                 }}
                                 style={{
