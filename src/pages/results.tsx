@@ -247,8 +247,9 @@ export default function ResultsPage() {
 
                             {/* STRATEGY CALL LOGIC */}
                             {price >= 4900 ? (
-                                /* Free Call for VIPs */
+                                /* Free Call for VIPs - Email to Redeem */
                                 <button
+                                    onClick={() => window.location.href = "mailto:temitoperichardbanji@gmail.com?subject=Booking%20My%20Free%20Strategy%20Session&body=Hi%20Temitope%2C%0A%0AI%20have%20completed%20my%20assessment%20and%20qualified%20for%20the%20free%20strategy%20session.%20Please%20find%20my%20proof%20of%20payment%20attached."}
                                     style={{
                                         padding: '1rem 2rem',
                                         background: 'var(--color-gold)',
@@ -261,10 +262,10 @@ export default function ResultsPage() {
                                         marginTop: '1rem'
                                     }}
                                 >
-                                    Book 30min Strategy Call (Free)
+                                    Email to Redeem Free Session
                                 </button>
                             ) : (
-                                /* Paid Upsell for Standard Users */
+                                /* Paid Upsell for Standard Users - Email to Book */
                                 <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px', border: '1px solid #E2E8F0', maxWidth: '600px', margin: '2rem auto 0 auto' }}>
                                     <h3 style={{ fontSize: '1.2rem', color: '#2C5282', marginBottom: '0.5rem' }}>Need personalized guidance?</h3>
                                     <p style={{ color: '#4A5568', marginBottom: '1rem' }}>
@@ -277,6 +278,7 @@ export default function ResultsPage() {
                                     </ul>
                                     <br />
                                     <button
+                                        onClick={() => window.location.href = "mailto:temitoperichardbanji@gmail.com?subject=Inquiry%3A%20Executive%20Coaching%20Session&body=Hi%20Temitope%2C%0A%0AI%20completed%20my%20assessment%20and%20would%20like%20to%20book%20a%20paid%20executive%20coaching%20session."}
                                         style={{
                                             padding: '0.8rem 2rem',
                                             background: 'white',
@@ -289,7 +291,7 @@ export default function ResultsPage() {
                                             marginTop: '0.5rem'
                                         }}
                                     >
-                                        Book Executive Session ($150)
+                                        Email to Book Session
                                     </button>
                                 </div>
                             )}

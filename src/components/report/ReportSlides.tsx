@@ -219,9 +219,9 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                     This report consists of TRB Alchemy insights and a strategic roadmap.
                     <br />Execute the plan. Track your progress.
                 </p>
-                <a href="https://calendly.com/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <a href="mailto:temitoperichardbanji@gmail.com?subject=Inquiry%3A%20Strategy%20Session" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                     <div style={{ padding: '25px 50px', background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', color: 'white', fontSize: '24px', fontWeight: 'bold', borderRadius: '50px', boxShadow: '0 10px 20px rgba(237, 137, 54, 0.4)' }}>
-                        Book Your Strategy Session
+                        Contact to Book Session
                     </div>
                 </a>
             </div>
