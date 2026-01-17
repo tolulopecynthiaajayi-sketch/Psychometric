@@ -268,7 +268,13 @@ export default function ResultsPage() {
                     {/* Hidden Slides for PDF Generation - DEFERRED RENDERING */}
                     {/* Only render if showing report to reduce DOM size on initial load */}
                     {/* Additionally, we could use a delay, but isMounted helps enough for hydration */}
-                    {isMounted && showFullReport && scores.length > 0 && <ReportSlides scores={scores} hasBookSessionAccess={price >= 4900} />}
+                    {isMounted && showFullReport && scores.length > 0 && (
+                        <ReportSlides
+                            scores={scores}
+                            hasBookSessionAccess={price >= 4900}
+                            candidateName={userProfile?.name || 'Candidate'}
+                        />
+                    )}
 
                 </div>
             </main>

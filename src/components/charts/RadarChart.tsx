@@ -7,7 +7,7 @@ interface RadarChartProps {
 
 export function RadarChart({ data, size = 300 }: RadarChartProps) {
     const center = size / 2;
-    const radius = (size / 2) - 40; // Padding
+    const radius = (size / 2) - 65; // Increased Padding for labels
     const angleSlice = (Math.PI * 2) / data.length;
 
     // Helper to get coordinates
@@ -83,7 +83,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
                         fill="var(--color-dark-blue)"
                         style={{ fontWeight: 'bold' }}
                     >
-                        {d.label.split(' ')[0]} {/* Shorten label for chart */}
+                        {d.label}
                     </text>
                 );
             })}
