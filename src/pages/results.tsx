@@ -16,7 +16,7 @@ export default function ResultsPage() {
     const { answers, isPremium, userProfile, setPremium, completeAssessment, isComplete } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
-    const [price, setPrice] = useState(4900); // Default
+    const [price, setPrice] = useState(0); // Default to 0 to prevent accidental premium logic
     const [saved, setSaved] = useState(false);
     const [isMounted, setIsMounted] = useState(false); // Safety check for client-side rendering
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -227,20 +227,23 @@ export default function ResultsPage() {
                                 {isGeneratingPdf ? 'Generating PDF...' : 'Download PDF Report'}
                             </button>
 
-                            <button
-                                style={{
-                                    padding: '1rem 2rem',
-                                    background: 'var(--color-gold)',
-                                    color: 'var(--color-black)',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    fontSize: '1rem',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                Book 30min Strategy Call (Free)
-                            </button>
+                            {/* Only Show Strategy Call for Top Tier ($49) */}
+                            {price >= 4900 && (
+                                <button
+                                    style={{
+                                        padding: '1rem 2rem',
+                                        background: 'var(--color-gold)',
+                                        color: 'var(--color-black)',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        fontSize: '1rem',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    Book 30min Strategy Call (Free)
+                                </button>
+                            )}
                         </div>
                     )}
 
