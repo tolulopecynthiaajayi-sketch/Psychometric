@@ -12,7 +12,7 @@ export default function Home() {
 
                 {/* Hero Section */}
                 <section style={{
-                    background: 'var(--color-dark-blue)',
+                    background: 'radial-gradient(circle at 50% 50%, #2D3748 0%, #171923 100%)', // Deep, spotlight effect
                     color: 'white',
                     padding: 'clamp(4rem, 8vw, 6rem) 1rem', // Responsive padding
                     textAlign: 'center',
@@ -21,42 +21,61 @@ export default function Home() {
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    minHeight: '80vh' // Ensure full height on mobile
+                    minHeight: '85vh', // Taller hero
+                    position: 'relative',
+                    overflow: 'hidden'
                 }}>
-                    <div className="container">
+                    {/* Decorative Background Elements */}
+                    <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(237, 137, 54, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
+                    <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(192, 86, 33, 0.1) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
+
+                    <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                        {/* HERO LOGO - Main Identity */}
+                        <img
+                            src="/images/logo-white.png"
+                            alt="TRB Alchemy Logo"
+                            style={{
+                                width: 'min(300px, 80vw)', // Responsive width
+                                marginBottom: '2rem',
+                                filter: 'drop-shadow(0 0 20px rgba(237, 137, 54, 0.3))' // Glow effect
+                            }}
+                        />
+
                         <h1 style={{
                             fontFamily: 'var(--font-serif)',
-                            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', // Fluid typography
+                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', // Slightly smaller than before to let logo shine
                             marginBottom: '1.5rem',
-                            color: 'var(--color-gold)',
-                            lineHeight: 1.1
+                            color: '#FBD38D', // Gold text
+                            lineHeight: 1.1,
+                            fontWeight: '300',
+                            letterSpacing: '1px'
                         }}>
-                            TRB Alchemy™️
+                            Unlock the secrets of your <br /> <span style={{ fontWeight: 'bold', color: 'white' }}>Professional DNA</span>.
                         </h1>
                         <p style={{
-                            fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
+                            fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
                             maxWidth: '600px',
                             margin: '0 auto 3rem',
                             opacity: 0.9,
                             lineHeight: 1.6,
-                            padding: '0 10px' // Prevent edge touching
+                            color: '#E2E8F0'
                         }}>
-                            Unlock the secrets of your professional DNA. <br />
                             Where insight becomes transformation.
                         </p>
 
                         <Link href="/onboarding" style={{
                             display: 'inline-block',
-                            background: 'var(--color-gold)',
-                            color: 'var(--color-dark-blue)',
-                            padding: '1.2rem 3rem',
+                            background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', // Gradient Button
+                            color: 'white',
+                            padding: '1.2rem 3.5rem',
                             fontSize: '1.2rem',
                             fontWeight: 'bold',
                             borderRadius: '50px',
-                            transition: 'transform 0.2s',
+                            transition: 'all 0.3s ease',
                             cursor: 'pointer',
-                            width: 'fit-content',
-                            maxWidth: '100%'
+                            boxShadow: '0 10px 25px rgba(237, 137, 54, 0.4)',
+                            border: '1px solid rgba(255,255,255,0.1)'
                         }}>
                             Begin Your Journey
                         </Link>

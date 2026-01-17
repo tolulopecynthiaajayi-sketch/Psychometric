@@ -168,7 +168,8 @@ export default function ResultsPage() {
                             </div>
                         )}
 
-                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)' }}>
+                        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                            <img src="/images/logo-orange-nobg.png" alt="TRB Alchemy" style={{ width: '120px' }} />
                             {showFullReport ? 'Your Alchemy Profile' : 'Preliminary Profile'}
                         </h1>
                         <p style={{ color: 'var(--color-gray-800)' }}>

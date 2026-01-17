@@ -56,26 +56,28 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             {/* SLIDE 1: Title Slide (High Impact, Orange/Gold) */}
             <div className="pdf-slide" style={{
                 ...slideStyle,
-                background: 'linear-gradient(135deg, #DD6B20 0%, #C05621 100%)', // Deep Orange Gradient
+                background: 'linear-gradient(135deg, #C05621 0%, #DD6B20 50%, #ED8936 100%)', // Richer Dr Stallion Gradient
                 color: 'white',
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                <div style={{
-                    position: 'absolute', top: '50px', left: '50px',
-                    width: '150px', height: '150px',
-                    border: '10px solid rgba(255,255,255,0.2)', borderRadius: '50%'
-                }} />
+                {/* Logo Centerpiece */}
+                <img
+                    src="/images/logo-white.png"
+                    alt="TRB Logo"
+                    style={{ width: '250px', marginBottom: '40px', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.2))' }}
+                    crossOrigin="anonymous"
+                />
 
                 <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '72px', marginBottom: '20px', textShadow: '2px 2px 4px rgba(0,0,0,0.2)' }}>
                     TRB Alchemy™️
                 </h1>
-                <h2 style={{ fontSize: '32px', fontWeight: '300', opacity: 0.9, letterSpacing: '2px' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: '300', opacity: 0.9, letterSpacing: '4px' }}>
                     PROFESSIONAL PROFILING REPORT
                 </h2>
-                <div style={{ width: '120px', height: '6px', background: '#FBD38D', margin: '40px 0' }} />
+                <div style={{ width: '120px', height: '6px', background: 'white', margin: '40px 0', borderRadius: '3px' }} />
                 <p style={{ fontSize: '28px', fontWeight: 'bold' }}>Prepared for {candidateName}</p>
-                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '10px 20px', borderRadius: '20px', marginTop: '20px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '10px 30px', borderRadius: '50px', marginTop: '20px', border: '1px solid rgba(255,255,255,0.4)' }}>
                     <p style={{ fontSize: '24px', fontWeight: 'bold' }}>Archetype: {archetype.name}</p>
                 </div>
                 <p style={{ marginTop: 'auto', fontSize: '18px', opacity: 0.8 }}>{new Date().toLocaleDateString()}</p>
@@ -84,9 +86,17 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             {/* SLIDE 2: Executive Summary */}
             <div className="pdf-slide" style={slideStyle}>
                 <div style={cornerShape} />
+                {/* Header Logo */}
+                <img
+                    src="/images/logo-orange-nobg.png"
+                    alt="TRB Logo"
+                    style={{ position: 'absolute', top: '40px', right: '40px', width: '100px', opacity: 0.9 }}
+                    crossOrigin="anonymous"
+                />
+
                 <h2 style={headerStyle}>Executive Assessment Summary</h2>
 
-                <div style={{ marginBottom: '20px', background: '#FFFAF0', padding: '15px', borderRadius: '10px', borderLeft: '5px solid #DD6B20' }}>
+                <div style={{ marginBottom: '20px', background: '#FFFAF0', padding: '15px', borderRadius: '10px', borderLeft: '5px solid #DD6B20', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                     <h3 style={{ margin: 0, fontSize: '22px', color: '#C05621' }}>{archetype.name}</h3>
                     <p style={{ margin: '5px 0 0 0', fontStyle: 'italic', color: '#4A5568' }}>"{archetype.motto}"</p>
                     <p style={{ marginTop: '5px', color: '#2D3748' }}>{archetype.description}</p>
@@ -95,7 +105,7 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                 <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
                     <div style={{ flex: '0 0 450px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Fixed width for chart col */}
                         {/* Radar Chart Container with shadow */}
-                        <div style={{ padding: '20px 0', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.1)', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ padding: '20px 0', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.15)', width: '100%', display: 'flex', justifyContent: 'center', border: '1px solid #FEEBC8' }}>
                             <RadarChart data={scores} size={380} /> {/* Reduced size due to overflow */}
                         </div>
                     </div>
@@ -103,7 +113,7 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                         <h3 style={{ fontSize: '20px', color: '#2C5282', marginBottom: '10px' }}>Performance Snapshot</h3> {/* Reduced margin */}
                         <ul style={{ fontSize: '14px', lineHeight: 1.4, listStyle: 'none', padding: 0 }}> {/* Smaller font/line-height to fit */}
                             {scores.map((s, i) => (
-                                <li key={i} style={{ marginBottom: '8px', padding: '10px', background: '#FFF5F5', borderRadius: '6px', borderLeft: '4px solid #ED8936' }}>
+                                <li key={i} style={{ marginBottom: '8px', padding: '10px', background: 'white', borderRadius: '6px', borderLeft: '4px solid #ED8936', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                                     <strong style={{ color: '#2D3748', fontSize: '16px' }}>{s.label}</strong>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '14px', color: '#718096' }}>
                                         <span>Score: {s.value}/25</span>
@@ -130,7 +140,15 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                     <div key={i} className="pdf-slide" style={slideStyle}>
                         <div style={{ ...cornerShape, left: '-100px', right: 'auto', background: 'rgba(49, 130, 206, 0.05)' }} /> {/* Blue tint for variety */}
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '3px solid #ED8936', paddingBottom: '10px', position: 'relative', zIndex: 1 }}>
+                        {/* Header Logo */}
+                        <img
+                            src="/images/logo-orange-nobg.png"
+                            alt="TRB Logo"
+                            style={{ position: 'absolute', top: '40px', right: '40px', width: '80px', opacity: 0.8 }}
+                            crossOrigin="anonymous"
+                        />
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '3px solid #ED8936', paddingBottom: '10px', position: 'relative', zIndex: 1, paddingRight: '100px' }}>
                             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '30px', color: '#2A4365', margin: 0 }}>{s.label}</h2>
                             <div style={{ padding: '6px 15px', background: '#ED8936', color: 'white', borderRadius: '15px', fontWeight: 'bold', fontSize: '16px' }}>
                                 Score: {s.value} ({s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'})
@@ -186,6 +204,14 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             {/* SLIDE: 90-DAY ACTION ROADMAP (Dynamic) */}
             <div className="pdf-slide" style={slideStyle}>
                 <div style={cornerShape} />
+                {/* Header Logo */}
+                <img
+                    src="/images/logo-orange-nobg.png"
+                    alt="TRB Logo"
+                    style={{ position: 'absolute', top: '40px', right: '40px', width: '100px', opacity: 0.9 }}
+                    crossOrigin="anonymous"
+                />
+
                 <h2 style={headerStyle}>90-Day Strategic Roadmap</h2>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <p style={{ fontSize: '16px', color: '#718096', maxWidth: '80%' }}>
@@ -207,15 +233,23 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             </div>
 
             {/* SLIDE: Closing */}
-            <div className="pdf-slide" style={{ ...slideStyle, background: '#2D3748', color: 'white', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+            <div className="pdf-slide" style={{ ...slideStyle, background: '#1A202C', color: 'white', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
                 <div style={{
-                    position: 'absolute', bottom: '-100px', left: '-150px',
-                    width: '400px', height: '400px',
-                    background: '#ED8936', borderRadius: '50%', opacity: 0.1
+                    position: 'absolute', bottom: '-150px', left: '-150px',
+                    width: '500px', height: '500px',
+                    background: 'radial-gradient(circle, #ED8936 0%, rgba(237, 137, 54, 0) 70%)',
+                    opacity: 0.2
                 }} />
 
+                <img
+                    src="/images/logo-white.png"
+                    alt="TRB Logo"
+                    style={{ width: '180px', marginBottom: '40px', opacity: 0.9 }}
+                    crossOrigin="anonymous"
+                />
+
                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '48px', marginBottom: '20px', color: '#FBD38D' }}>Unlock Your Potential</h2>
-                <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '60px', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '22px', maxWidth: '700px', marginBottom: '60px', lineHeight: 1.6, color: '#E2E8F0' }}>
                     This report consists of TRB Alchemy insights and a strategic roadmap.
                     <br />Execute the plan. Track your progress.
                 </p>
