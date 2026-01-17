@@ -149,7 +149,7 @@ export default function AssessmentPage() {
                                 opacity: isNavigating ? 0.8 : 1
                             }}
                         >
-                            {isNavigating ? 'Processing...' : (currentQuestionIndex === totalQuestions - 1 ? 'COMPLETE ASSESSMENT' : 'Next')}
+                            {isNavigating ? 'Finalizing Results...' : (currentQuestionIndex === totalQuestions - 1 ? 'FINALISE ASSESSMENT' : 'Next')}
                         </button>
                     </div>
                 </div>
