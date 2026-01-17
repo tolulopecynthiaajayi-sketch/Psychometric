@@ -145,6 +145,31 @@ export default function AssessmentPage() {
 
     const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
+    // Prevent hydration flash/glitch where questions show before "Finalising..."
+    if (!router.isReady) return null;
+
+    if (isProcessingPayment) {
+        return (
+            <div style={{
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                background: 'white',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 99999,
+                color: 'var(--color-dark-blue)'
+            }}>
+                <h2 style={{ marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Finalizing your access...</h2>
+                <div style={{ width: '40px', height: '40px', border: '3px solid var(--color-gray-200)', borderTopColor: 'var(--color-gold)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <style jsx>{`
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                `}</style>
+            </div>
+        );
+    }
+
     return (
         <>
             <Head>
