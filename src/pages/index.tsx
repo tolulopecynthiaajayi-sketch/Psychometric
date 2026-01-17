@@ -1,7 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Home() {
+    const { user } = useAuth();
     return (
         <>
             <Head>
@@ -25,6 +27,41 @@ export default function Home() {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
+                    {/* Navigation Header */}
+                    <nav style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        padding: '1.5rem',
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        zIndex: 10
+                    }}>
+                        {user ? (
+                            <Link href="/dashboard" style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                fontWeight: 'bold',
+                                border: '1px solid rgba(255,255,255,0.3)',
+                                padding: '0.5rem 1.5rem',
+                                borderRadius: '30px',
+                                background: 'rgba(0,0,0,0.2)',
+                                backdropFilter: 'blur(5px)'
+                            }}>
+                                Go to Dashboard →
+                            </Link>
+                        ) : (
+                            <Link href="/login" style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                fontWeight: 'bold',
+                                opacity: 0.9
+                            }}>
+                                Login to Account
+                            </Link>
+                        )}
+                    </nav>
                     {/* Decorative Background Elements */}
                     <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(237, 137, 54, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
                     <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(192, 86, 33, 0.1) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
