@@ -107,7 +107,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
                         y={coords.y - ((lines.length - 1) * 6)}
                         textAnchor={textAnchor}
                         dominantBaseline="middle"
-                        fontSize="10"
+                        fontSize="8.5"
                         fill="var(--color-dark-blue)"
                         style={{ fontWeight: 'bold' }}
                     >

@@ -100,12 +100,12 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                         </div>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <h3 style={{ fontSize: '24px', color: '#2C5282', marginBottom: '15px' }}>Performance Snapshot</h3> {/* Reduced margin */}
-                        <ul style={{ fontSize: '16px', lineHeight: 1.6, listStyle: 'none', padding: 0 }}> {/* Smaller font/line-height to fit */}
+                        <h3 style={{ fontSize: '20px', color: '#2C5282', marginBottom: '10px' }}>Performance Snapshot</h3> {/* Reduced margin */}
+                        <ul style={{ fontSize: '14px', lineHeight: 1.4, listStyle: 'none', padding: 0 }}> {/* Smaller font/line-height to fit */}
                             {scores.map((s, i) => (
-                                <li key={i} style={{ marginBottom: '15px', padding: '15px', background: '#FFF5F5', borderRadius: '8px', borderLeft: '5px solid #ED8936' }}>
-                                    <strong style={{ color: '#2D3748', fontSize: '20px' }}>{s.label}</strong>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px', fontSize: '16px', color: '#718096' }}>
+                                <li key={i} style={{ marginBottom: '8px', padding: '10px', background: '#FFF5F5', borderRadius: '6px', borderLeft: '4px solid #ED8936' }}>
+                                    <strong style={{ color: '#2D3748', fontSize: '16px' }}>{s.label}</strong>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '14px', color: '#718096' }}>
                                         <span>Score: {s.value}/25</span>
                                         <span style={{ fontWeight: 'bold', color: s.value >= 21 ? '#38A169' : s.value >= 15 ? '#3182CE' : s.value >= 10 ? '#D69E2E' : '#E53E3E' }}>
                                             {s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'}
