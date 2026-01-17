@@ -23,6 +23,10 @@ export default function AssessmentPage() {
         completeAssessment
     } = useAssessment();
 
+    // DEBUG: Visible Logger
+    const [logs, setLogs] = React.useState<string[]>([]);
+    const addLog = (msg: string) => setLogs(p => [...p, `${new Date().toISOString().split('T')[1].slice(0, 8)}: ${msg}`].slice(-5));
+
     const [isNavigating, setIsNavigating] = React.useState(false);
 
     useEffect(() => {
@@ -59,17 +63,38 @@ export default function AssessmentPage() {
     const currentAnswer = answers[currentQuestion.id];
 
     const handleAnswer = (value: number) => {
-        setAnswer(currentQuestion.id, value);
+        addLog(`Ans: ${value} Idx: ${currentQuestionIndex}`);
 
-        // Auto-advance after small delay
-        setTimeout(() => {
-            if (currentQuestionIndex === totalQuestions - 1) {
-                // FORCE HARD NAVIGATION TO DEDICATED SUCCESS PAGE
+        // CRITICAL FIX: If last question, bypass React State entirely to prevent render loops
+        if (currentQuestionIndex === totalQuestions - 1) {
+            addLog('Last Q detected. Saving direct...');
+            try {
+                // 1. Construct new state manually
+                const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+                currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
+                currentState.isComplete = true; // Mark complete
+
+                // 2. Write to storage synchronously
+                localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+                addLog('Saved. Navigating...');
+
+                // 3. Force Hard Redirect
                 window.location.href = '/assessment-complete';
-            } else {
+            } catch (e) {
+                addLog(`Err: ${e}`);
+                // Fallback
+                setAnswer(currentQuestion.id, value);
                 nextQuestion();
             }
-        }, 400);
+            return;
+        }
+
+        setAnswer(currentQuestion.id, value);
+
+        // Auto-advance
+        setTimeout(() => {
+            nextQuestion();
+        }, 300);
     };
 
     const handleUpgrade = async () => {
@@ -123,27 +148,31 @@ export default function AssessmentPage() {
                         </button>
 
                         {currentQuestionIndex === totalQuestions - 1 ? (
-                            /* IRONCLAD NAVIGATION: Raw Anchor Tag */
-                            /* Bypasses all React Event logic, Context state, and JavaScript execution */
-                            <a
-                                href="/assessment-complete"
-                                style={{
-                                    padding: '0.8rem 1.5rem',
-                                    background: 'var(--color-dark-blue)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    textDecoration: 'none',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                FINALISE ASSESSMENT ➔
-                            </a>
+                            /* NUCLEAR OPTION: Form Submission */
+                            /* Browsers handle form actions with highest priority, breaking JS loops */
+                            <form action="/assessment-complete" method="GET">
+                                <button
+                                    type="submit"
+                                    onClick={(e) => {
+                                        // Optional: Ensure storage is synced one last time
+                                        addLog('Form Submit Clicked');
+                                    }}
+                                    style={{
+                                        padding: '0.8rem 1.5rem',
+                                        background: 'var(--color-dark-blue)',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px'
+                                    }}
+                                >
+                                    FINALISE ASSESSMENT ➔
+                                </button>
+                            </form>
                         ) : (
                             <button
                                 key="next-btn"
@@ -161,19 +190,18 @@ export default function AssessmentPage() {
                             </button>
                         )}
                     </div>
-                </div>
 
-                {/* DEBUG FOOTER (Temporary for troubleshooting) */}
-                <div style={{ position: 'fixed', bottom: 5, right: 5, fontSize: '10px', opacity: 0.5, background: '#eee', padding: '2px' }}>
-                    Idx: {currentQuestionIndex} / {totalQuestions} | Mode: {currentQuestionIndex === totalQuestions - 1 ? 'ANCHOR' : 'BTN'}
-                </div>
+                    {/* DEBUG CONSOLE: Live visible feedback for user */}
+                    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: '#0f0', fontSize: '10px', padding: '4px', fontFamily: 'monospace', pointerEvents: 'none', zIndex: 9999 }}>
+                        {logs.map((L, i) => <div key={i}>{L}</div>)}
+                    </div>
 
-                {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
-                < PricingModal
-                    isOpen={showUpsell}
-                    onClose={closeUpsell}
-                    onUpgrade={handleUpgrade}
-                />
+                    {/* Upsell Modal - (Optional: Kept if we want to force upgrade at certain points, but logic moved to Results) */}
+                    < PricingModal
+                        isOpen={showUpsell}
+                        onClose={closeUpsell}
+                        onUpgrade={handleUpgrade}
+                    />
             </main >
         </>
     );
