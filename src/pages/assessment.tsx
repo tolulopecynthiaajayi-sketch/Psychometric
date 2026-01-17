@@ -175,113 +175,119 @@ export default function AssessmentPage() {
             <Head>
                 <title>Assessment | TRB Alchemy™️</title>
             </Head>
-            <main style={{ minHeight: '100vh', padding: 'clamp(1rem, 4vw, 2rem) 0' }}>
-                <div className="container" style={{ maxWidth: '800px' }}>
-                    {/* Progress Bar */}
-                    <div style={{ marginBottom: '3rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-gray-800)' }}>
-                            <span>Question {currentQuestionIndex + 1} of {totalQuestions}</span>
-                            <span>{Math.round(progress)}%</span>
+            <main style={{
+                minHeight: '100vh',
+                padding: 'clamp(2rem, 5vw, 4rem) 1rem',
+                background: 'linear-gradient(135deg, #FFFAF0 0%, #FDF2F8 100%)', // Calm Warm Gradient
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
+                <div className="container" style={{ maxWidth: '900px', width: '100%' }}>
+
+                    {/* Progress Bar (Calm & Thick) */}
+                    <div style={{ marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem auto' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'flex-end' }}>
+                            <span style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', color: 'var(--color-dark-blue)', fontWeight: 'bold' }}>
+                                Question {currentQuestionIndex + 1} <span style={{ color: '#CBD5E0', fontWeight: 'normal' }}>/ {totalQuestions}</span>
+                            </span>
+                            <span style={{ color: 'var(--color-warm-orange)', fontWeight: 'bold', fontSize: '1rem' }}>{Math.round(progress)}% Complete</span>
                         </div>
-                        <div style={{ height: '8px', background: 'var(--color-gray-200)', borderRadius: '4px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', background: 'var(--color-gold)', width: `${progress}%`, transition: 'width 0.3s ease' }} />
+                        <div style={{ height: '14px', background: 'rgba(255,255,255,0.5)', borderRadius: '10px', overflow: 'hidden', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}>
+                            <div style={{
+                                height: '100%',
+                                background: 'linear-gradient(90deg, #F6AD55 0%, #ED8936 50%, #D4AF37 100%)',
+                                width: `${progress}%`,
+                                transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                                borderRadius: '10px',
+                                boxShadow: '0 2px 10px rgba(237, 137, 54, 0.3)'
+                            }} />
                         </div>
                     </div>
 
-                    {/* Question Interface */}
-                    <QuestionRenderer
-                        question={currentQuestion}
-                        currentAnswer={currentAnswer}
-                        onAnswer={handleAnswer}
-                    />
+                    {/* Question Interface (Glass Card) */}
+                    <div className="glass-card fade-in-up" style={{ padding: 'clamp(2rem, 5vw, 4rem)', minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        <QuestionRenderer
+                            question={currentQuestion}
+                            currentAnswer={currentAnswer}
+                            onAnswer={handleAnswer}
+                        />
 
-                    {/* Navigation Controls */}
-                    <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 100000 }}>
-                        <button
-                            onClick={prevQuestion}
-                            disabled={currentQuestionIndex === 0}
-                            style={{
-                                padding: '0.8rem 1.5rem',
-                                border: '1px solid var(--color-gray-200)',
-                                background: 'white',
-                                borderRadius: '4px',
-                                cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer',
-                                opacity: currentQuestionIndex === 0 ? 0.5 : 1
-                            }}
-                        >
-                            Previous
-                        </button>
 
-                        {currentQuestionIndex === totalQuestions - 1 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        const btn = e.currentTarget;
-                                        btn.innerText = "PROCESSING...";
-                                        btn.style.opacity = "0.7";
-
-                                        // 1. Save Data (Synchronous)
-                                        try {
-                                            const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
-                                            currentState.isComplete = true;
-                                            localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
-                                        } catch (err) {
-                                            console.error("Save error", err);
-                                        }
-
-                                        // 2. Force Hard Navigation
-                                        setTimeout(() => {
-                                            console.log("Forcing navigation...");
-                                            window.location.assign("/assessment-complete");
-                                        }, 50);
-                                    }}
-                                    style={{
-                                        border: 'none',
-                                        padding: '0.8rem 1.5rem',
-                                        background: 'var(--color-dark-blue)',
-                                        color: 'white',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        position: 'relative',
-                                        zIndex: 100001, // NUCLEAR PLUS ONE
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                                    }}
-                                >
-                                    FINALISE ASSESSMENT ➔
-                                </button>
-                                <div style={{ marginTop: '10px', fontSize: '0.8rem', textAlign: 'center' }}>
-                                    <span style={{ opacity: 0.7 }}>Not redirecting? </span>
-                                    <a href="/assessment-complete" style={{ color: 'var(--color-gold)', textDecoration: 'underline', cursor: 'pointer', position: 'relative', zIndex: 100001 }}>
-                                        Click here
-                                    </a>
-                                </div>
-                            </div>
-                        ) : (
+                        {/* Navigation Controls */}
+                        <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '2rem' }}>
                             <button
-                                key="next-btn"
-                                onClick={nextQuestion}
+                                onClick={prevQuestion}
+                                disabled={currentQuestionIndex === 0}
                                 style={{
-                                    padding: '0.8rem 1.5rem',
-                                    background: 'var(--color-dark-blue)',
-                                    color: 'white',
+                                    padding: '0.8rem 2rem',
                                     border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px'
+                                    background: 'transparent',
+                                    color: currentQuestionIndex === 0 ? '#CBD5E0' : 'var(--color-gray-800)',
+                                    cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: '500',
+                                    transition: 'color 0.2s'
                                 }}
                             >
-                                Next ➔
+                                ← Previous
                             </button>
-                        )}
+
+                            {currentQuestionIndex === totalQuestions - 1 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            const btn = e.currentTarget;
+                                            btn.innerText = "PROCESSING...";
+                                            btn.style.opacity = "0.7";
+
+                                            // 1. Save Data (Synchronous)
+                                            try {
+                                                const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+                                                currentState.isComplete = true;
+                                                localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+                                            } catch (err) {
+                                                console.error("Save error", err);
+                                            }
+
+                                            // 2. Force Hard Navigation
+                                            setTimeout(() => {
+                                                console.log("Forcing navigation...");
+                                                window.location.assign("/assessment-complete");
+                                            }, 50);
+                                        }}
+                                        className="btn-primary-warm"
+                                        style={{
+                                            fontSize: '1.1rem',
+                                            padding: '1rem 3rem'
+                                        }}
+                                    >
+                                        FINALISE ASSESSMENT ➔
+                                    </button>
+                                    <div style={{ marginTop: '10px', fontSize: '0.8rem', textAlign: 'center' }}>
+                                        <span style={{ opacity: 0.7 }}>Not redirecting? </span>
+                                        <a href="/assessment-complete" style={{ color: 'var(--color-warm-orange)', textDecoration: 'underline', cursor: 'pointer', position: 'relative', zIndex: 100001 }}>
+                                            Click here
+                                        </a>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button
+                                    key="next-btn"
+                                    onClick={nextQuestion}
+                                    className="btn-primary-warm"
+                                    style={{
+                                        fontSize: '1.2rem',
+                                        padding: '1rem 3rem'
+                                    }}
+                                >
+                                    Next ➔
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
