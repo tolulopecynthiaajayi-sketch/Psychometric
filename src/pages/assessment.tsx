@@ -42,6 +42,15 @@ export default function AssessmentPage() {
         return () => clearTimeout(checkProfile);
     }, [userProfile, router, setPremium]);
 
+    // SAFETY NET: Watch for completion state
+    // If the button logic somehow fails or runs "Next" instead of "Finish",
+    // this hook catches the state change and forces the redirect anyway.
+    useEffect(() => {
+        if (isComplete) {
+            window.location.href = '/assessment-complete';
+        }
+    }, [isComplete]);
+
     const currentQuestion = activeQuestions[currentQuestionIndex];
 
     // Guard against undefined (e.g. during state transitions)
@@ -114,6 +123,10 @@ export default function AssessmentPage() {
                         </button>
 
                         <button
+                            // STALE CLOSURE VACCINE: The 'key' forces React to destroy and recreate the button
+                            // whenever we switch between "Next" and "Finish". This ensures the onClick handler
+                            // is always fresh and never using old logic.
+                            key={currentQuestionIndex === totalQuestions - 1 ? 'finish-btn' : 'next-btn'}
                             onClick={() => {
                                 if (currentQuestionIndex === totalQuestions - 1) {
                                     window.location.href = '/assessment-complete';
