@@ -149,11 +149,12 @@ export default function AssessmentPage() {
 
                                     try {
                                         const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
-                                        currentState.answers = { ...currentState.answers, [currentQuestion.id]: value };
+                                        // We don't have 'value' here, so we just mark complete.
+                                        // The answer should have been saved when the user clicked the option.
                                         currentState.isComplete = true;
                                         localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
 
-                                        alert('Step 2: Data Saved Successfully.\nClick OK to Redirect.');
+                                        alert('Step 2: Data Saved Successfully OLD.\nClick OK to Redirect.');
                                     } catch (err: any) {
                                         alert(`Step 2 FAILED: Save Error: ${err.message}\nProceeding to redirect anyway.`);
                                     }
