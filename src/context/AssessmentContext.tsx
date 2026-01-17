@@ -123,8 +123,31 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
     const setPremium = (status: boolean) => {
         // When upgrading, we likely want to keep current progress but unlock rest.
+        // SMART REWIND: Find the first unanswered question and jump there.
         setState((prev) => {
-            return { ...prev, isPremium: status, showUpsell: false, isComplete: false };
+            let nextQ = prev.currentQuestionId;
+
+            if (status === true) {
+                // We access QUESTIONS directly from config because 'activeQuestions' in state 
+                // might still be the old Free tier list during this update cycle.
+                const firstUnanswered = QUESTIONS.find(q => !prev.answers[q.id]);
+                if (firstUnanswered) {
+                    console.log("Smart Rewind: Jumping to first unanswered question:", firstUnanswered.id);
+                    nextQ = firstUnanswered.id;
+                } else if (!QUESTIONS.find(q => q.id === prev.currentQuestionId)) {
+                    // If current ID is somehow invalid (e.g. Free user on Q30, but Q30 is valid), 
+                    // just safe reset to start if no gaps found.
+                    nextQ = QUESTIONS[0].id;
+                }
+            }
+
+            return {
+                ...prev,
+                isPremium: status,
+                showUpsell: false,
+                isComplete: false,
+                currentQuestionId: nextQ
+            };
         });
     };
 
