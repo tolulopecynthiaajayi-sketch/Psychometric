@@ -143,7 +143,7 @@ export default function AssessmentPage() {
                             <a
                                 href="/assessment-complete"
                                 onClick={(e) => {
-                                    // 1. Try to save data
+                                    // 1. Save Data
                                     try {
                                         const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
                                         currentState.isComplete = true;
@@ -151,8 +151,7 @@ export default function AssessmentPage() {
                                     } catch (err) {
                                         console.error("Save error", err);
                                     }
-
-                                    // 2. Allow default link behavior to proceed
+                                    // 2. Default Link Behavior (Navigation)
                                 }}
                                 style={{
                                     textDecoration: 'none',
@@ -166,7 +165,7 @@ export default function AssessmentPage() {
                                     alignItems: 'center',
                                     gap: '8px',
                                     userSelect: 'none',
-                                    position: 'relative', // FORCE CLICKABILITY
+                                    position: 'relative',
                                     zIndex: 20
                                 }}
                             >
