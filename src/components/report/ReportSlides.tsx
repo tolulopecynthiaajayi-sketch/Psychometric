@@ -96,45 +96,48 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
             </div>
 
             {/* SLIDE 2: Executive Summary */}
-            <div className="pdf-slide" style={slideStyle}>
+            <div className="pdf-slide" style={{ ...slideStyle, padding: '30px' }}> {/* Reduced Padding */}
                 <div style={cornerShape} />
                 {/* Header Logo */}
                 <img
                     src="/images/logo-orange-nobg.png"
                     alt="TRB Logo"
-                    style={{ position: 'absolute', top: '40px', right: '40px', width: '100px', opacity: 0.9 }}
+                    style={{ position: 'absolute', top: '30px', right: '30px', width: '90px', opacity: 0.9 }}
                     crossOrigin="anonymous"
                 />
 
-                <h2 style={headerStyle}>Executive Assessment Summary</h2>
+                <h2 style={{ ...headerStyle, marginBottom: '15px', fontSize: '32px' }}>Executive Assessment Summary</h2>
 
-                <div style={{ marginBottom: '20px', background: '#FFFAF0', padding: '15px', borderRadius: '10px', borderLeft: '5px solid #DD6B20', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-                    <h3 style={{ margin: 0, fontSize: '22px', color: '#C05621' }}>{archetype.name}</h3>
-                    <p style={{ margin: '5px 0 0 0', fontStyle: 'italic', color: '#4A5568' }}>"{archetype.motto}"</p>
-                    <p style={{ marginTop: '5px', color: '#2D3748', whiteSpace: 'pre-line' }}>{aiReport ? aiReport.executive_summary : archetype.description}</p>
+                {/* AI Summary Box - Compacted */}
+                <div style={{ marginBottom: '15px', background: '#FFFAF0', padding: '12px 15px', borderRadius: '10px', borderLeft: '4px solid #DD6B20', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                    <h3 style={{ margin: 0, fontSize: '20px', color: '#C05621' }}>{archetype.name}</h3>
+                    <p style={{ margin: '2px 0 0 0', fontStyle: 'italic', color: '#4A5568', fontSize: '14px' }}>"{archetype.motto}"</p>
+                    <p style={{ marginTop: '5px', color: '#2D3748', whiteSpace: 'pre-line', fontSize: '14px', lineHeight: 1.4 }}>
+                        {aiReport ? aiReport.executive_summary : archetype.description}
+                    </p>
 
                     {aiReport && (
-                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #FBD38D' }}>
+                        <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #FBD38D', fontSize: '13px' }}>
                             <strong style={{ color: '#C05621' }}>Key Insight: </strong>
                             <span style={{ color: '#742A2A', fontStyle: 'italic' }}>"{aiReport.blindspot_warning}"</span>
                         </div>
                     )}
                 </div>
 
-                <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
-                    <div style={{ flex: '0 0 450px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Fixed width for chart col */}
-                        {/* Radar Chart Container with shadow */}
-                        <div style={{ padding: '20px 0', background: 'white', borderRadius: '20px', boxShadow: '0 10px 25px rgba(221, 107, 32, 0.15)', width: '100%', display: 'flex', justifyContent: 'center', border: '1px solid #FEEBC8' }}>
-                            <RadarChart data={scores} size={380} /> {/* Reduced size due to overflow */}
+                <div style={{ display: 'flex', gap: '30px', position: 'relative', zIndex: 1, flex: 1, overflow: 'hidden' }}>
+                    <div style={{ flex: '0 0 420px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* Radar Chart Container - Compacted */}
+                        <div style={{ padding: '10px 0', background: 'white', borderRadius: '20px', boxShadow: '0 5px 15px rgba(221, 107, 32, 0.1)', width: '100%', display: 'flex', justifyContent: 'center', border: '1px solid #FEEBC8' }}>
+                            <RadarChart data={scores} size={340} />
                         </div>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <h3 style={{ fontSize: '20px', color: '#2C5282', marginBottom: '10px' }}>Performance Snapshot</h3> {/* Reduced margin */}
-                        <ul style={{ fontSize: '14px', lineHeight: 1.4, listStyle: 'none', padding: 0 }}> {/* Smaller font/line-height to fit */}
+                        <h3 style={{ fontSize: '18px', color: '#2C5282', marginBottom: '8px', marginTop: 0 }}>Performance Snapshot</h3>
+                        <ul style={{ fontSize: '13px', lineHeight: 1.3, listStyle: 'none', padding: 0, margin: 0 }}>
                             {scores.map((s, i) => (
-                                <li key={i} style={{ marginBottom: '8px', padding: '10px', background: 'white', borderRadius: '6px', borderLeft: '4px solid #ED8936', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                    <strong style={{ color: '#2D3748', fontSize: '16px' }}>{s.label}</strong>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '14px', color: '#718096' }}>
+                                <li key={i} style={{ marginBottom: '6px', padding: '8px 12px', background: 'white', borderRadius: '6px', borderLeft: '4px solid #ED8936', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+                                    <strong style={{ color: '#2D3748', fontSize: '14px' }}>{s.label}</strong>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1px', fontSize: '13px', color: '#718096' }}>
                                         <span>Score: {s.value}/25</span>
                                         <span style={{ fontWeight: 'bold', color: s.value >= 21 ? '#38A169' : s.value >= 15 ? '#3182CE' : s.value >= 10 ? '#D69E2E' : '#E53E3E' }}>
                                             {s.value >= 21 ? 'Strong' : s.value >= 15 ? 'Solid' : s.value >= 10 ? 'Developing' : 'Underdeveloped'}
