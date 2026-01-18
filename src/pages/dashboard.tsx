@@ -5,12 +5,17 @@ import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Link from 'next/link';
 import { isAdmin } from '@/config/admin';
+import { ReportSlides } from '@/components/report/ReportSlides';
 
 export default function Dashboard() {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
     const [assessments, setAssessments] = useState<any[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
+
+    // PDF State
+    const [pdfData, setPdfData] = useState<{ scores: any[], name: string, isPremium: boolean } | null>(null);
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     useEffect(() => {
         if (!loading && !user) {
@@ -36,6 +41,32 @@ export default function Dashboard() {
         } finally {
             setFetchLoading(false);
         }
+    };
+
+    const handleDownloadPDF = async (assessment: any) => {
+        if (isGeneratingPdf) return;
+        setIsGeneratingPdf(true);
+
+        // 1. Set data to render the hidden report
+        setPdfData({
+            scores: assessment.scores,
+            name: user?.displayName || user?.email?.split('@')[0] || 'Valued User',
+            isPremium: assessment.isPremium
+        });
+
+        // 2. Wait for render, then print
+        setTimeout(async () => {
+            try {
+                const { generatePDFReport } = await import('@/utils/pdfGenerator');
+                await generatePDFReport('user-pdf-container', user?.displayName || 'My_Report');
+            } catch (error) {
+                console.error("PDF Fail:", error);
+                alert("Failed to generate PDF");
+            } finally {
+                setIsGeneratingPdf(false);
+                setPdfData(null); // Clear after generation
+            }
+        }, 1000); // 1s buffer for React render
     };
 
     if (loading || (fetchLoading && user)) {
@@ -145,15 +176,44 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     {/* In a real app, this would open the detailed view or regenerate PDF */}
-                                    <span style={{ background: '#EBF8FF', color: '#3182CE', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                                    <span style={{ background: '#EBF8FF', color: '#3182CE', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', marginRight: '1rem' }}>
                                         {assessment.isPremium ? 'Premium Report' : 'Free Report'}
                                     </span>
+
+                                    {assessment.isPremium && (
+                                        <button
+                                            onClick={() => handleDownloadPDF(assessment)}
+                                            disabled={isGeneratingPdf}
+                                            style={{
+                                                padding: '0.5rem 1rem',
+                                                background: isGeneratingPdf ? '#CBD5E0' : '#38A169',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '6px',
+                                                cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
+
+            {/* Hidden PDF Container */}
+            {pdfData && (
+                <div id="user-pdf-container">
+                    <ReportSlides
+                        scores={pdfData.scores}
+                        candidateName={pdfData.name}
+                        hasBookSessionAccess={true}
+                    />
+                </div>
+            )}
         </div>
     );
 }

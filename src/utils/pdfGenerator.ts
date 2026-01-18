@@ -2,9 +2,10 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 export async function generatePDFReport(containerId: string, candidateName: string = 'Candidate') {
-    // Find all elements with class 'pdf-slide' inside the container
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
     const slides = container.getElementsByClassName('pdf-slide');
     if (slides.length === 0) {
@@ -12,7 +13,6 @@ export async function generatePDFReport(containerId: string, candidateName: stri
         return;
     }
 
-    // Create PDF instance (Landscape, A4)
     const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
@@ -32,11 +32,7 @@ export async function generatePDFReport(containerId: string, candidateName: stri
             const canvas = await html2canvas(slide, {
                 scale: 2, // Improve quality
                 useCORS: true,
-                logging: false,
-                width: 1123, // A4 width in px at 96dpi approx (297mm)
-                height: 794, // A4 height in px at 96dpi approx (210mm)
-                windowWidth: 1123,
-                windowHeight: 794
+                // logging: false, // Removed to allow html2canvas logging if desired for tracing
             });
 
             const imgData = canvas.toDataURL('image/png');
