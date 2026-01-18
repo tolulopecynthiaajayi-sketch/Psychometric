@@ -152,6 +152,18 @@ export default function Dashboard() {
                             font-size: 0.9rem;
                             padding: 0.5rem 1rem;
                         }
+
+                        /* Assessment Item Mobile Styles */
+                        .assessment-item {
+                            flex-direction: column !important;
+                            align-items: flex-start !important;
+                            gap: 1rem;
+                        }
+                        .assessment-actions {
+                            width: 100%;
+                            justify-content: space-between !important;
+                            gap: 0.5rem;
+                        }
                     }
                 `}</style>
 
@@ -171,7 +183,7 @@ export default function Dashboard() {
                 ) : (
                     <div style={{ display: 'grid', gap: '1.5rem' }}>
                         {assessments.map((assessment: any) => (
-                            <div key={assessment.id} className="glass-card fade-in-up" style={{ padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.2s' }}>
+                            <div key={assessment.id} className="glass-card fade-in-up assessment-item" style={{ padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.2s' }}>
                                 <div>
                                     <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--color-burnt-orange)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>
                                         {assessment.archetype?.name || 'Professional Profile'}
@@ -180,7 +192,7 @@ export default function Dashboard() {
                                         <span>📅</span> Completed on {new Date(assessment.createdAt?.seconds * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                                <div className="assessment-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                                     {/* Status Badge */}
                                     {assessment.isPremium ? (
                                         <span style={{
