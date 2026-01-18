@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
 import { DIMENSIONS, QUESTIONS, PRICE_TIERS, CATEGORY_LABELS, getArchetype } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
+import { useAIReport } from '@/hooks/useAIReport';
 // REMOVED STATIC IMPORT: import { generatePDFReport } from '@/utils/pdfGenerator';
 import { ReportSlides } from '@/components/report/ReportSlides';
 import { useAuth } from '@/context/AuthContext';
@@ -16,25 +17,30 @@ export default function ResultsPage() {
     const { answers, isPremium, userProfile, setPremium, completeAssessment, isComplete } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
-    const [price, setPrice] = useState(0); // Default to 0 to prevent accidental premium logic
+    const [price, setPrice] = useState(0);
     const [saved, setSaved] = useState(false);
-    const [isMounted, setIsMounted] = useState(false); // Safety check for client-side rendering
+    const [isMounted, setIsMounted] = useState(false);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-    // Determine Status
+    // AI REPORT INTEGRATION
+    const { report, loading: aiLoading, generateReport } = useAIReport();
     const isExempt = userProfile?.category === 'student' || userProfile?.category === 'job_seeker';
     const showFullReport = isPremium || isExempt;
     const archetype = getArchetype(scores);
 
     useEffect(() => {
         setIsMounted(true);
-        // NUCLEAR OPTION FIX: Auto-complete assessment on arrival
-        // ONLY if user is NOT premium. If they are premium, they might be here mid-upgrade,
-        // so we must NOT force completion, otherwise they can't go back to answer the rest.
         if (!isComplete && Object.keys(answers).length > 0 && !isPremium) {
             completeAssessment();
         }
     }, [isComplete, answers, completeAssessment, isPremium]);
+
+    // TRIGGER AI GENERATION ON LOAD (If premium/exempt)
+    useEffect(() => {
+        if (showFullReport && userProfile && scores.length > 0 && !report && !aiLoading) {
+            generateReport(userProfile, scores, archetype);
+        }
+    }, [showFullReport, userProfile, scores, report, aiLoading, generateReport]);
 
     useEffect(() => {
         if (userProfile?.category) {
@@ -43,7 +49,6 @@ export default function ResultsPage() {
     }, [userProfile]);
 
     useEffect(() => {
-        // Calculate scores
         const calculatedScores = DIMENSIONS.map(dim => {
             const dimQuestions = QUESTIONS.filter(q => q.dimension === dim.key);
             const sum = dimQuestions.reduce((acc, q) => acc + (answers[q.id] || 0), 0);
@@ -56,8 +61,6 @@ export default function ResultsPage() {
         setScores(calculatedScores);
     }, [answers]);
 
-    // Auto-save when scores, profile, and user are ready
-    // CHANGED: We now save for ALL logged-in users, so Admin sees leads.
     useEffect(() => {
         if (user && scores.length > 0 && !saved) {
             saveResultToFirebase();
@@ -192,9 +195,26 @@ export default function ResultsPage() {
                         <h2 style={{ color: 'var(--color-burnt-orange)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
                             ✨ Executive Summary
                         </h2>
-                        <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#4A5568' }}>
-                            {archetype.description}
-                        </p>
+                        {aiLoading ? (
+                            <div className="animate-pulse">
+                                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                <p className="text-sm text-gray-400 mt-2">The Alchemist AI is analyzing your profile...</p>
+                            </div>
+                        ) : (
+                            <>
+                                <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#4A5568', whiteSpace: 'pre-line' }}>
+                                    {report ? report.executive_summary : archetype.description}
+                                </p>
+                                {report && (
+                                    <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#FFF5F5', borderRadius: '12px', borderLeft: '4px solid #C05621' }}>
+                                        <h4 style={{ color: '#C05621', fontWeight: 'bold', marginBottom: '0.5rem' }}>👁️ Blindspot Warning</h4>
+                                        <p style={{ color: '#742A2A', fontStyle: 'italic' }}>"{report.blindspot_warning}"</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
 
                     {/* Results Grid */}
@@ -364,6 +384,7 @@ export default function ResultsPage() {
                             scores={scores}
                             hasBookSessionAccess={price >= 4900}
                             candidateName={userProfile?.name || 'Candidate'}
+                            aiReport={report}
                         />
                     )}
 

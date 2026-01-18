@@ -14,7 +14,7 @@ export default function Home() {
 
                 {/* Hero Section */}
                 <section style={{
-                    background: 'radial-gradient(circle at 50% 50%, #2D3748 0%, #171923 100%)', // Deep, spotlight effect
+                    background: 'radial-gradient(circle at 50% 50%, #2C1A1D 0%, #1A202C 100%)', // Warmer dark background (Deep Espresso/Slate)
                     color: 'white',
                     padding: 'clamp(4rem, 8vw, 6rem) 1rem', // Responsive padding
                     textAlign: 'center',
@@ -58,16 +58,16 @@ export default function Home() {
                                 textDecoration: 'none',
                                 fontWeight: 'bold',
                                 opacity: 0.9,
-                                padding: '0.5rem 1rem', // Added padding
-                                display: 'inline-block' // Ensure padding works
+                                padding: '0.5rem 1rem',
+                                display: 'inline-block'
                             }}>
                                 Login to Account
                             </Link>
                         )}
                     </nav>
-                    {/* Decorative Background Elements */}
-                    <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(237, 137, 54, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
-                    <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(192, 86, 33, 0.1) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
+                    {/* Decorative Background Elements - Warmer Glows */}
+                    <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(237, 137, 54, 0.2) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
+                    <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(192, 86, 33, 0.15) 0%, rgba(0,0,0,0) 70%)', borderRadius: '50%' }} />
 
                     <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -78,13 +78,13 @@ export default function Home() {
                             style={{
                                 width: 'min(300px, 80vw)', // Responsive width
                                 marginBottom: '2rem',
-                                filter: 'drop-shadow(0 0 20px rgba(237, 137, 54, 0.3))' // Glow effect
+                                filter: 'drop-shadow(0 0 20px rgba(237, 137, 54, 0.4))' // Warmer Glow
                             }}
                         />
 
                         <h1 style={{
                             fontFamily: 'var(--font-serif)',
-                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', // Slightly smaller than before to let logo shine
+                            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
                             marginBottom: '1.5rem',
                             color: '#FBD38D', // Gold text
                             lineHeight: 1.1,
@@ -104,32 +104,30 @@ export default function Home() {
                             Where insight becomes transformation.
                         </p>
 
-                        <Link href="/onboarding" style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(90deg, #ED8936 0%, #C05621 100%)', // Gradient Button
-                            color: 'white',
-                            padding: '1.2rem 3.5rem',
-                            fontSize: '1.2rem',
-                            fontWeight: 'bold',
-                            borderRadius: '50px',
-                            transition: 'all 0.3s ease',
-                            cursor: 'pointer',
-                            boxShadow: '0 10px 25px rgba(237, 137, 54, 0.4)',
-                            border: '1px solid rgba(255,255,255,0.1)'
-                        }}>
-                            Begin Your Journey
-                        </Link>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+                            <Link href="/onboarding" className="btn-primary-warm" style={{
+                                padding: '1.2rem 3.5rem',
+                                fontSize: '1.2rem',
+                                display: 'inline-block',
+                                textDecoration: 'none',
+                                boxShadow: '0 10px 25px rgba(237, 137, 54, 0.4)'
+                            }}>
+                                Begin Your Journey
+                            </Link>
+                            <p style={{ fontSize: '0.9rem', opacity: 0.7, marginTop: '0.5rem' }}>
+                                Takes approx. 12 minutes
+                            </p>
+                        </div>
                     </div>
                 </section>
 
-                {/* Features / tiers */}
                 {/* Content Section: Educational instead of Transactional */}
-                <section style={{ padding: '6rem 1rem', background: 'white' }}>
+                <section style={{ padding: '6rem 1rem', background: 'var(--bg-warm)' }}>
                     <div className="container" style={{ maxWidth: '900px' }}>
 
                         {/* What is it? */}
                         <div style={{ marginBottom: '6rem' }}>
-                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '1.5rem', textAlign: 'center' }}>
+                            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-burnt-orange)', marginBottom: '1.5rem', textAlign: 'center' }}>
                                 What is the Alchemy Profile?
                             </h2>
                             <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: 'var(--color-gray-800)', textAlign: 'center' }}>
@@ -157,35 +155,29 @@ export default function Home() {
                             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-dark-blue)', marginBottom: '2rem', textAlign: 'center' }}>
                                 Why Take This Assessment?
                             </h2>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
-                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Clarity</h3>
-                                    <p>Gain a precise understanding of your operational style and hidden blind spots.</p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                                <div className="glass-card" style={{ padding: '2rem', background: 'white' }}>
+                                    <h3 style={{ fontSize: '1.4rem', color: 'var(--color-burnt-orange)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>Clarity</h3>
+                                    <p style={{ lineHeight: 1.6 }}>Gain a precise understanding of your operational style and hidden blind spots.</p>
                                 </div>
-                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
-                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Strategy</h3>
-                                    <p>Receive concrete recommendations to accelerate your career trajectory.</p>
+                                <div className="glass-card" style={{ padding: '2rem', background: 'white' }}>
+                                    <h3 style={{ fontSize: '1.4rem', color: 'var(--color-burnt-orange)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>Strategy</h3>
+                                    <p style={{ lineHeight: 1.6 }}>Receive concrete recommendations to accelerate your career trajectory.</p>
                                 </div>
-                                <div style={{ padding: '1.5rem', background: '#F7FAFC', borderRadius: '8px' }}>
-                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '0.5rem' }}>Growth</h3>
-                                    <p>Unlock detailed insights that serve as a roadmap for your next 90 days and beyond.</p>
+                                <div className="glass-card" style={{ padding: '2rem', background: 'white' }}>
+                                    <h3 style={{ fontSize: '1.4rem', color: 'var(--color-burnt-orange)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>Growth</h3>
+                                    <p style={{ lineHeight: 1.6 }}>Unlock detailed insights that serve as a roadmap for your next 90 days and beyond.</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Final CTA */}
                         <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-                            <Link href="/onboarding" style={{
-                                display: 'inline-block',
-                                background: 'var(--color-dark-blue)',
-                                color: 'white',
-                                padding: '1.2rem 3rem',
+                            <Link href="/onboarding" className="btn-primary-warm" style={{
+                                padding: '1.2rem 3.5rem',
                                 fontSize: '1.2rem',
-                                fontWeight: 'bold',
-                                borderRadius: '50px',
-                                transition: 'transform 0.2s',
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 14px 0 rgba(0,0,0,0.39)'
+                                display: 'inline-block',
+                                textDecoration: 'none'
                             }}>
                                 Begin Your Assessment
                             </Link>

@@ -67,7 +67,7 @@ export interface Archetype {
     motto: string;
 }
 
-const getBand = (score: number): 'strong' | 'solid' | 'developing' | 'underdeveloped' => {
+export const getBand = (score: number): 'strong' | 'solid' | 'developing' | 'underdeveloped' => {
     if (score >= 21) return 'strong';       // 21-25
     if (score >= 15) return 'solid';        // 15-20
     if (score >= 10) return 'developing';   // 10-14

@@ -1,13 +1,21 @@
 import { DIMENSIONS, generateDynamicRoadmap, getArchetype } from '@/config/assessment';
 import { RadarChart } from '@/components/charts/RadarChart';
 
+interface AIReportData {
+    executive_summary: string;
+    superpower_analysis: string;
+    blindspot_warning: string;
+    immediate_actions: string[];
+}
+
 interface ReportSlidesProps {
     scores: { label: string; value: number; fullMark: number }[];
     candidateName?: string;
     hasBookSessionAccess?: boolean;
+    aiReport?: AIReportData | null;
 }
 
-export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessionAccess = false }: ReportSlidesProps) {
+export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessionAccess = false, aiReport }: ReportSlidesProps) {
     // 1. Calculate Archetype & Roadmap
     const archetype = getArchetype(scores);
     const roadmap = generateDynamicRoadmap(scores);
@@ -103,7 +111,14 @@ export function ReportSlides({ scores, candidateName = 'Candidate', hasBookSessi
                 <div style={{ marginBottom: '20px', background: '#FFFAF0', padding: '15px', borderRadius: '10px', borderLeft: '5px solid #DD6B20', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                     <h3 style={{ margin: 0, fontSize: '22px', color: '#C05621' }}>{archetype.name}</h3>
                     <p style={{ margin: '5px 0 0 0', fontStyle: 'italic', color: '#4A5568' }}>"{archetype.motto}"</p>
-                    <p style={{ marginTop: '5px', color: '#2D3748' }}>{archetype.description}</p>
+                    <p style={{ marginTop: '5px', color: '#2D3748', whiteSpace: 'pre-line' }}>{aiReport ? aiReport.executive_summary : archetype.description}</p>
+
+                    {aiReport && (
+                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #FBD38D' }}>
+                            <strong style={{ color: '#C05621' }}>Key Insight: </strong>
+                            <span style={{ color: '#742A2A', fontStyle: 'italic' }}>"{aiReport.blindspot_warning}"</span>
+                        </div>
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', height: '100%', gap: '40px', position: 'relative', zIndex: 1 }}> {/* Reduced gap */}
