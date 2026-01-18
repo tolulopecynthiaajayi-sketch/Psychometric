@@ -65,8 +65,8 @@ export default function AdminUsersPage() {
         try {
             const q = query(
                 collection(db, 'assessments'),
-                where('userId', '==', user.uid),
-                orderBy('createdAt', 'desc')
+                where('userId', '==', user.uid)
+                // orderBy('createdAt', 'desc') // Checking if Index is missing
             );
             const snapshot = await getDocs(q);
             const assessments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdminAssessment));

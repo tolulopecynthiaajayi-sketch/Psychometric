@@ -368,6 +368,10 @@ export default function ResultsPage() {
                     )}
 
                 </div>
+                {/* DEBUG STATUS */}
+                <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: 'white', padding: '0.5rem', fontSize: '0.8rem', textAlign: 'center', zIndex: 100 }}>
+                    Debug: {saved ? "✅ Saved to Database" : "⏳ Saving/Waiting..."} | User: {user?.email || "None"} | Scores: {scores.length}
+                </div>
             </main>
         </>
     );

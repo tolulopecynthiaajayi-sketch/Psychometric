@@ -25,7 +25,7 @@ export default function OnboardingPage() {
             </Head>
             <main style={{
                 minHeight: '100vh',
-                padding: '4rem 1rem',
+                padding: 'clamp(2rem, 5vw, 4rem) 1rem', // Responsive padding
                 background: 'linear-gradient(135deg, #FFF5F5 0%, #FEFCBF 100%)', // Soft Peach/Lemon gradient
                 position: 'relative',
                 overflow: 'hidden',

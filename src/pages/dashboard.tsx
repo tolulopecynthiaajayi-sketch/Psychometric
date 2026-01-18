@@ -25,8 +25,8 @@ export default function Dashboard() {
         try {
             const q = query(
                 collection(db, 'assessments'),
-                where('userId', '==', user.uid),
-                orderBy('createdAt', 'desc')
+                where('userId', '==', user.uid)
+                // orderBy('createdAt', 'desc') // Checking if Index is missing
             );
             const querySnapshot = await getDocs(q);
             const results = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -47,19 +47,82 @@ export default function Dashboard() {
     return (
         <div style={{ minHeight: '100vh', background: '#F7FAFC', padding: '2rem' }}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                <header className="dashboard-header">
                     <h1 style={{ fontFamily: 'serif', fontSize: '2rem', color: '#2D3748' }}>Dashboard</h1>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <span style={{ color: '#718096' }}>{user.email}</span>
+                    <div className="dashboard-actions">
+                        <span className="user-email">{user.email}</span>
                         {isAdmin(user.email) && (
-                            <Link href="/admin" style={{ padding: '0.5rem 1rem', background: '#2D3748', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>
+                            <Link href="/admin" className="btn-admin">
                                 Admin Panel
                             </Link>
                         )}
-                        <button onClick={logout} style={{ padding: '0.5rem 1rem', background: 'white', border: '1px solid #CBD5E0', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
-                        <Link href="/" style={{ padding: '0.5rem 1rem', background: '#DD6B20', color: 'white', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>New Assessment</Link>
+                        <button onClick={logout} className="btn-logout">Logout</button>
+                        <Link href="/" className="btn-new">New Assessment</Link>
                     </div>
                 </header>
+
+                <style jsx>{`
+                    .dashboard-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 3rem;
+                    }
+                    .dashboard-actions {
+                        display: flex;
+                        gap: 1rem;
+                        align-items: center;
+                    }
+                    .user-email {
+                        color: #718096;
+                    }
+                    .btn-admin {
+                        padding: 0.5rem 1rem;
+                        background: #2D3748;
+                        color: white;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        font-weight: bold;
+                    }
+                    .btn-logout {
+                        padding: 0.5rem 1rem;
+                        background: white;
+                        border: 1px solid #CBD5E0;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    }
+                    .btn-new {
+                        padding: 0.5rem 1rem;
+                        background: #DD6B20;
+                        color: white;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        font-weight: bold;
+                    }
+
+                    @media (max-width: 768px) {
+                        .dashboard-header {
+                            flex-direction: column;
+                            align-items: flex-start;
+                            padding-top: 2rem; /* Add top padding on mobile */
+                            gap: 1.5rem;
+                        }
+                        .dashboard-actions {
+                            flex-wrap: wrap; /* allow wrapping if email is long */
+                            width: 100%;
+                            justify-content: space-between;
+                        }
+                        .user-email {
+                            width: 100%; /* force new line for buttons */
+                            margin-bottom: 0.5rem;
+                            font-size: 0.9rem;
+                        }
+                        .btn-admin, .btn-logout, .btn-new {
+                            font-size: 0.9rem;
+                            padding: 0.4rem 0.8rem;
+                        }
+                    }
+                `}</style>
 
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#4A5568' }}>Your Reports</h2>
 

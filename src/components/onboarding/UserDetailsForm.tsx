@@ -78,7 +78,7 @@ export function UserDetailsForm() {
     // --- RENDER PRICING STEP ---
     if (step === 'pricing') {
         return (
-            <div style={cardStyle}>
+            <div style={cardStyle} className="user-form-card">
                 <h2 style={headerStyle}>Confirm Your Strategy</h2>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <p style={{ fontSize: '1.2rem', color: '#4A5568' }}>
@@ -138,7 +138,7 @@ export function UserDetailsForm() {
 
     // --- RENDER FORM STEP ---
     return (
-        <div style={cardStyle}>
+        <div style={cardStyle} className="user-form-card">
             <h2 style={headerStyle}>Your Professional Profile</h2>
             <p style={{ textAlign: 'center', color: 'var(--color-gray-800)', marginBottom: '2rem' }}>
                 Please provide your details to personalize your assessment experience.
@@ -202,6 +202,16 @@ export function UserDetailsForm() {
                 </button>
 
             </form>
+            <style jsx global>{`
+                .user-form-card {
+                    padding: 2rem;
+                }
+                @media (max-width: 480px) {
+                    .user-form-card {
+                        padding: 1.5rem 1rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
@@ -210,7 +220,7 @@ const cardStyle = {
     maxWidth: '600px',
     margin: '0 auto',
     background: 'white',
-    padding: '2rem',
+    // padding: '2rem', // Now handled by CSS class for responsiveness
     borderRadius: '12px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
 };

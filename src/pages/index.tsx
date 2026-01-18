@@ -25,7 +25,8 @@ export default function Home() {
                     alignItems: 'center',
                     minHeight: '85vh', // Taller hero
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    width: '100%' // Ensure it doesn't expand beyond viewport
                 }}>
                     {/* Navigation Header */}
                     <nav style={{
@@ -56,7 +57,9 @@ export default function Home() {
                                 color: 'white',
                                 textDecoration: 'none',
                                 fontWeight: 'bold',
-                                opacity: 0.9
+                                opacity: 0.9,
+                                padding: '0.5rem 1rem', // Added padding
+                                display: 'inline-block' // Ensure padding works
                             }}>
                                 Login to Account
                             </Link>
