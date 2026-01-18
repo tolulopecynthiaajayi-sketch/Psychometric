@@ -15,6 +15,9 @@ interface AdminUser {
         name: string;
         category: string;
         organization?: string;
+        title?: string;
+        occupation?: string;
+        purpose?: string;
     };
     isPremium?: boolean;
     lastActive?: any;
@@ -169,13 +172,13 @@ export default function AdminUsersPage() {
             {selectedUser && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(26, 32, 44, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50 }}>
                     <div className="fade-in-up" style={{ background: 'white', width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.8rem', fontFamily: 'serif', color: '#2D3748', margin: 0 }}>
-                                Assessment History
-                                <span style={{ display: 'block', fontSize: '1rem', color: '#718096', marginTop: '0.5rem', fontFamily: 'sans-serif', fontWeight: 'normal' }}>
-                                    for {selectedUser.profile?.name}
-                                </span>
-                            </h2>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '1rem' }}>
+                            <div>
+                                <h2 style={{ fontSize: '1.8rem', fontFamily: 'serif', color: '#2D3748', margin: 0 }}>
+                                    {selectedUser.profile?.name}
+                                </h2>
+                                <p style={{ color: '#718096', margin: '0.2rem 0 0' }}>{selectedUser.email}</p>
+                            </div>
                             <button
                                 onClick={() => setSelectedUser(null)}
                                 style={{ background: '#F7FAFC', border: 'none', fontSize: '1.5rem', cursor: 'pointer', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A0AEC0', transition: 'all 0.2s' }}
@@ -185,6 +188,36 @@ export default function AdminUsersPage() {
                                 ×
                             </button>
                         </div>
+
+                        {/* Full User Details Grid */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2.5rem', background: '#F7FAFC', padding: '1.5rem', borderRadius: '12px' }}>
+                            <div>
+                                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</p>
+                                <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#2D3748' }}>{selectedUser.profile?.organization || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Role/Title</p>
+                                <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#2D3748' }}>{selectedUser.profile?.title || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Category</p>
+                                <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#2D3748' }}>
+                                    {selectedUser.profile?.category ? CATEGORY_LABELS[selectedUser.profile.category as keyof typeof CATEGORY_LABELS] : 'N/A'}
+                                </p>
+                            </div>
+                            <div>
+                                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Occupation</p>
+                                <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#2D3748' }}>{selectedUser.profile?.occupation || 'N/A'}</p>
+                            </div>
+                            <div style={{ gridColumn: '1 / -1' }}>
+                                <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Purpose/Goal</p>
+                                <p style={{ fontSize: '1rem', color: '#4A5568', background: 'white', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', fontStyle: 'italic' }}>
+                                    "{selectedUser.profile?.purpose || 'No purpose stated.'}"
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3 style={{ fontSize: '1.4rem', fontFamily: 'serif', color: '#2D3748', marginBottom: '1rem' }}>Assessment History</h3>
 
                         {loadingAssessments ? (
                             <p style={{ textAlign: 'center', padding: '2rem', color: '#718096' }}>Loading assessments...</p>
