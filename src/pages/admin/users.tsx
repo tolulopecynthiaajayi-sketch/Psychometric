@@ -190,7 +190,7 @@ export default function AdminUsersPage() {
                         </div>
 
                         {/* Full User Details Grid */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2.5rem', background: '#F7FAFC', padding: '1.5rem', borderRadius: '12px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem', background: '#F7FAFC', padding: '1.5rem', borderRadius: '12px' }}>
                             <div>
                                 <p style={{ fontSize: '0.85rem', color: '#718096', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</p>
                                 <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#2D3748' }}>{selectedUser.profile?.organization || 'N/A'}</p>
