@@ -110,40 +110,51 @@ export default function AdminUsersPage() {
                 <title>Admin: Users | TRB Alchemy</title>
             </Head>
 
-            <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: '#2D3748', fontFamily: 'serif' }}>User Management</h1>
+            <h1 className="text-gradient-warm" style={{ fontSize: '2.5rem', marginBottom: '2rem', fontFamily: 'serif' }}>User Management</h1>
 
             {/* User Table */}
-            <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+            <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', overflow: 'hidden', border: '1px solid #FEEBC8' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#F7FAFC', borderBottom: '2px solid #EDF2F7' }}>
+                    <thead style={{ background: '#FFFAF0', borderBottom: '2px solid #F6AD55' }}>
                         <tr>
-                            <th style={{ padding: '1rem', textAlign: 'left', color: '#718096' }}>Name</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', color: '#718096' }}>Email</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', color: '#718096' }}>Category</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', color: '#718096' }}>Status</th>
-                            <th style={{ padding: '1rem', textAlign: 'right', color: '#718096' }}>Actions</th>
+                            <th style={{ padding: '1.25rem 1rem', textAlign: 'left', color: '#C05621', fontFamily: 'var(--font-serif)', fontSize: '1.1rem' }}>Name</th>
+                            <th style={{ padding: '1.25rem 1rem', textAlign: 'left', color: '#C05621', fontFamily: 'var(--font-serif)', fontSize: '1.1rem' }}>Email</th>
+                            <th style={{ padding: '1.25rem 1rem', textAlign: 'left', color: '#C05621', fontFamily: 'var(--font-serif)', fontSize: '1.1rem' }}>Category</th>
+                            <th style={{ padding: '1.25rem 1rem', textAlign: 'left', color: '#C05621', fontFamily: 'var(--font-serif)', fontSize: '1.1rem' }}>Status</th>
+                            <th style={{ padding: '1.25rem 1rem', textAlign: 'right', color: '#C05621', fontFamily: 'var(--font-serif)', fontSize: '1.1rem' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center' }}>Loading users...</td></tr>
+                            <tr><td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: '#718096' }}>Loading users...</td></tr>
                         ) : users.map(user => (
-                            <tr key={user.uid} style={{ borderBottom: '1px solid #EDF2F7' }}>
-                                <td style={{ padding: '1rem', fontWeight: 'bold', color: '#2D3748' }}>{user.profile?.name || user.displayName || 'N/A'}</td>
-                                <td style={{ padding: '1rem', color: '#4A5568' }}>{user.email}</td>
-                                <td style={{ padding: '1rem', color: '#4A5568' }}>
+                            <tr key={user.uid} style={{ borderBottom: '1px solid #EDF2F7', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = '#FFFBEB'} onMouseLeave={(e) => e.currentTarget.style.background = 'white'}>
+                                <td style={{ padding: '1.25rem 1rem', fontWeight: 'bold', color: '#2D3748' }}>{user.profile?.name || user.displayName || 'N/A'}</td>
+                                <td style={{ padding: '1.25rem 1rem', color: '#4A5568' }}>{user.email}</td>
+                                <td style={{ padding: '1.25rem 1rem', color: '#4A5568' }}>
                                     {user.profile?.category ? CATEGORY_LABELS[user.profile.category as keyof typeof CATEGORY_LABELS] : 'Unknown'}
                                 </td>
-                                <td style={{ padding: '1rem' }}>
+                                <td style={{ padding: '1.25rem 1rem' }}>
                                     {user.isPremium ?
-                                        <span style={{ background: '#C6F6D5', color: '#22543D', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem' }}>Premium</span> :
-                                        <span style={{ background: '#EDF2F7', color: '#4A5568', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem' }}>Free</span>
+                                        <span style={{ background: '#C6F6D5', color: '#22543D', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid #9AE6B4' }}>Premium</span> :
+                                        <span style={{ background: '#EDF2F7', color: '#4A5568', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', border: '1px solid #E2E8F0' }}>Free</span>
                                     }
                                 </td>
-                                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                <td style={{ padding: '1.25rem 1rem', textAlign: 'right' }}>
                                     <button
                                         onClick={() => handleViewUser(user)}
-                                        style={{ padding: '0.5rem 1rem', background: '#3182CE', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                                        style={{
+                                            padding: '0.6rem 1.2rem',
+                                            background: 'white',
+                                            color: '#C05621',
+                                            border: '1px solid #ED8936',
+                                            borderRadius: '8px',
+                                            cursor: 'pointer',
+                                            fontWeight: 'bold',
+                                            transition: 'all 0.2s'
+                                        }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = '#ED8936'; e.currentTarget.style.color = 'white'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = '#C05621'; }}
                                     >
                                         View Results
                                     </button>
@@ -156,41 +167,59 @@ export default function AdminUsersPage() {
 
             {/* Detail Modal */}
             {selectedUser && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50 }}>
-                    <div style={{ background: 'white', width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', borderRadius: '12px', padding: '2rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                            <h2 style={{ fontSize: '1.5rem', fontFamily: 'serif' }}>Assessment History for {selectedUser.profile?.name}</h2>
-                            <button onClick={() => setSelectedUser(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(26, 32, 44, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50 }}>
+                    <div className="fade-in-up" style={{ background: 'white', width: '90%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '1rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', fontFamily: 'serif', color: '#2D3748', margin: 0 }}>
+                                Assessment History
+                                <span style={{ display: 'block', fontSize: '1rem', color: '#718096', marginTop: '0.5rem', fontFamily: 'sans-serif', fontWeight: 'normal' }}>
+                                    for {selectedUser.profile?.name}
+                                </span>
+                            </h2>
+                            <button
+                                onClick={() => setSelectedUser(null)}
+                                style={{ background: '#F7FAFC', border: 'none', fontSize: '1.5rem', cursor: 'pointer', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A0AEC0', transition: 'all 0.2s' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.background = '#FED7D7'; e.currentTarget.style.color = '#C53030'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.background = '#F7FAFC'; e.currentTarget.style.color = '#A0AEC0'; }}
+                            >
+                                ×
+                            </button>
                         </div>
 
                         {loadingAssessments ? (
-                            <p>Loading assessments...</p>
+                            <p style={{ textAlign: 'center', padding: '2rem', color: '#718096' }}>Loading assessments...</p>
                         ) : userAssessments.length === 0 ? (
-                            <p>No assessments found for this user.</p>
+                            <div style={{ textAlign: 'center', padding: '3rem', background: '#F7FAFC', borderRadius: '12px', border: '1px dashed #E2E8F0' }}>
+                                <p style={{ color: '#718096' }}>No assessments found for this user.</p>
+                            </div>
                         ) : (
-                            <div style={{ display: 'grid', gap: '1rem' }}>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
                                 {userAssessments.map(assessment => (
-                                    <div key={assessment.id} style={{ border: '1px solid #E2E8F0', padding: '1.5rem', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div key={assessment.id} style={{ background: '#FFFAF0', border: '1px solid #FEEBC8', padding: '1.5rem', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.2s' }}>
                                         <div>
-                                            <h3 style={{ fontWeight: 'bold', color: '#2D3748' }}>{assessment.archetype?.name || 'Incomplete Analysis'}</h3>
+                                            <h3 style={{ fontWeight: 'bold', color: '#C05621', fontSize: '1.2rem', marginBottom: '0.5rem' }}>
+                                                {assessment.archetype?.name || 'Incomplete Analysis'}
+                                            </h3>
                                             <p style={{ fontSize: '0.9rem', color: '#718096' }}>
-                                                {new Date(assessment.createdAt?.seconds * 1000).toLocaleString()}
+                                                Created on {new Date(assessment.createdAt?.seconds * 1000).toLocaleDateString()} at {new Date(assessment.createdAt?.seconds * 1000).toLocaleTimeString()}
                                             </p>
                                         </div>
                                         <div style={{ display: 'flex', gap: '1rem' }}>
                                             <button
                                                 onClick={() => handleDownloadPDF(assessment, selectedUser.profile?.name || 'Candidate')}
                                                 disabled={isGeneratingPdf}
+                                                className="btn-primary-warm"
                                                 style={{
-                                                    padding: '0.5rem 1rem',
-                                                    background: isGeneratingPdf ? '#CBD5E0' : '#38A169',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '6px',
-                                                    cursor: isGeneratingPdf ? 'wait' : 'pointer'
+                                                    padding: '0.6rem 1.2rem',
+                                                    fontSize: '0.9rem',
+                                                    opacity: isGeneratingPdf ? 0.7 : 1,
+                                                    cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem'
                                                 }}
                                             >
-                                                {isGeneratingPdf ? 'Generating...' : 'Download PDF'}
+                                                {isGeneratingPdf ? 'Generating...' : '📥 Download PDF'}
                                             </button>
                                         </div>
                                     </div>
