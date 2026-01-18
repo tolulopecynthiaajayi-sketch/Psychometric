@@ -14,7 +14,36 @@ const SIMULATION_RESPONSES = {
             "Delegate the 'how' completely—focus entirely on the 'what' and 'why'."
         ]
     },
-    // Default fallback
+    'The Diplomatic Commander': {
+        executive_summary: "You are a master of soft power. Your profile indicates that you don't just lead through authority; you lead through consensus and influence. You understand that in modern organizations, getting things done requires navigating political currents and aligning diverse stakeholders.",
+        superpower_analysis: "Stellar Influence. You can walk into a room of conflicting interests and leave with a unified plan. Your ability to read emotional undercurrents gives you a tactical edge in negotiations.",
+        blindspot_warning: "The 'Peacekeeper's Paralysis'. In your drive to maintain harmony and buy-in, you may delay critical decisions that require conflict. Sometimes, being a commander means disappointing people to save the mission.",
+        immediate_actions: [
+            "Identify one decision you've delayed to avoid conflict and make it today.",
+            "Practice 'benevolent friction'—disagreeing openly without being disagreeable.",
+            "Audit your time: Are you spending too much time smoothing feathers instead of flying?"
+        ]
+    },
+    'The Relentless Operator': {
+        executive_summary: "You are the engine of execution. When others are paralyzed by analysis, you are already moving. Your profile suggests a high drive for results and an allergy to inefficiency. You are the person stakeholders call when the building is on fire.",
+        superpower_analysis: "Unstoppable Momentum. Your bias for action creates a gravitational pull that drags projects forward. You don't just complete tasks; you demolish obstacles.",
+        blindspot_warning: "The 'Bulldozer' effect. Your speed can leave your team breathless or bruised. You risk leaving a trail of exhausted colleagues in your wake, burning out your best people in the pursuit of the objective.",
+        immediate_actions: [
+            "Implement a 'mandatory pause' before starting new initiatives to check team capacity.",
+            "Celebrate the 'process' specifically, not just the result, to encourage your team.",
+            "Delegate a critical task and force yourself NOT to intervene for 48 hours."
+        ]
+    },
+    'The Visionary Driver': {
+        executive_summary: "You see the destination before anyone else has even packed their bags. Your profile blends high cognitive scope with intense motivation. You are a catalyst for change, often frustrated by the pace of 'business as usual'.",
+        superpower_analysis: "Infectious Ambition. You don't just have goals; you have a reality distortion field. You can make the impossible seem inevitable to those around you.",
+        blindspot_warning: "The 'Gap of Despair'. The distance between your vision and current reality is obvious to you, but terrifying to others. If you don't bridge that gap with concrete steps, your team will see you as a dreamer rather than a leader.",
+        immediate_actions: [
+            "Break your 5-year vision into a boring, linear 2-week checklist.",
+            "Find an 'Integrator'—someone who loves details—and partner with them closely.",
+            "Stop selling the 'dream' to operations people; sell them the 'plan'."
+        ]
+    },
     'default': {
         executive_summary: "You possess a balanced and adaptable professional profile. You are capable of shifting between execution and strategy as the situation demands. Your core challenge is now distinctiveness—moving from being 'good at everything' to being 'exceptional at one thing'.",
         superpower_analysis: "Versatility. You are the ultimate utility player. You can plug into almost any gap in an organization and add value immediately.",
@@ -55,10 +84,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Select simulation based on Archetype Name
             const sim = (SIMULATION_RESPONSES as any)[archetype.name] || SIMULATION_RESPONSES['default'];
 
-            // Personalize the simulation
+            // Personalize the simulation deeply
+            const context = {
+                name: userProfile.name,
+                role: userProfile.title || 'Professional',
+                org: userProfile.organization || 'your organization',
+                category: userProfile.category === 'entrepreneur' ? 'business' : 'career'
+            };
+
             const personalizedSim = {
                 ...sim,
-                executive_summary: sim.executive_summary.replace("Your psychometric profile", `${userProfile.name}, your profile`)
+                executive_summary: sim.executive_summary
+                    .replace("You operate", `${context.name}, as a ${context.role} at ${context.org}, you operate`)
+                    .replace("You are a master", `${context.name}, in your role as ${context.role}, you are a master`)
+                    .replace("You are the engine", `${context.name}, at ${context.org}, you are the engine`)
+                    .replace("You see the destination", `${context.name}, as a visionary ${context.role}, you see the destination`)
+                    .replace("You possess", `${context.name}, you possess`)
+                    .replace("your organization", context.org),
+
+                superpower_analysis: sim.superpower_analysis
+                    .replace("Your", `For a ${context.role}, your`)
+                    .replace("Versatility", `As a ${context.role}, your Versatility`),
+
+                immediate_actions: sim.immediate_actions.map((action: string) =>
+                    action.replace("team", context.category === 'entrepreneur' ? "business" : "team")
+                        .replace("organization", context.org)
+                )
             };
 
             return res.status(200).json(personalizedSim);
