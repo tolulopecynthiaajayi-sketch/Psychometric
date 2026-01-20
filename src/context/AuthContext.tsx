@@ -40,6 +40,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = async () => {
         if (auth) {
             await firebaseSignOut(auth);
+            // CRITICAL: Clear local assessment state on logout so next user starts fresh
+            localStorage.removeItem('trb_assessment_state');
         }
     };
 

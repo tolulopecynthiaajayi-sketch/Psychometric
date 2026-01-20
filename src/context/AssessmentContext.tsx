@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { QUESTIONS, Question, UserProfile, PRICE_TIERS } from '@/config/assessment';
+import { useAuth } from './AuthContext'; // Import Auth to track user changes
 
 interface AssessmentState {
     answers: Record<string, number>;
@@ -8,6 +9,7 @@ interface AssessmentState {
     isComplete: boolean;
     showUpsell: boolean;
     userProfile: UserProfile | null;
+    ownerId?: string; // NEW: Track who owns this state
 }
 
 interface AssessmentContextType extends AssessmentState {
@@ -27,6 +29,8 @@ interface AssessmentContextType extends AssessmentState {
 const AssessmentContext = createContext<AssessmentContextType | undefined>(undefined);
 
 export function AssessmentProvider({ children }: { children: React.ReactNode }) {
+    const { user, loading: authLoading } = useAuth(); // Access current user
+
     const [state, setState] = useState<AssessmentState>({
         answers: {},
         currentQuestionId: QUESTIONS[0].id,
@@ -34,6 +38,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         isComplete: false,
         showUpsell: false,
         userProfile: null,
+        ownerId: undefined
     });
 
     // Safety flag to prevent overwriting LocalStorage before we've read it
@@ -57,13 +62,26 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
     const safeIndex = currentQuestionIndex === -1 ? 0 : currentQuestionIndex;
 
-    // Load state from localStorage
+    // 1. LOAD STATE & CHECK OWNER
     useEffect(() => {
+        if (authLoading) return; // Wait for auth to settle
+
         const savedState = localStorage.getItem('trb_assessment_state');
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState);
-                // Migrate old index-based state to ID-based if needed (or just reset if too complex)
+
+                // CRITICAL SAFETY CHECK:
+                // If a user is logged in, but the saved state belongs to someone else (or no one),
+                // we MUST reset to prevent leaking previous user's data.
+                if (user && parsed.ownerId && parsed.ownerId !== user.uid) {
+                    console.log("AssessmentContext: Detected user mismatch (Saved:", parsed.ownerId, "| Current:", user.uid, "). Resetting state.");
+                    // Don't load the old state. Just start fresh and tag with new ID.
+                    setState(prev => ({ ...prev, ownerId: user.uid }));
+                    setIsLoaded(true);
+                    return;
+                }
+
                 if (typeof parsed.currentQuestionIndex === 'number' && !parsed.currentQuestionId) {
                     parsed.currentQuestionId = QUESTIONS[0].id;
                 }
@@ -71,17 +89,31 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 setState({
                     ...parsed,
                     showUpsell: parsed.showUpsell || false,
-                    userProfile: parsed.userProfile || null
+                    userProfile: parsed.userProfile || null,
+                    ownerId: parsed.ownerId || (user ? user.uid : undefined) // Adopt orphan state if valid
                 });
             } catch (e) {
                 console.error("Failed to parse saved state", e);
             }
+        } else if (user) {
+            // No saved state, but we have a user. Ensure state has their ID.
+            setState(prev => ({ ...prev, ownerId: user.uid }));
         }
-        setIsLoaded(true); // Allow writes after this
-    }, []);
 
+        setIsLoaded(true);
+    }, [user, authLoading]);
+
+    // 2. FORCE ID SYNC
+    // If user logs in mid-session, tag the anonymous state with their ID
     useEffect(() => {
-        // ONLY save if we have initialized the state from storage (or confirmed it's new)
+        if (user && state.ownerId !== user.uid && isLoaded) {
+            console.log("AssessmentContext: Tagging anonymous state with User ID");
+            setState(prev => ({ ...prev, ownerId: user.uid }));
+        }
+    }, [user, isLoaded]);
+
+    // 3. PERSIST STATE
+    useEffect(() => {
         if (isLoaded) {
             localStorage.setItem('trb_assessment_state', JSON.stringify(state));
         }
