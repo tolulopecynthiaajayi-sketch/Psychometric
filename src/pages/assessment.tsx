@@ -39,6 +39,22 @@ export default function AssessmentPage() {
             setIsProcessingPayment(true);
             setPremium(true);
 
+            // FORCE SAVE: Bypass React state delay to ensure next page load sees it
+            try {
+                const currentState = JSON.parse(localStorage.getItem('trb_assessment_state') || '{}');
+                currentState.isPremium = true;
+                // Also ensures we don't accidentally mark as complete
+                currentState.isComplete = false;
+                if (userProfile?.category !== 'student') {
+                    // Ensure non-student paid users don't get stuck on free questions
+                    // We let the setPremium logic handle the index, but we save the flag hard.
+                }
+                localStorage.setItem('trb_assessment_state', JSON.stringify(currentState));
+                console.log("Payment Success: Forced strict save to localStorage");
+            } catch (err) {
+                console.error("Force save failed", err);
+            }
+
             // Clean URL and THEN unlock UI
             router.replace('/assessment', undefined, { shallow: true })
                 .then(() => {

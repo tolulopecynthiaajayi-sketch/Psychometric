@@ -28,7 +28,7 @@ export default async function handler(
         const host = req.headers.host;
         const origin = `${protocol}://${host}`;
 
-        const { amount, description } = req.body;
+        const { amount, description, userId } = req.body;
 
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
@@ -51,7 +51,8 @@ export default async function handler(
             success_url: `${origin}/assessment?session_id={CHECKOUT_SESSION_ID}&payment_success=true`,
             cancel_url: `${origin}/onboarding?payment_canceled=true`,
             metadata: {
-                source: 'web_app_v1'
+                source: 'web_app_v1',
+                userId: req.body.userId // Vital for webhook to ID the user
             }
         });
 

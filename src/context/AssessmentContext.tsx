@@ -110,7 +110,34 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
             console.log("AssessmentContext: Tagging anonymous state with User ID");
             setState(prev => ({ ...prev, ownerId: user.uid }));
         }
-    }, [user, isLoaded]);
+    }, [user, isLoaded, state.ownerId]);
+
+    // 3. FIRESTORE SYNC (Real-time Premium Check)
+    useEffect(() => {
+        if (!user) return;
+        let unsubscribe: () => void;
+
+        import('firebase/firestore').then(({ doc, onSnapshot, getFirestore }) => {
+            const db = getFirestore();
+            unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
+                const data = doc.data();
+                // If Firebase says Premium, but Local says Free -> UPGRADE
+                if (data?.isPremium === true) {
+                    setState(prev => {
+                        if (!prev.isPremium) {
+                            console.log("🔥 FIRESTORE SYNC: Unlocking Premium Access");
+                            return { ...prev, isPremium: true, showUpsell: false };
+                        }
+                        return prev;
+                    });
+                }
+            });
+        });
+
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
+    }, [user]);
 
     // 3. PERSIST STATE
     useEffect(() => {

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAssessment } from '@/context/AssessmentContext';
+import { useAuth } from '@/context/AuthContext';
 import { UserCategory, CATEGORY_LABELS, PRICE_TIERS } from '@/config/assessment';
 
 export function UserDetailsForm() {
     const router = useRouter();
+    const { user: authUser } = useAuth();
     const { setUserProfile, setPremium } = useAssessment();
     const [step, setStep] = useState<'form' | 'pricing'>('form');
 
@@ -48,7 +50,8 @@ export function UserDetailsForm() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         amount: price,
-                        description: `Professional Profile (${CATEGORY_LABELS[formData.category]})`
+                        description: `Professional Profile (${CATEGORY_LABELS[formData.category]})`,
+                        userId: authUser?.uid // Pass UID for webhook verification
                     })
                 });
 
