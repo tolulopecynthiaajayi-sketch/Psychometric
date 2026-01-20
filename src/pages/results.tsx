@@ -14,11 +14,20 @@ import Link from 'next/link';
 
 export default function ResultsPage() {
     const router = useRouter();
-    const { answers, isPremium, userProfile, setPremium, completeAssessment, isComplete } = useAssessment();
+    const {
+        answers,
+        isPremium,
+        userProfile,
+        setPremium,
+        completeAssessment,
+        isComplete,
+        isSaved, // Get saved status
+        markAsSaved // Function to update it
+    } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
     const [price, setPrice] = useState(0);
-    const [saved, setSaved] = useState(false);
+    // const [saved, setSaved] = useState(false); // Local state removed in favor of Context state
     const [isMounted, setIsMounted] = useState(false);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
@@ -61,15 +70,20 @@ export default function ResultsPage() {
         setScores(calculatedScores);
     }, [answers]);
 
+    // SAVE LOGIC: Only if not already saved!
     useEffect(() => {
-        if (user && scores.length > 0 && !saved) {
+        if (user && scores.length > 0 && !isSaved) {
             saveResultToFirebase();
         }
-    }, [user, scores, saved]);
+    }, [user, scores, isSaved]);
 
     const saveResultToFirebase = async () => {
-        if (!user || saved || !db) return;
+        // Double check saved status
+        if (!user || isSaved || !db) return;
+
         try {
+            console.log("Saving assessment result...");
+
             // 1. Save Assessment Result
             const archetype = getArchetype(scores);
             await addDoc(collection(db, 'assessments'), {
@@ -84,7 +98,6 @@ export default function ResultsPage() {
             });
 
             // 2. Save/Update User Profile in 'users' collection
-            // This creates a clean directory of all users
             const userRef = doc(db, 'users', user.uid);
             await setDoc(userRef, {
                 uid: user.uid,
@@ -92,14 +105,12 @@ export default function ResultsPage() {
                 displayName: userProfile?.name || '',
                 profile: userProfile,
                 updatedAt: serverTimestamp(),
-                // If they are premium, mark it here too
                 isPremium: showFullReport || false
             }, { merge: true });
 
-            setSaved(true);
-            console.log("Assessment AND User Profile saved to Firebase!");
-            setSaved(true);
             console.log("Assessment saved to Firebase!");
+            markAsSaved(); // Persist saved status to Context/LocalStorage
+
         } catch (err) {
             console.error("Error saving assessment:", err);
         }
@@ -391,7 +402,7 @@ export default function ResultsPage() {
                 </div>
                 {/* DEBUG STATUS */}
                 <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: 'white', padding: '0.5rem', fontSize: '0.8rem', textAlign: 'center', zIndex: 100 }}>
-                    Debug: {saved ? "✅ Saved to Database" : "⏳ Saving/Waiting..."} | User: {user?.email || "None"} | Scores: {scores.length}
+                    Debug: {isSaved ? "✅ Saved to Database" : "⏳ Saving/Waiting..."} | User: {user?.email || "None"} | Scores: {scores.length}
                 </div>
             </main>
         </>

@@ -7,6 +7,7 @@ interface AssessmentState {
     currentQuestionId: string;
     isPremium: boolean;
     isComplete: boolean;
+    isSaved: boolean; // NEW: Track if saved to DB to prevent duplicates
     showUpsell: boolean;
     userProfile: UserProfile | null;
     ownerId?: string; // NEW: Track who owns this state
@@ -17,6 +18,7 @@ interface AssessmentContextType extends AssessmentState {
     nextQuestion: () => void;
     prevQuestion: () => void;
     setPremium: (status: boolean) => void;
+    markAsSaved: () => void; // NEW
     closeUpsell: () => void;
     completeAssessment: () => void;
     resetAssessment: () => void;
@@ -36,6 +38,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         currentQuestionId: QUESTIONS[0].id,
         isPremium: false,
         isComplete: false,
+        isSaved: false,
         showUpsell: false,
         userProfile: null,
         ownerId: undefined
@@ -88,6 +91,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
                 setState({
                     ...parsed,
+                    isSaved: parsed.isSaved || false, // Restore or default
                     showUpsell: parsed.showUpsell || false,
                     userProfile: parsed.userProfile || null,
                     ownerId: parsed.ownerId || (user ? user.uid : undefined) // Adopt orphan state if valid
@@ -218,12 +222,17 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         setState((prev) => ({ ...prev, isComplete: true }));
     };
 
+    const markAsSaved = () => {
+        setState((prev) => ({ ...prev, isSaved: true }));
+    };
+
     const resetAssessment = () => {
         const newState = {
             answers: {},
             currentQuestionId: QUESTIONS[0].id,
             isPremium: false,
             isComplete: false,
+            isSaved: false, // Reset
             showUpsell: false,
             userProfile: null
         };
@@ -239,6 +248,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 nextQuestion,
                 prevQuestion,
                 setPremium,
+                markAsSaved, // Expose
                 closeUpsell,
                 completeAssessment,
                 resetAssessment,
