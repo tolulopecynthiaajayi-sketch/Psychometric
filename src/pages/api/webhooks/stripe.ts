@@ -67,6 +67,9 @@ export default async function handler(
             console.log(`💰 Payment success for User: ${userId}`);
 
             try {
+                if (!db) {
+                    throw new Error("Firestore not initialized");
+                }
                 // Update Firestore
                 const userRef = doc(db, 'users', userId);
 
