@@ -22,7 +22,8 @@ export default function ResultsPage() {
         completeAssessment,
         isComplete,
         isSaved, // Get saved status
-        markAsSaved // Function to update it
+        markAsSaved, // Function to update it
+        assessmentId // Get ID for updates
     } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
@@ -78,15 +79,18 @@ export default function ResultsPage() {
     }, [user, scores, isSaved]);
 
     const saveResultToFirebase = async () => {
-        // Double check saved status
-        if (!user || isSaved || !db) return;
+        // Double check saved status (but allow if we have an ID to update!)
+        if (!user || (!answers && scores.length === 0) || !db) return;
+
+        // If it is saved AND we have an ID AND we are not just upgrading (checked by isSaved being false), skip.
+        // But remember setPremium sets isSaved=false, so we WILL pass this check on upgrade.
+        if (isSaved && assessmentId) return;
 
         try {
-            console.log("Saving assessment result...");
+            console.log("Saving assessment result...", assessmentId ? `(Updating ${assessmentId})` : "(New)");
 
-            // 1. Save Assessment Result
             const archetype = getArchetype(scores);
-            await addDoc(collection(db, 'assessments'), {
+            const assessmentData = {
                 userId: user.uid,
                 userEmail: user.email,
                 profile: userProfile,
@@ -94,8 +98,20 @@ export default function ResultsPage() {
                 archetype: archetype,
                 isPremium: showFullReport,
                 createdAt: serverTimestamp(),
-                answers: answers // Optional: Save raw answers too
-            });
+                answers: answers
+            };
+
+            let newId = assessmentId;
+
+            if (assessmentId) {
+                // UPDATE existing doc
+                const assessmentRef = doc(db, 'assessments', assessmentId);
+                await setDoc(assessmentRef, assessmentData, { merge: true });
+            } else {
+                // CREATE new doc
+                const docRef = await addDoc(collection(db, 'assessments'), assessmentData);
+                newId = docRef.id;
+            }
 
             // 2. Save/Update User Profile in 'users' collection
             const userRef = doc(db, 'users', user.uid);
@@ -109,12 +125,15 @@ export default function ResultsPage() {
             }, { merge: true });
 
             console.log("Assessment saved to Firebase!");
-            markAsSaved(); // Persist saved status to Context/LocalStorage
+            markAsSaved(newId); // Save ID to context to prevent dupes next time
 
         } catch (err) {
             console.error("Error saving assessment:", err);
         }
     };
+
+
+
 
     const handleUnlock = async () => {
         try {

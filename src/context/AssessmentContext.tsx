@@ -7,10 +7,11 @@ interface AssessmentState {
     currentQuestionId: string;
     isPremium: boolean;
     isComplete: boolean;
-    isSaved: boolean; // NEW: Track if saved to DB to prevent duplicates
+    isSaved: boolean;
+    assessmentId?: string; // NEW: Track the document ID for updates/deduplcation
     showUpsell: boolean;
     userProfile: UserProfile | null;
-    ownerId?: string; // NEW: Track who owns this state
+    ownerId?: string;
 }
 
 interface AssessmentContextType extends AssessmentState {
@@ -18,7 +19,7 @@ interface AssessmentContextType extends AssessmentState {
     nextQuestion: () => void;
     prevQuestion: () => void;
     setPremium: (status: boolean) => void;
-    markAsSaved: () => void; // NEW
+    markAsSaved: (id?: string) => void; // Update signature
     closeUpsell: () => void;
     completeAssessment: () => void;
     resetAssessment: () => void;
@@ -39,6 +40,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         isPremium: false,
         isComplete: false,
         isSaved: false,
+        assessmentId: undefined,
         showUpsell: false,
         userProfile: null,
         ownerId: undefined
@@ -91,10 +93,11 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
 
                 setState({
                     ...parsed,
-                    isSaved: parsed.isSaved || false, // Restore or default
+                    isSaved: parsed.isSaved || false,
+                    assessmentId: parsed.assessmentId || undefined, // Restore ID
                     showUpsell: parsed.showUpsell || false,
                     userProfile: parsed.userProfile || null,
-                    ownerId: parsed.ownerId || (user ? user.uid : undefined) // Adopt orphan state if valid
+                    ownerId: parsed.ownerId || (user ? user.uid : undefined)
                 });
             } catch (e) {
                 console.error("Failed to parse saved state", e);
@@ -209,6 +212,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 isPremium: status,
                 showUpsell: false,
                 isComplete: false,
+                isSaved: false, // Force re-save on upgrade so we can update the doc
                 currentQuestionId: nextQ
             };
         });
@@ -222,8 +226,12 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         setState((prev) => ({ ...prev, isComplete: true }));
     };
 
-    const markAsSaved = () => {
-        setState((prev) => ({ ...prev, isSaved: true }));
+    const markAsSaved = (id?: string) => {
+        setState((prev) => ({
+            ...prev,
+            isSaved: true,
+            assessmentId: id || prev.assessmentId
+        }));
     };
 
     const resetAssessment = () => {
@@ -232,7 +240,8 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
             currentQuestionId: QUESTIONS[0].id,
             isPremium: false,
             isComplete: false,
-            isSaved: false, // Reset
+            isSaved: false,
+            assessmentId: undefined, // Reset
             showUpsell: false,
             userProfile: null
         };
