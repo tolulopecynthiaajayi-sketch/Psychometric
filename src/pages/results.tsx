@@ -211,7 +211,7 @@ export default function ResultsPage() {
                                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                                 <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
                                 <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                                <p className="text-sm text-gray-400 mt-2">The Alchemist AI is analyzing your profile...</p>
+                                <p className="text-sm text-gray-400 mt-2">Generating your personalized analysis...</p>
                             </div>
                         ) : (
                             <>
