@@ -49,9 +49,9 @@ export default function ResultsPage() {
     // TRIGGER AI GENERATION ON LOAD (If premium/exempt)
     useEffect(() => {
         if (showFullReport && userProfile && scores.length > 0 && !report && !aiLoading) {
-            generateReport(userProfile, scores, archetype);
+            generateReport(userProfile, scores, archetype, answers);
         }
-    }, [showFullReport, userProfile, scores, report, aiLoading, generateReport]);
+    }, [showFullReport, userProfile, scores, report, aiLoading, generateReport, answers]);
 
     useEffect(() => {
         if (userProfile?.category) {

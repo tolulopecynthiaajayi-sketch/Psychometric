@@ -13,7 +13,7 @@ export function useAIReport() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const generateReport = useCallback(async (userProfile: UserProfile, scores: { label: string; value: number }[], archetype: Archetype) => {
+    const generateReport = useCallback(async (userProfile: UserProfile, scores: { label: string; value: number }[], archetype: Archetype, answers: Record<string, number>) => {
         setLoading(true);
         setError(null);
 
@@ -40,7 +40,8 @@ export function useAIReport() {
                 body: JSON.stringify({
                     userProfile,
                     scores: enrichedScores,
-                    archetype
+                    archetype,
+                    answers // Pass the raw answers for deep analysis
                 })
             });
 

@@ -62,14 +62,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const { userProfile, scores, archetype } = req.body;
+        const { userProfile, scores, archetype, answers } = req.body;
 
         if (!userProfile || !scores) {
             return res.status(400).json({ message: 'Missing user profile or scores' });
         }
 
         // 1. Build the Prompt
-        const prompt = PromptEngine.build(userProfile, scores, archetype);
+        const prompt = PromptEngine.build(userProfile, scores, archetype, answers);
 
         // 2. CHECK FOR API KEY (Gemini)
         const apiKey = process.env.GEMINI_API_KEY;
