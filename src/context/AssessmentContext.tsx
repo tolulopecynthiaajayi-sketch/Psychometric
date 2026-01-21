@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { QUESTIONS, Question, UserProfile, PRICE_TIERS } from '@/config/assessment';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import { QUESTIONS, Question, UserProfile, PRICE_TIERS, getArchetype } from '@/config/assessment';
+import { collection, addDoc, serverTimestamp, doc, setDoc, getFirestore } from 'firebase/firestore';
 import { useAuth } from './AuthContext'; // Import Auth to track user changes
 
 interface AssessmentState {
@@ -23,6 +24,7 @@ interface AssessmentContextType extends AssessmentState {
     closeUpsell: () => void;
     completeAssessment: () => void;
     resetAssessment: () => void;
+    saveAssessment: (scores: any[]) => Promise<void>; // New exposed method
     setUserProfile: (profile: UserProfile) => void;
     activeQuestions: Question[];
     currentQuestionIndex: number;
@@ -248,6 +250,85 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
         };
         setState(newState);
         localStorage.setItem('trb_assessment_state', JSON.stringify(newState));
+        setState(newState);
+        localStorage.setItem('trb_assessment_state', JSON.stringify(newState));
+    };
+
+    // MUTEX LOCK for saving
+    const isSavingRef = useRef(false);
+
+    const saveAssessment = async (scores: any[]) => {
+        // 1. Double check locks and auth
+        if (isSavingRef.current || !user || !isLoaded) {
+            console.warn("Save skipped: Locked or not loaded.");
+            return;
+        }
+
+        // 2. Double check state (prevent saving initialized/empty states)
+        if (state.isSaved && state.assessmentId && !state.isPremium) {
+            // Allow RE-SAVE if we are Premium (upgrading), otherwise skip
+            // But actually, setPremium resets isSaved to false, so this check passes.
+            console.log("Save skipped: Already saved.");
+            return;
+        }
+
+        try {
+            isSavingRef.current = true; // LOCK
+            console.log("🔐 Context: Starting Secure Save...", state.assessmentId ? `(Updating ${state.assessmentId})` : "(New)");
+
+            // Lazy load DB if not already available? We used getFirestore above? 
+            // Better to use imported db from lib/firebase but we can use the SDK function too.
+            // Let's use the one from lib/firebase if possible, or just standard SDK.
+            // I'll stick to standard SDK for the context to avoid circular dep issues if possible, 
+            // but importing `db` from `@/lib/firebase` is safer for initialized instance.
+            // Actually, I'll dynamic import to be safe OR just use the hook's db.
+            // Let's use standard import.
+            const { db } = await import('@/lib/firebase');
+            if (!db) throw new Error("Firebase not initialized");
+
+            const archetype = getArchetype(scores);
+            const assessmentData = {
+                userId: user.uid,
+                userEmail: user.email,
+                profile: state.userProfile,
+                scores: scores,
+                archetype: archetype,
+                isPremium: state.isPremium,
+                createdAt: serverTimestamp(),
+                answers: state.answers
+            };
+
+            let newId = state.assessmentId;
+
+            if (state.assessmentId) {
+                // UPDATE
+                await setDoc(doc(db, 'assessments', state.assessmentId), assessmentData, { merge: true });
+            } else {
+                // CREATE
+                const docRef = await addDoc(collection(db, 'assessments'), assessmentData);
+                newId = docRef.id;
+            }
+
+            // Update User Profile
+            await setDoc(doc(db, 'users', user.uid), {
+                uid: user.uid,
+                email: user.email,
+                displayName: state.userProfile?.name || '',
+                profile: state.userProfile,
+                updatedAt: serverTimestamp(),
+                isPremium: state.isPremium || false
+            }, { merge: true });
+
+            console.log("✅ Context: Save Complete!");
+
+            // Update State with new ID and Saved Status
+            markAsSaved(newId);
+
+        } catch (err) {
+            console.error("❌ Save Failed:", err);
+        } finally {
+            isSavingRef.current = false; // UNLOCK
+        }
     };
 
     return (
@@ -262,6 +343,7 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 closeUpsell,
                 completeAssessment,
                 resetAssessment,
+                saveAssessment, // Expose
                 setUserProfile,
                 activeQuestions,
                 currentQuestionIndex: safeIndex,

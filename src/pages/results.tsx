@@ -8,8 +8,8 @@ import { useAIReport } from '@/hooks/useAIReport';
 // REMOVED STATIC IMPORT: import { generatePDFReport } from '@/utils/pdfGenerator';
 import { ReportSlides } from '@/components/report/ReportSlides';
 import { useAuth } from '@/context/AuthContext';
-import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+// import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore'; // MOVED TO CONTEXT
+// import { db } from '@/lib/firebase';
 import Link from 'next/link';
 
 export default function ResultsPage() {
@@ -24,12 +24,12 @@ export default function ResultsPage() {
         isSaved, // Get saved status
         markAsSaved, // Function to update it
         assessmentId, // Get ID for updates
-        isLoaded // Wait for storage sync
+        isLoaded,
+        saveAssessment // Import the new method
     } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
     const [price, setPrice] = useState(0);
-    // const [saved, setSaved] = useState(false); // Local state removed in favor of Context state
     const [isMounted, setIsMounted] = useState(false);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
@@ -72,66 +72,12 @@ export default function ResultsPage() {
         setScores(calculatedScores);
     }, [answers]);
 
-    // SAVE LOGIC: Only if not already saved!
+    // REF: Context-based Save (Prevents Race Conditions)
     useEffect(() => {
         if (isLoaded && user && scores.length > 0 && !isSaved) {
-            saveResultToFirebase();
+            saveAssessment(scores);
         }
-    }, [user, scores, isSaved, isLoaded]);
-
-    const saveResultToFirebase = async () => {
-        // Double check saved status (but allow if we have an ID to update!)
-        if (!isLoaded || !user || (!answers && scores.length === 0) || !db) return;
-
-        // If it is saved AND we have an ID AND we are not just upgrading (checked by isSaved being false), skip.
-        // But remember setPremium sets isSaved=false, so we WILL pass this check on upgrade.
-        if (isSaved && assessmentId) return;
-
-        try {
-            console.log("Saving assessment result...", assessmentId ? `(Updating ${assessmentId})` : "(New)");
-
-            const archetype = getArchetype(scores);
-            const assessmentData = {
-                userId: user.uid,
-                userEmail: user.email,
-                profile: userProfile,
-                scores: scores,
-                archetype: archetype,
-                isPremium: showFullReport,
-                createdAt: serverTimestamp(),
-                answers: answers
-            };
-
-            let newId = assessmentId;
-
-            if (assessmentId) {
-                // UPDATE existing doc
-                const assessmentRef = doc(db, 'assessments', assessmentId);
-                await setDoc(assessmentRef, assessmentData, { merge: true });
-            } else {
-                // CREATE new doc
-                const docRef = await addDoc(collection(db, 'assessments'), assessmentData);
-                newId = docRef.id;
-            }
-
-            // 2. Save/Update User Profile in 'users' collection
-            const userRef = doc(db, 'users', user.uid);
-            await setDoc(userRef, {
-                uid: user.uid,
-                email: user.email,
-                displayName: userProfile?.name || '',
-                profile: userProfile,
-                updatedAt: serverTimestamp(),
-                isPremium: showFullReport || false
-            }, { merge: true });
-
-            console.log("Assessment saved to Firebase!");
-            markAsSaved(newId); // Save ID to context to prevent dupes next time
-
-        } catch (err) {
-            console.error("Error saving assessment:", err);
-        }
-    };
+    }, [isLoaded, user, scores, isSaved, saveAssessment]);
 
 
 
@@ -422,8 +368,7 @@ export default function ResultsPage() {
                 </div>
                 {/* DEBUG STATUS */}
                 <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: 'white', padding: '0.5rem', fontSize: '0.8rem', textAlign: 'center', zIndex: 100 }}>
-                    Debug: {isSaved ? "✅ Saved" : "⏳ Saving..."} | ID: {assessmentId || "New"} | Loaded: {isLoaded ? "Yes" : "No"} | User: {user?.email || "None"}
-                    <button onClick={() => window.location.reload()} style={{ marginLeft: '10px', background: 'blue', color: 'white' }}>Refresh Page</button>
+                    Debug: {isSaved ? "✅ Saved to Database" : "⏳ Saving/Waiting..."} | User: {user?.email || "None"} | Scores: {scores.length}
                 </div>
             </main>
         </>
