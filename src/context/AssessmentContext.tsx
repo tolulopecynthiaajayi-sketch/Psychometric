@@ -27,6 +27,7 @@ interface AssessmentContextType extends AssessmentState {
     activeQuestions: Question[];
     currentQuestionIndex: number;
     totalQuestions: number;
+    isLoaded: boolean; // Sync flag
 }
 
 const AssessmentContext = createContext<AssessmentContextType | undefined>(undefined);
@@ -264,7 +265,8 @@ export function AssessmentProvider({ children }: { children: React.ReactNode }) 
                 setUserProfile,
                 activeQuestions,
                 currentQuestionIndex: safeIndex,
-                totalQuestions: activeQuestions.length
+                totalQuestions: activeQuestions.length,
+                isLoaded
             }}
         >
             {children}

@@ -23,7 +23,8 @@ export default function ResultsPage() {
         isComplete,
         isSaved, // Get saved status
         markAsSaved, // Function to update it
-        assessmentId // Get ID for updates
+        assessmentId, // Get ID for updates
+        isLoaded // Wait for storage sync
     } = useAssessment();
     const { user } = useAuth();
     const [scores, setScores] = useState<{ label: string; value: number; fullMark: number }[]>([]);
@@ -73,14 +74,14 @@ export default function ResultsPage() {
 
     // SAVE LOGIC: Only if not already saved!
     useEffect(() => {
-        if (user && scores.length > 0 && !isSaved) {
+        if (isLoaded && user && scores.length > 0 && !isSaved) {
             saveResultToFirebase();
         }
-    }, [user, scores, isSaved]);
+    }, [user, scores, isSaved, isLoaded]);
 
     const saveResultToFirebase = async () => {
         // Double check saved status (but allow if we have an ID to update!)
-        if (!user || (!answers && scores.length === 0) || !db) return;
+        if (!isLoaded || !user || (!answers && scores.length === 0) || !db) return;
 
         // If it is saved AND we have an ID AND we are not just upgrading (checked by isSaved being false), skip.
         // But remember setPremium sets isSaved=false, so we WILL pass this check on upgrade.
@@ -421,7 +422,8 @@ export default function ResultsPage() {
                 </div>
                 {/* DEBUG STATUS */}
                 <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.8)', color: 'white', padding: '0.5rem', fontSize: '0.8rem', textAlign: 'center', zIndex: 100 }}>
-                    Debug: {isSaved ? "✅ Saved to Database" : "⏳ Saving/Waiting..."} | User: {user?.email || "None"} | Scores: {scores.length}
+                    Debug: {isSaved ? "✅ Saved" : "⏳ Saving..."} | ID: {assessmentId || "New"} | Loaded: {isLoaded ? "Yes" : "No"} | User: {user?.email || "None"}
+                    <button onClick={() => window.location.reload()} style={{ marginLeft: '10px', background: 'blue', color: 'white' }}>Refresh Page</button>
                 </div>
             </main>
         </>
