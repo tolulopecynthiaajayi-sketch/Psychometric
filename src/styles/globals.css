@@ -75,6 +75,7 @@ a {
 .text-gradient-warm {
   background: linear-gradient(90deg, #C05621 0%, #D4AF37 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
